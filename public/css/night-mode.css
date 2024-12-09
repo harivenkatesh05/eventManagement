@@ -95,11 +95,11 @@ Night Mood
 }
 
 .night-mode .hero-banner {
-    background-image: url(../images/dark-banner.jpg);
+    background-image: url(/images/dark-banner.jpg);
 }
 
 .night-mode .breadcrumb-block {
-    background-image: url(../images/dark-banner.jpg);
+    background-image: url(/images/dark-banner.jpg);
 }
 
 .night-mode .barren-breadcrumb .breadcrumb .breadcrumb-item a {
@@ -1389,5 +1389,4 @@ Night Mood
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) and (max-width: 1199.98px) {
 	
-}
 }
