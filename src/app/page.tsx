@@ -1,89 +1,14 @@
-import Card from "@/components/card";
+'use client'
+
+import Card from "@/components/card/card";
+import CardSkeletons from "@/components/card/skeletonCollection";
+import { events } from "@/dataset/events";
 import { getDateObj } from "@/util/date";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-	const events = [
-		{
-			id: 1,
-			title: 'A New Way Of Life',
-			dateTime: '2024-04-15T15:45:00',
-			duration: 1,
-			price: 'AUD $100.00',
-			image: 'img-1.jpg',
-			remaining: 0,
-			tags: ['arts', 'concert', 'workshops', 'volunteer', 'sports', 'health_Wellness'],
-		},
-		{
-			id: 2,
-			title: 'Earrings Workshop with Bronwyn David',
-			image: 'img-2.jpg',
-			dateTime: '2024-04-30T23:20:00',
-			duration: 2,
-			price: 'AUD $75.00',
-			remaining: 6,
-			tags: ['business', 'workshops', 'volunteer', 'sports', 'health_Wellness'],
-		},
-		{
-			id: 3,
-			title: 'Spring Showcase Saturday April 30th 2022 at 7pm',
-			image: 'img-3.jpg',
-			dateTime: '2024-05-01T19:30:00',
-			duration: 3,
-			price: 'Free',
-			remaining: 0,
-			tags: ['coaching_consulting', 'free', 'concert', 'volunteer', 'health_Wellness', 'bussiness'],
-		},
-		{
-			id: 4,
-			title: 'Shutter Life',
-			image: 'img-4.jpg',
-			dateTime: '2024-05-01T21:30:00',
-			duration: 1,
-			price: 'AUD $85.00',
-			remaining: 7,
-			tags: ['health_Wellness', 'concert', 'volunteer', 'sports', 'free', 'business'],
-		},
-		{
-			id: 5,
-			title: 'Friday Night Dinner at The Old Station May 27 2022',
-			image: 'img-5.jpg',
-			dateTime: '2024-05-27T12:00:00',
-			duration: 5,
-			price: 'AUD $41.50',
-			remaining: 0,
-			tags: ["concert", "sports", "health_Wellness", "free", "arts"]
-		},
-		{
-			id: 6,
-			title: 'Step Up Open Mic Show',
-			image: 'img-6.jpg',
-			dateTime: '2024-06-30T14:00:00',
-			duration: 1,
-			price: 'AUD $200.00',
-			remaining: 0,
-			tags: ['workshops', 'concert', 'arts', 'volunteer', 'sports'],
-		},
-		{
-			id: 7,
-			title: 'Tutorial on Canvas Painting for Beginners',
-			image: 'img-7.jpg',
-			dateTime: '2024-07-17T15:30:00',
-			duration: 1,
-			price: 'AUD $50.00',
-			remaining: 17,
-			tags: ['volunteer', 'free', 'health_Wellness'],
-		},
-		{
-			id: 8,
-			title: 'Trainee Program on Leadership&apos; 2022',
-			image: 'img-8.jpg',
-			dateTime: '2024-07-20T16:00:00',
-			duration: 1,
-			price: 'AUD $120.00',
-			remaining: 7,
-			tags: ['sports', 'concert', 'volunteer', 'arts'],
-		},
-	]
+	const [isLoading, setIsLoading] = useState(true)
 
 	const eventCards = events.map((event) => {
 		return (
@@ -93,6 +18,9 @@ export default function Home() {
 		)
 	})
 
+	useEffect(() => {
+		setIsLoading(false)
+	}, [eventCards])
 	
 	return (
 		<div className="wrapper">
@@ -121,17 +49,17 @@ export default function Home() {
 							<div className="event-filter-items">
 								<div className="featured-controls">
 									<div className="filter-tag">
-										<a href="explore_events_by_date.html" className="active">All</a>
-										<a href="explore_events_by_date.html">Today</a>
-										<a href="explore_events_by_date.html">Tomorrow</a>
-										<a href="explore_events_by_date.html">This Week</a>
-										<a href="explore_events_by_date.html">This Weekend</a>
-										<a href="explore_events_by_date.html">Next Week</a>
-										<a href="explore_events_by_date.html">Next Weekend</a>
-										<a href="explore_events_by_date.html">This Month</a>
-										<a href="explore_events_by_date.html">Next Month</a>
-										<a href="explore_events_by_date.html">This Year</a>
-										<a href="explore_events_by_date.html">Next Year</a>
+										<Link href="/explore" className="active">All</Link>
+										<Link href="/explore?date=today">Today</Link>
+										<Link href="/explore?date=tomorrow">Tomorrow</Link>
+										<Link href="/explore?date=this-week">This Week</Link>
+										<Link href="/explore?date=this-weekend">This Weekend</Link>
+										<Link href="/explore?date=next-week">Next Week</Link>
+										<Link href="/explore?date=next-weekend">Next Weekend</Link>
+										<Link href="/explore?date=this-month">This Month</Link>
+										<Link href="/explore?date=next-month">Next Month</Link>
+										<Link href="/explore?date=this-year">This Year</Link>
+										<Link href="/explore?date=next-year">Next Year</Link>
 									</div>
 									<div className="controls">
 										<button type="button" className="control" data-filter="all">All</button>
@@ -146,7 +74,9 @@ export default function Home() {
 										<button type="button" className="control" data-filter=".free">Free</button>
 									</div>
 									<div className="row" data-ref="event-filter-content">
-										{eventCards}
+										{isLoading ? (<>
+											<CardSkeletons count={3} />	
+										</>) : eventCards.length > 0 ? eventCards : <p>No events found</p> }
 									</div>
 									<div className="browse-btn">
 										<a href="explore_events.html" className="main-btn btn-hover ">Browse All</a>

@@ -1,6 +1,18 @@
+'use client'
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import React from 'react'
 
 export default function Header() {
+	const pathname = usePathname();
+	const isActive = (pattern: string) => {
+		// Check if pathname matches the pattern with wildcard
+		const regex = new RegExp(pattern.replace('*', '.*'));
+		return regex.test(pathname!);
+	};
+	
+
 	return (
 		<header className="header">
 			<div className="header-inner">
@@ -11,7 +23,7 @@ export default function Header() {
 								<i className="fa-solid fa-bars"></i>
 							</span>
 						</button>
-						<a className="navbar-brand order-1 order-lg-0 ml-lg-0 ml-2 me-auto" href="index.html">
+						<Link className="navbar-brand order-1 order-lg-0 ml-lg-0 ml-2 me-auto" href="/">
 							<div className="res-main-logo">
 								<img src="images/logo-icon.svg" alt="" />
 							</div>
@@ -19,7 +31,7 @@ export default function Header() {
 								<img src="images/logo.svg" alt="" />
 								<img className="logo-inverse" src="images/dark-logo.svg" alt="" />
 							</div>
-						</a>
+						</Link>
 						<div className="offcanvas offcanvas-start" tabIndex={-1} id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
 							<div className="offcanvas-header">
 								<div className="offcanvas-logo" id="offcanvasNavbarLabel">
@@ -40,15 +52,15 @@ export default function Header() {
 								</div>
 								<ul className="navbar-nav justify-content-end flex-grow-1 pe_5">
 									<li className="nav-item">
-										<a className="nav-link active" aria-current="page" href="index.html">Home</a>
+										<Link className={"nav-link " + (pathname === "/"  ? 'active' : '')} aria-current="page" href="/">Home</Link>
 									</li>
 									<li className="nav-item dropdown">
-										<a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+										<a className={"nav-link dropdown-toggle " + (isActive('/explore*') ? 'active' : '')} href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 											Explore Events
 										</a>
 										<ul className="dropdown-menu dropdown-submenu">
 											<li>
-												<a className="dropdown-item" href="explore_events.html">Explore Events</a>
+												<a className="dropdown-item" href="/explore">Explore Events</a>
 											</li>
 											<li>
 												<a className="dropdown-item" href="venue_event_detail_view.html">Venue Event Detail View</a>
@@ -58,7 +70,7 @@ export default function Header() {
 											</li>
 										</ul>
 									</li>
-									<li className="nav-item dropdown">
+									<li className={"nav-item dropdown " + (isActive('/help*') ? 'active' : '')}>
 										<a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 											Help
 										</a>
@@ -74,7 +86,7 @@ export default function Header() {
 											</li>
 										</ul>
 									</li>
-									<li className="nav-item dropdown">
+									{/* <li className={"nav-item dropdown" + (isActive('index') ? 'active' : '')}>
 										<a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 											Pages
 										</a>
@@ -161,7 +173,7 @@ export default function Header() {
 												<a className="dropdown-item" href="privacy_policy.html">Privacy Policy</a>
 											</li>
 										</ul>
-									</li>
+									</li> */}
 								</ul>
 							</div>
 							<div className="offcanvas-footer">

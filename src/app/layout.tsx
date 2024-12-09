@@ -9,6 +9,7 @@ import "../../public/vendor/OwlCarousel/assets/owl.theme.default.min.css"
 import "../../public/vendor/bootstrap/css/bootstrap.min.css"
 import "../../public/vendor/bootstrap-select/dist/css/bootstrap-select.min.css"
 import "../../public/css/responsive.css"
+import "./global.css"
 
 import Script from "next/script";
 import { roboto } from './fonts'
