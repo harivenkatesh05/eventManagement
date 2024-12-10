@@ -25,17 +25,17 @@ export default function Header() {
 						</button>
 						<Link className="navbar-brand order-1 order-lg-0 ml-lg-0 ml-2 me-auto" href="/">
 							<div className="res-main-logo">
-								<img src="images/logo-icon.svg" alt="" />
+								<img src="/images/logo-icon.svg" alt="" />
 							</div>
 							<div className="main-logo" id="logo">
-								<img src="images/logo.svg" alt="" />
-								<img className="logo-inverse" src="images/dark-logo.svg" alt="" />
+								<img src="/images/logo.svg" alt="" />
+								<img className="logo-inverse" src="/images/dark-logo.svg" alt="" />
 							</div>
 						</Link>
 						<div className="offcanvas offcanvas-start" tabIndex={-1} id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
 							<div className="offcanvas-header">
 								<div className="offcanvas-logo" id="offcanvasNavbarLabel">
-									<img src="images/logo-icon.svg" alt="" />
+									<img src="/images/logo-icon.svg" alt="" />
 								</div>
 								<button type="button" className="close-btn" data-bs-dismiss="offcanvas" aria-label="Close">
 									<i className="fa-solid fa-xmark"></i>
@@ -54,11 +54,11 @@ export default function Header() {
 									<li className="nav-item">
 										<Link className={"nav-link " + (pathname === "/"  ? 'active' : '')} aria-current="page" href="/">Home</Link>
 									</li>
-									<li className="nav-item dropdown">
-										<a className={"nav-link dropdown-toggle " + (isActive('/explore*') ? 'active' : '')} href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									<li className="nav-item">
+										<Link className={"nav-link " + (isActive('/explore*') ? 'active' : '')} href="/explore" aria-expanded="false">
 											Explore Events
-										</a>
-										<ul className="dropdown-menu dropdown-submenu">
+										</Link>
+										{/* <ul className="dropdown-menu dropdown-submenu">
 											<li>
 												<a className="dropdown-item" href="/explore">Explore Events</a>
 											</li>
@@ -68,7 +68,7 @@ export default function Header() {
 											<li>
 												<a className="dropdown-item" href="online_event_detail_view.html">Online Event Detail View</a>
 											</li>
-										</ul>
+										</ul> */}
 									</li>
 									<li className={"nav-item dropdown " + (isActive('/help*') ? 'active' : '')}>
 										<a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -219,14 +219,14 @@ export default function Header() {
 								</li>
 								<li className="dropdown account-dropdown">
 									<a href="#" className="account-link" role="button" id="accountClick" data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-expanded="false">
-										<img src="images/profile-imgs/img-13.jpg" alt="" />
+										<img src="/images/profile-imgs/img-13.jpg" alt="" />
 										<i className="fas fa-caret-down arrow-icon"></i>
 									</a>
 									<ul className="dropdown-menu dropdown-menu-account dropdown-menu-end" aria-labelledby="accountClick">
 										<li>
 											<div className="dropdown-account-header">
 												<div className="account-holder-avatar">
-													<img src="images/profile-imgs/img-13.jpg" alt="" />
+													<img src="/images/profile-imgs/img-13.jpg" alt="" />
 												</div>
 												<h5>John Doe</h5>
 												<p>johndoe@example.com</p>

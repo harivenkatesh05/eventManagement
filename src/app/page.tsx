@@ -2,26 +2,61 @@
 
 import Card from "@/components/card/card";
 import CardSkeletons from "@/components/card/skeletonCollection";
-import { events } from "@/dataset/events";
+import { Event } from "@/dataset/events";
 import { getDateObj } from "@/util/date";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { fetchEvents } from "./apis";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
 	const [isLoading, setIsLoading] = useState(true)
-
-	const eventCards = events.map((event) => {
-		return (
-			<div key={event.id} className={"col-xl-3 col-lg-4 col-md-6 col-sm-12 mix " + event.tags.join(" ")} data-ref="mixitup-target">
-				<Card title={event.title} dateTime={getDateObj(event.dateTime)} duration={event.duration} price={event.price} image={event.image} remaining={event.remaining} />
-			</div>
-		)
-	})
-
+	const [events, setEvents] = useState<Event[]>([])
+	const [error, setError] = useState<string | null>(null)
+	const router = useRouter()
 	useEffect(() => {
-		setIsLoading(false)
-	}, [eventCards])
-	
+		fetchEvents().then((events: Event[]) => {
+			setEvents(events)
+			setIsLoading(false)
+		}).catch((err) => {
+			setError(err instanceof Error ? err.message : 'Failed to load events');
+			setIsLoading(false);
+		});
+	}, [])
+
+	const renderContent = () => {
+		if (isLoading) {
+			return <CardSkeletons count={8} />
+		}
+
+		if (error) {
+			return <div className="alert alert-danger">{error}</div>
+		}
+
+		if (!events.length) {
+			return (
+				<div className="text-center p-4">
+					<h3>No events found</h3>
+					<p>Check back later for upcoming events</p>
+				</div>
+			)
+		}
+
+		return events.map((event) => (
+			<div key={event.id} className={"col-xl-3 col-lg-4 col-md-6 col-sm-12 mix " + event.tags.join(" ")} data-ref="mixitup-target">
+				<Card 
+					title={event.title} 
+					dateTime={getDateObj(event.dateTime)} 
+					duration={event.duration} 
+					price={event.price} 
+					image={event.image} 
+					remaining={event.remaining} 
+					id={event.id}
+				/>
+			</div>
+		))
+	}
+
 	return (
 		<div className="wrapper">
 			<div className="hero-banner">
@@ -74,9 +109,7 @@ export default function Home() {
 										<button type="button" className="control" data-filter=".free">Free</button>
 									</div>
 									<div className="row" data-ref="event-filter-content">
-										{isLoading ? (<>
-											<CardSkeletons count={3} />	
-										</>) : eventCards.length > 0 ? eventCards : <p>No events found</p> }
+										{renderContent()}
 									</div>
 									<div className="browse-btn">
 										<a href="explore_events.html" className="main-btn btn-hover ">Browse All</a>
@@ -103,7 +136,7 @@ export default function Home() {
 										<div className="main-card">
 											<div className="host-item">
 												<div className="host-img">
-													<img src="images/icons/venue-events.png" alt="" />
+													<img src="/images/icons/venue-events.png" alt="" />
 												</div>
 												<h4>Venue Events</h4>
 												<p>Create outstanding event page for your venue events, attract attendees and sell more tickets.</p>
@@ -114,7 +147,7 @@ export default function Home() {
 										<div className="main-card">
 											<div className="host-item">
 												<div className="host-img">
-													<img src="images/icons/webinar.png" alt="" />
+													<img src="/images/icons/webinar.png" alt="" />
 												</div>
 												<h4>Webinar</h4>
 												<p>Webinars tend to be one-way events. Barren helps to make them more engaging.</p>
@@ -125,7 +158,7 @@ export default function Home() {
 										<div className="main-card">
 											<div className="host-item">
 												<div className="host-img">
-													<img src="images/icons/training-workshop.png" alt="" />
+													<img src="/images/icons/training-workshop.png" alt="" />
 												</div>
 												<h4>Training & Workshop </h4>
 												<p>Create and host profitable workshops and training sessions online, sell tickets and earn money.</p>
@@ -136,7 +169,7 @@ export default function Home() {
 										<div className="main-card">
 											<div className="host-item">
 												<div className="host-img">
-													<img src="images/icons/online-class.png" alt="" />
+													<img src="/images/icons/online-class.png" alt="" />
 												</div>
 												<h4>Online Class</h4>
 												<p>Try our e-learning template to create a fantastic e-learning event page and drive engagement. </p>
@@ -147,7 +180,7 @@ export default function Home() {
 										<div className="main-card">
 											<div className="host-item">
 												<div className="host-img">
-													<img src="images/icons/talk-show.png" alt="" />
+													<img src="/images/icons/talk-show.png" alt="" />
 												</div>
 												<h4>Talk Show</h4>
 												<p>Use our intuitive built-in event template to create and host an engaging Talk Show.</p>
@@ -175,7 +208,7 @@ export default function Home() {
 									<div className="col-xl-3 col-lg-4 col-md-6">
 										<div className="feature-item mt-46">
 											<div className="feature-icon">
-												<img src="images/icons/feature-icon-1.png" alt="" />
+												<img src="/images/icons/feature-icon-1.png" alt="" />
 											</div>
 											<h4>Online Events</h4>
 											<p>Built-in video conferencing platform to save you time and cost.</p>
@@ -184,7 +217,7 @@ export default function Home() {
 									<div className="col-xl-3 col-lg-4 col-md-6">
 										<div className="feature-item mt-46">
 											<div className="feature-icon">
-												<img src="images/icons/feature-icon-2.png" alt="" />
+												<img src="/images/icons/feature-icon-2.png" alt="" />
 											</div>
 											<h4>Venue Event</h4>
 											<p>Easy-to-use features to create and manage your venue events.</p>
@@ -193,7 +226,7 @@ export default function Home() {
 									<div className="col-xl-3 col-lg-4 col-md-6">
 										<div className="feature-item mt-46">
 											<div className="feature-icon">
-												<img src="images/icons/feature-icon-3.png" alt="" />
+												<img src="/images/icons/feature-icon-3.png" alt="" />
 											</div>
 											<h4>Engaging Event Page</h4>
 											<p>Create engaging event pages with your logo and our hero image collage gallery.</p>
@@ -202,7 +235,7 @@ export default function Home() {
 									<div className="col-xl-3 col-lg-4 col-md-6">
 										<div className="feature-item mt-46">
 											<div className="feature-icon">
-												<img src="images/icons/feature-icon-4.png" alt="" />
+												<img src="/images/icons/feature-icon-4.png" alt="" />
 											</div>
 											<h4>Marketing Automation</h4>
 											<p>Use our marketing automation tools to promote your events on social media and email.</p>
@@ -211,7 +244,7 @@ export default function Home() {
 									<div className="col-xl-3 col-lg-4 col-md-6">
 										<div className="feature-item mt-46">
 											<div className="feature-icon">
-												<img src="images/icons/feature-icon-5.png" alt="" />
+												<img src="/images/icons/feature-icon-5.png" alt="" />
 											</div>
 											<h4>Sell Tickets</h4>
 											<p>Start monetising your online and venue events, sell unlimited* tickets.</p>
@@ -220,7 +253,7 @@ export default function Home() {
 									<div className="col-xl-3 col-lg-4 col-md-6">
 										<div className="feature-item mt-46">
 											<div className="feature-icon">
-												<img src="images/icons/feature-icon-6.png" alt="" />
+												<img src="/images/icons/feature-icon-6.png" alt="" />
 											</div>
 											<h4>Networking</h4>
 											<p>Engage your attendees with the speakers using our interactive tools and build your own network.</p>
@@ -229,7 +262,7 @@ export default function Home() {
 									<div className="col-xl-3 col-lg-4 col-md-6">
 										<div className="feature-item mt-46">
 											<div className="feature-icon">
-												<img src="images/icons/feature-icon-7.png" alt="" />
+												<img src="/images/icons/feature-icon-7.png" alt="" />
 											</div>
 											<h4>Recording</h4>
 											<p>Securely record your online events and save on the cloud of your choice*.</p>
@@ -238,7 +271,7 @@ export default function Home() {
 									<div className="col-xl-3 col-lg-4 col-md-6">
 										<div className="feature-item mt-46">
 											<div className="feature-icon">
-												<img src="images/icons/feature-icon-8.png" alt="" />
+												<img src="/images/icons/feature-icon-8.png" alt="" />
 											</div>
 											<h4>Live Streaming</h4>
 											<p>Livestream your online events on Facebook, YouTube and other social networks.</p>
@@ -247,7 +280,7 @@ export default function Home() {
 									<div className="col-xl-3 col-lg-4 col-md-6">
 										<div className="feature-item mt-46">
 											<div className="feature-icon">
-												<img src="images/icons/feature-icon-9.png" alt="" />
+												<img src="/images/icons/feature-icon-9.png" alt="" />
 											</div>
 											<h4>Engagement Metrics</h4>
 											<p>Track your event engagement metrics like visitors, ticket sales, etc. from your dashboard.</p>
@@ -256,7 +289,7 @@ export default function Home() {
 									<div className="col-xl-3 col-lg-4 col-md-6">
 										<div className="feature-item mt-46">
 											<div className="feature-icon">
-												<img src="images/icons/feature-icon-10.png" alt="" />
+												<img src="/images/icons/feature-icon-10.png" alt="" />
 											</div>
 											<h4>Security & Support</h4>
 											<p>Secure data and payment processing backed by a team eager to see you succeed.</p>
@@ -265,7 +298,7 @@ export default function Home() {
 									<div className="col-xl-3 col-lg-4 col-md-6">
 										<div className="feature-item mt-46">
 											<div className="feature-icon">
-												<img src="images/icons/feature-icon-11.png" alt="" />
+												<img src="/images/icons/feature-icon-11.png" alt="" />
 											</div>
 											<h4>Reports & Analytics</h4>
 											<p>Get useful reports and insights to boost your sales and marketing activities.</p>
@@ -274,7 +307,7 @@ export default function Home() {
 									<div className="col-xl-3 col-lg-4 col-md-6">
 										<div className="feature-item mt-46">
 											<div className="feature-icon">
-												<img src="images/icons/feature-icon-12.png" alt="" />
+												<img src="/images/icons/feature-icon-12.png" alt="" />
 											</div>
 											<h4>Mobile & Desktop App</h4>
 											<p>Stay on top of things, manage and monitor your events using the organiser app.</p>
@@ -312,7 +345,7 @@ export default function Home() {
 											<div className="col-lg-4 col-md-6">
 												<div className="step-item">
 													<div className="step-icon">
-														<img src="images/icons/step-icon-1.png" alt="" />
+														<img src="/images/icons/step-icon-1.png" alt="" />
 													</div>
 													<h4>Sign up for free</h4>
 													<p>Sign up easily using your Google or Facebook account or email and create your events in minutes.</p>
@@ -321,7 +354,7 @@ export default function Home() {
 											<div className="col-lg-4 col-md-6">
 												<div className="step-item">
 													<div className="step-icon">
-														<img src="images/icons/step-icon-2.png" alt="" />
+														<img src="/images/icons/step-icon-2.png" alt="" />
 													</div>
 													<h4>Use built-in event page template</h4>
 													<p>Choose from our customised page templates specially designed to attract attendees.</p>
@@ -330,7 +363,7 @@ export default function Home() {
 											<div className="col-lg-4 col-md-6">
 												<div className="step-item">
 													<div className="step-icon">
-														<img src="images/icons/step-icon-3.png" alt="" />
+														<img src="/images/icons/step-icon-3.png" alt="" />
 													</div>
 													<h4>Customise your event page as you like</h4>
 													<p>Add logo, collage hero images, and add details to create an outstanding event page.</p>
@@ -346,7 +379,7 @@ export default function Home() {
 											<div className="col-lg-4 col-md-6">
 												<div className="step-item">
 													<div className="step-icon">
-														<img src="images/icons/step-icon-4.png" alt="" />
+														<img src="/images/icons/step-icon-4.png" alt="" />
 													</div>
 													<h4>Promote your events on social media & email</h4>
 													<p>Use our intuitive event promotion tools to reach your target audience and sell tickets.</p>
@@ -355,7 +388,7 @@ export default function Home() {
 											<div className="col-lg-4 col-md-6">
 												<div className="step-item">
 													<div className="step-icon">
-														<img src="images/icons/step-icon-5.png" alt="" />
+														<img src="/images/icons/step-icon-5.png" alt="" />
 													</div>
 													<h4>Use early-bird discounts, coupons & group ticketing</h4>
 													<p>Double your ticket sales using our built-in discounts, coupons and group ticketing features.</p>
@@ -364,7 +397,7 @@ export default function Home() {
 											<div className="col-lg-4 col-md-6">
 												<div className="step-item">
 													<div className="step-icon">
-														<img src="images/icons/step-icon-6.png" alt="" />
+														<img src="/images/icons/step-icon-6.png" alt="" />
 													</div>
 													<h4>Get paid quickly & securely</h4>
 													<p>Use our PCI compliant payment gateways to collect your payment securely.</p>
@@ -380,7 +413,7 @@ export default function Home() {
 											<div className="col-lg-4 col-md-6">
 												<div className="step-item">
 													<div className="step-icon">
-														<img src="images/icons/step-icon-7.png" alt="" />
+														<img src="/images/icons/step-icon-7.png" alt="" />
 													</div>
 													<h4>Free event hosting</h4>
 													<p>Use Eventbookings to host any types of online events for free.</p>
@@ -389,7 +422,7 @@ export default function Home() {
 											<div className="col-lg-4 col-md-6">
 												<div className="step-item">
 													<div className="step-icon">
-														<img src="images/icons/step-icon-8.png" alt="" />
+														<img src="/images/icons/step-icon-8.png" alt="" />
 													</div>
 													<h4>Built-in video conferencing platform</h4>
 													<p>No need to integrate with ZOOM or other 3rd party apps, use our built-in video conferencing platform for your events.</p>
@@ -398,7 +431,7 @@ export default function Home() {
 											<div className="col-lg-4 col-md-6">
 												<div className="step-item">
 													<div className="step-icon">
-														<img src="images/icons/step-icon-9.png" alt="" />
+														<img src="/images/icons/step-icon-9.png" alt="" />
 													</div>
 													<h4>Connect your attendees with your event</h4>
 													<p>Use our live engagement tools to connect with attendees during the event.</p>
@@ -414,7 +447,7 @@ export default function Home() {
 											<div className="col-lg-4 col-md-6">
 												<div className="step-item">
 													<div className="step-icon">
-														<img src="images/icons/step-icon-10.png" alt="" />
+														<img src="/images/icons/step-icon-10.png" alt="" />
 													</div>
 													<h4>Create multiple sessions & earn more</h4>
 													<p>Use our event scheduling features to create multiple sessions for your events & earn more money.</p>
@@ -423,7 +456,7 @@ export default function Home() {
 											<div className="col-lg-4 col-md-6">
 												<div className="step-item">
 													<div className="step-icon">
-														<img src="images/icons/step-icon-11.png" alt="" />
+														<img src="/images/icons/step-icon-11.png" alt="" />
 													</div>
 													<h4>Clone past event to create similar events</h4>
 													<p>Use our event cloning feature to clone past event and create a new one easily within a few clicks.</p>
@@ -432,7 +465,7 @@ export default function Home() {
 											<div className="col-lg-4 col-md-6">
 												<div className="step-item">
 													<div className="step-icon">
-														<img src="images/icons/step-icon-12.png" alt="" />
+														<img src="/images/icons/step-icon-12.png" alt="" />
 													</div>
 													<h4>Get support like nowhere else</h4>
 													<p>Our dedicated on-boarding coach will assist you in becoming an expert in no time.</p>
@@ -676,49 +709,49 @@ export default function Home() {
 									<div className="item">
 										<div className="sponsor">
 											<a href="#">
-												<img src="images/icons/sponsor-1.png" alt="" />
+												<img src="/images/icons/sponsor-1.png" alt="" />
 											</a>
 										</div>
 									</div>
 									<div className="item">
 										<div className="sponsor">
 											<a href="#">
-												<img src="images/icons/sponsor-2.png" alt="" />
+												<img src="/images/icons/sponsor-2.png" alt="" />
 											</a>
 										</div>
 									</div>
 									<div className="item">
 										<div className="sponsor">
 											<a href="#">
-												<img src="images/icons/sponsor-3.png" alt="" />
+												<img src="/images/icons/sponsor-3.png" alt="" />
 											</a>
 										</div>
 									</div>
 									<div className="item">
 										<div className="sponsor">
 											<a href="#">
-												<img src="images/icons/sponsor-4.png" alt="" />
+												<img src="/images/icons/sponsor-4.png" alt="" />
 											</a>
 										</div>
 									</div>
 									<div className="item">
 										<div className="sponsor">
 											<a href="#">
-												<img src="images/icons/sponsor-5.png" alt="" />
+												<img src="/images/icons/sponsor-5.png" alt="" />
 											</a>
 										</div>
 									</div>
 									<div className="item">
 										<div className="sponsor">
 											<a href="#">
-												<img src="images/icons/sponsor-6.png" alt="" />
+												<img src="/images/icons/sponsor-6.png" alt="" />
 											</a>
 										</div>
 									</div>
 									<div className="item">
 										<div className="sponsor">
 											<a href="#">
-												<img src="images/icons/sponsor-7.png" alt="" />
+												<img src="/images/icons/sponsor-7.png" alt="" />
 											</a>
 										</div>
 									</div>

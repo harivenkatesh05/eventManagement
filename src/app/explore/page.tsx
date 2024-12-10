@@ -2,11 +2,12 @@
 
 import Card from '@/components/card/card'
 import CardSkeletons from '@/components/card/skeletonCollection'
-import { Event, events } from '@/dataset/events'
+import { Event } from '@/dataset/events'
 import { getDateObj, isDateSatisfies } from '@/util/date'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import React, { useCallback, useEffect, useState } from 'react'
+import { fetchEvents } from '../apis'
 
 
 export default function Explore() {
@@ -14,6 +15,7 @@ export default function Explore() {
 		
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [filteredEvents, setFilteredEvents] = useState<Event[]>([])
+	const [events, setEvents] = useState<Event[]>([])
 	const [eventType, setEventType] = useState('browse_all')
 	const [eventTag, setEventTag] = useState('all')
 	const [isLoading, setIsLoading] = useState(true)
@@ -34,14 +36,17 @@ export default function Explore() {
 			$('.selectpicker').selectpicker();
 		}, 20)
 
-		setFilteredEvents(filter(events))
-		setIsLoading(false)
+		fetchEvents().then((events: Event[]) => {
+			setEvents(events)
+			setFilteredEvents(filter(events))
+			setIsLoading(false)
+		});
 	}, [filter]);
 
 	const eventCards = filteredEvents.map((event) => {
 		return (
 			<div key={event.id} className={"col-xl-3 col-lg-4 col-md-6 col-sm-12 mix " + event.tags.join(" ")} data-ref="mixitup-target">
-				<Card title={event.title} dateTime={getDateObj(event.dateTime)} duration={event.duration} price={event.price} image={event.image} remaining={event.remaining} />
+				<Card title={event.title} dateTime={getDateObj(event.dateTime)} duration={event.duration} price={event.price} image={event.image} remaining={event.remaining} id={event.id} />
 			</div>
 		)
 	})

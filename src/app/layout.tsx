@@ -54,13 +54,13 @@ export default function RootLayout({
 					<Footer />
 				</div>
 				
-				<Script src="js/jquery.min.js" />
-				<Script src="vendor/bootstrap/js/bootstrap.bundle.min.js" />
-				<Script src="vendor/OwlCarousel/owl.carousel.js" />
-				<Script src="vendor/bootstrap-select/dist/js/bootstrap-select.min.js" />
-				<Script src="vendor/mixitup/dist/mixitup.min.js" />
-				<Script src="js/custom.js" />
-				<Script src="js/night-mode.js" />
+				<Script src="/js/jquery.min.js" />
+				<Script src="/vendor/bootstrap/js/bootstrap.bundle.min.js" />
+				<Script src="/vendor/OwlCarousel/owl.carousel.js" />
+				<Script src="/vendor/bootstrap-select/dist/js/bootstrap-select.min.js" />
+				<Script src="/vendor/mixitup/dist/mixitup.min.js" />
+				<Script src="/js/custom.js" />
+				<Script src="/js/night-mode.js" />
 				<Script id="mixitup-init">
 					{`
 						setTimeout(() => {
