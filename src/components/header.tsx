@@ -76,13 +76,10 @@ export default function Header() {
 										</a>
 										<ul className="dropdown-menu dropdown-submenu">
 											<li>
-												<a className="dropdown-item" href="faq.html">FAQ</a>
+												<Link className="dropdown-item" href="/faq">FAQ</Link>
 											</li>
 											<li>
-												<a className="dropdown-item" href="help_center.html">Help Center</a>
-											</li>
-											<li>
-												<a className="dropdown-item" href="contact_us.html">Contact Us</a>
+												<Link className="dropdown-item" href="/contact">Contact Us</Link>
 											</li>
 										</ul>
 									</li>
