@@ -7,13 +7,12 @@ import { getDateObj } from "@/util/date";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fetchEvents } from "./apis";
-import { useRouter } from "next/navigation";
 
 export default function Home() {
 	const [isLoading, setIsLoading] = useState(true)
 	const [events, setEvents] = useState<Event[]>([])
 	const [error, setError] = useState<string | null>(null)
-	const router = useRouter()
+	
 	useEffect(() => {
 		fetchEvents().then((events: Event[]) => {
 			setEvents(events)
@@ -66,7 +65,7 @@ export default function Home() {
 							<div className="hero-banner-content">
 								<h2>The Easiest and Most Powerful Online Event Booking and Ticketing System</h2>
 								<p>Barren is an all-in-one event ticketing platform for event organisers, promoters, and managers. Easily create, promote and manage your events of any type and size.</p>
-								<a href="create.html" className="main-btn btn-hover">Create Event <i className="fa-solid fa-arrow-right ms-3"></i></a>
+								<Link href="/createEvent" className="main-btn btn-hover">Create Event <i className="fa-solid fa-arrow-right ms-3"></i></Link>
 							</div>
 						</div>
 					</div>

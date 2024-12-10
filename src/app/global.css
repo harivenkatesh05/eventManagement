@@ -34,3 +34,7 @@
       transform: translateX(100%);
     }
 }
+
+button.btn.btn-default.btn-hover.steps_btn{
+  margin-left: 10px;
+}

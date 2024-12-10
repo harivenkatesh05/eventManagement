@@ -75,3 +75,25 @@ export function formatDateToIST(date: Date) {
 		timeZone: 'Asia/Kolkata'
 	});
 }
+
+
+export function getTimeFromDate(dateStr: string): string {
+	const date = new Date(dateStr);
+	return date.toLocaleTimeString('en-US', { 
+		hour12: false,
+		hour: '2-digit', 
+		minute: '2-digit'
+	});
+}
+
+export function setTimeToDate(dateStr: string, timeStr: string): string {
+	const date = new Date(dateStr);
+	const [hours, minutes] = timeStr.split(':').map(Number);
+	
+	date.setHours(hours);
+	date.setMinutes(minutes);
+	date.setSeconds(0);
+	date.setMilliseconds(0);
+	
+	return date.toISOString();
+}

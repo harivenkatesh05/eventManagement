@@ -44,10 +44,10 @@ export default function Header() {
 							<div className="offcanvas-body">
 								<div className="offcanvas-top-area">
 									<div className="create-bg">
-										<a href="create.html" className="offcanvas-create-btn">
+										<Link href="/createEvent" className="offcanvas-create-btn">
 											<i className="fa-solid fa-calendar-days"></i>
 											<span>Create Event</span>
-										</a>
+										</Link>
 									</div>
 								</div>
 								<ul className="navbar-nav justify-content-end flex-grow-1 pe_5">
@@ -209,10 +209,10 @@ export default function Header() {
 						<div className="right-header order-2">
 							<ul className="align-self-stretch">
 								<li>
-									<a href="create.html" className="create-btn btn-hover">
+									<Link href="/createEvent" className="create-btn btn-hover">
 										<i className="fa-solid fa-calendar-days"></i>
 										<span>Create Event</span>
-									</a>
+									</Link>
 								</li>
 								<li className="dropdown account-dropdown">
 									<a href="#" className="account-link" role="button" id="accountClick" data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-expanded="false">

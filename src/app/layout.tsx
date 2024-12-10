@@ -55,6 +55,9 @@ export default function RootLayout({
 				</div>
 				
 				<Script src="/js/jquery.min.js" />
+				<Script src="/vendor/ckeditor5/ckeditor.js"></Script>
+				<Script src="/js/jquery-steps.min.js"></Script>
+				<Script src="/js/datepicker.min.js"></Script>
 				<Script src="/vendor/bootstrap/js/bootstrap.bundle.min.js" />
 				<Script src="/vendor/OwlCarousel/owl.carousel.js" />
 				<Script src="/vendor/bootstrap-select/dist/js/bootstrap-select.min.js" />
@@ -71,6 +74,24 @@ export default function RootLayout({
 								}
 							});
 						}, 1000);
+					`}
+				</Script>
+				<Script id="datepicker-init">
+					{`
+						setTimeout(() => {	
+							$.fn.datepicker.language['en'] = {
+								days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+								daysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+								daysMin: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+								months: ['January','February','March','April','May','June', 'July','August','September','October','November','December'],
+								monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+								today: 'Today',
+								clear: 'Clear',
+								dateFormat: 'mm/dd/yyyy',
+								timeFormat: 'hh:ii aa',
+								firstDay: 0
+							};
+						});
 					`}
 				</Script>
 			</body>
