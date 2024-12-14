@@ -74,3 +74,23 @@ type VenueEventForm = EventForm & {
 	latitude: number,
 	longitude: number,
 }
+
+
+type EventType = Omit<EventForm, 'image'> & {
+	id: string;
+	type: string;
+	image: string;
+	remaining: number;
+}
+
+type EventFullDetail = EventType & {
+	createdBy: User;
+	createdByName: string;
+	startDate: string;
+	endDate: string;
+	venue?: {
+		location: string;
+		latitude: number;
+		longitude: number;
+	}
+}

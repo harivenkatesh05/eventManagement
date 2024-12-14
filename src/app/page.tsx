@@ -2,7 +2,6 @@
 
 import Card from "@/components/card/card";
 import CardSkeletons from "@/components/card/skeletonCollection";
-import { Event } from "@/dataset/events";
 import { getDateObj } from "@/util/date";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -10,11 +9,11 @@ import { fetchEvents } from "./apis";
 
 export default function Home() {
 	const [isLoading, setIsLoading] = useState(true)
-	const [events, setEvents] = useState<Event[]>([])
+	const [events, setEvents] = useState<EventType[]>([])
 	const [error, setError] = useState<string | null>(null)
 	
 	useEffect(() => {
-		fetchEvents().then((events: Event[]) => {
+		fetchEvents().then((events: EventType[]) => {
 			setEvents(events)
 			setIsLoading(false)
 		}).catch((err) => {
@@ -41,19 +40,23 @@ export default function Home() {
 			)
 		}
 
-		return events.map((event) => (
-			<div key={event.id} className={"col-xl-3 col-lg-4 col-md-6 col-sm-12 mix " + event.tags.join(" ")} data-ref="mixitup-target">
-				<Card 
-					title={event.title} 
-					dateTime={getDateObj(event.dateTime)} 
-					duration={event.duration} 
-					price={event.price} 
-					image={event.image} 
-					remaining={event.remaining} 
-					id={event.id}
-				/>
-			</div>
-		))
+		return events.map((event) => {
+			const price = event.isFreeEvent ? "Free" : `${event.locale} ${event.price.toLocaleString('en-IN')}`;
+			const inHour = `${Math.floor(event.eventDuration / 60)}h ${event.eventDuration % 60}m`;
+			return (
+				<div key={event.id} className={"col-xl-3 col-lg-4 col-md-6 col-sm-12 mix " + event.tags.join(" ")} data-ref="mixitup-target">
+					<Card 
+						title={event.name} 
+						dateTime={getDateObj(event.eventDate)} 
+						duration={inHour} 
+						price={price} 
+						image={event.image} 
+						remaining={event.remaining} 
+						id={event.id}
+					/>
+				</div>
+			)
+		})
 	}
 
 	return (

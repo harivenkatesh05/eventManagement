@@ -64,7 +64,7 @@ export default function OnlineEvent() {
 	const handleCreateEvent = async () => {
 		try {
 			// Required fields validation
-			const requiredFields = ['name', 'tags', 'eventDate', 'eventDuration', 'type'];
+			const requiredFields = ['name', 'tags', 'eventDate', 'eventDuration', 'type', 'totalTickets'];
 
 			const emptyFields = requiredFields.filter((key) => {
 				if (key === 'tags') {
@@ -318,7 +318,7 @@ export default function OnlineEvent() {
 																					}}
 																				/>
 																				<div className="pp-select">
-																					<select className="selectpicker dropdown-no-bg" onChange={handleChange} name='locale' defaultValue={"INR"}>
+																					<select className="selectpicker dropdown-no-bg" onChange={handleChange} name='locale' value={event.locale}>
 																						<option value="AUD">AUD</option>
 																						<option value="USD">USD</option>
 																						<option value="INR">INR</option>
@@ -363,7 +363,7 @@ export default function OnlineEvent() {
 																</div>
 															</div>
 														</div>
-														<div className="stepper-data-set pt_30 disabled-action">
+														{/* <div className="stepper-data-set pt_30 disabled-action">
 															<div className="content-holder">
 																<div className="form-group">
 																	<div className="d-flex align-items-start">
@@ -399,7 +399,7 @@ export default function OnlineEvent() {
 																	</div>
 																</div>
 															</div>
-														</div>
+														</div> */}
 													</div>
 												</div>
 											</div>
@@ -455,7 +455,7 @@ export default function OnlineEvent() {
 																			</div>
 																		</div>
 																	</div>
-																	<div className="setting-item border_bottom pb_30 pt_30">
+																	{/* <div className="setting-item border_bottom pb_30 pt_30">
 																		<div className="d-flex align-items-start">
 																			<label className="btn-switch m-0 me-3">
 																				<input type="checkbox" className="" id="refund-policies-btn"  value="" onChange={handleChange} name='isRefundPolicies' defaultChecked={true}/>
@@ -501,8 +501,8 @@ export default function OnlineEvent() {
 																				</div>																	
 																			</div>
 																		</div>
-																	</div>
-																	<div className="setting-item border_bottom pb_30 pt_30">
+																	</div> */}
+																	{/* <div className="setting-item border_bottom pb_30 pt_30">
 																		<div className="d-flex align-items-start">
 																			<label className="btn-switch m-0 me-3">
 																				<input type="checkbox" className="" id="ticket-instructions-btn" value="" onChange={handleChange} name='isSpecialInstructions' defaultChecked={true}/>
@@ -518,7 +518,7 @@ export default function OnlineEvent() {
 																				<textarea className="form-textarea" placeholder="About" onChange={handleChange} name='specialInstructions'></textarea>
 																			</div>
 																		</div>
-																	</div>
+																	</div> */}
 																	{/* <div className="setting-item pb-0 pt_30">
 																		<div className="d-flex align-items-start">
 																			<label className="btn-switch m-0 me-3">

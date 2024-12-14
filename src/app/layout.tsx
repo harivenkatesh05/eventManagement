@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { UserProvider } from '../context/UserContext';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import "../../public/vendor/unicons-2.0.1/css/unicons.css"
 import "../../public/css/style.css"
@@ -48,13 +48,13 @@ export default function RootLayout({
 	return (
 		<html lang="en" className={roboto.className}>
 			<body>
-				<div className="d-flex flex-column h-100">
-					<UserProvider>
+				<GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+					<div className="d-flex flex-column h-100">
 						<ClientRouteHandler>
-								{children}
+							{children}
 						</ClientRouteHandler>
-					</UserProvider>
-				</div>
+					</div>
+				</GoogleOAuthProvider>
 				<Script src="/js/jquery.min.js" />
 				<Script src="/js/jquery-steps.min.js"></Script>
 				<Script src="/js/datepicker.min.js"></Script>

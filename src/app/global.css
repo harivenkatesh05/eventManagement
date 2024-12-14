@@ -73,3 +73,47 @@ textarea.form-control:disabled {
   background-color: #f9f9f9;
   cursor: not-allowed;
 }
+
+/* Style button to match link-item */
+button.link-item {
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+  display: block;
+  transition: all .3s;
+}
+
+button.link-item:hover {
+  color: #1da1f2;
+  background-color: rgba(1,116,181,.1);
+  text-decoration: none;
+}
+
+/* For active state */
+button.link-item.active {
+  color: #1da1f2;
+  background-color: rgba(1,116,181,.1);
+}
+
+/* For disabled state */
+button.link-item:disabled {
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+.main-btn.disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.main-btn.sold-out {
+  background-color: #dc3545;
+  cursor: not-allowed;
+}

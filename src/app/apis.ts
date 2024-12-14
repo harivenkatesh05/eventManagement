@@ -7,6 +7,12 @@ function convertToBase64(file: File) {
 	});
 }
   
+export const fetchEvent = async (id: string) => {
+	const response = await fetch(`/api/events/${id}`);
+	if (!response.ok) throw new Error('Failed to fetch event');
+	const data = await response.json();
+	return data.event;
+}
 
 export const fetchEvents = async () => {
 	const response = await fetch('/api/events');
@@ -21,6 +27,7 @@ export const signup = async (data: User) => {
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(data),
 	});
+	if (!response.ok) throw new Error('Failed to sign up');
 	return response.json();
 }
 
@@ -30,6 +37,7 @@ export const signin = async (data: SignInForm) => {
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(data),
 	});
+	if (!response.ok) throw new Error('Failed to sign in');
 	return response.json();
 }
 
@@ -71,10 +79,22 @@ export const createVenueEvent = async (data: VenueEventForm) => {
 		headers: { 'Content-Type': 'application/json'},
 		body: JSON.stringify(data),
 	});
+	if (!response.ok) throw new Error('Failed to create event');
 	return response.json();
 }
 
+export const signout = async () => {
+	const response = await fetch('/api/auth/signout', {
+		method: 'POST',
+		credentials: 'include',
+		headers: { 'Content-Type': 'application/json'},
+	});
+	if (!response.ok) throw new Error('Failed to sign out');
+	return response.json();
+};
+
 export const getUserDetails = async () => {
 	const response = await fetch('/api/auth/me');
+	if (!response.ok) throw new Error('Failed to fetch user details');
 	return response.json();
 };

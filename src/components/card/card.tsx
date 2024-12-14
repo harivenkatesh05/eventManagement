@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react'
 
-function Card({ title, dateTime, duration, price, image, remaining, id }: { title: string; dateTime: Date; duration: number; price: string; image: string; remaining: number; id: string }) {
+function Card({ title, dateTime, duration, price, image, remaining, id }: { title: string; dateTime: Date; duration: string; price: string; image: string; remaining: number; id: string }) {
 	const date = dateTime.getDate() + ' ' + dateTime.toLocaleString('default', { month: 'short' });
 	const time = dateTime.toLocaleDateString('en-US', { weekday: 'short' }) + ', ' + dateTime.toLocaleString('default', { hour: '2-digit', minute: '2-digit', hour12: true });
 	// const src = `/images/event-imgs/${image}`
@@ -42,7 +42,7 @@ function Card({ title, dateTime, duration, price, image, remaining, id }: { titl
 						<span>{time}</span>
 					</div>
 					<span className="publish-time">
-						<i className="fa-solid fa-clock me-2"></i>{duration}h
+						<i className="fa-solid fa-clock me-2"></i>{duration}
 					</span>
 				</div>
 			</div>

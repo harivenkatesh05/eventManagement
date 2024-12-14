@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
 		
 		const event = await req.json();
 		
-		if (!event.name || event.tags.length <= 0 || !event.eventDate || !event.eventDuration || !event.type) {
+		if (!event.name || event.tags.length <= 0 || !event.eventDate || !event.eventDuration || !event.type || !event.totalTickets) {
 			return NextResponse.json({ message: "Required fields are missing" }, { status: 400 });
 		}
 		
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 		const newEvent = new Event({
 			name: event.name,
 			tags: event.tags,
-			file: imageUrl,
+			image: imageUrl,
 			description: event.description,
 			eventDate: event.eventDate,
 			eventDuration: event.eventDuration,
@@ -69,7 +69,9 @@ export async function POST(req: NextRequest) {
 			createdBy: userId,
 			createdAt: new Date().toISOString(),
 			updatedAt: new Date().toISOString(),
-			status: "waitingForApproval"
+			status: "waitingForApproval",
+
+			remaining: event.totalTickets,
 		});
 		
 		await newEvent.save();

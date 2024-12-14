@@ -15,13 +15,13 @@ export async function GET(req: NextRequest) {
 		// Get user details excluding password
 		const user = await User.findById(userId).select('-password');
 		if (!user) {
-		return NextResponse.json({ error: 'User not found' }, { status: 404 });
+			return NextResponse.json({ error: 'User not found' }, { status: 404 });
 		}
 
 		return NextResponse.json(user);
 	} catch (error) {
 		return NextResponse.json(
-			{ error: 'Failed to get user details' }, 
+			{ error: 'Failed to get user details' + error }, 
 			{ status: 500 }
 		);
 	}

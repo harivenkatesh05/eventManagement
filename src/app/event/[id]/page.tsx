@@ -1,6 +1,5 @@
 'use client'
 
-import { Event } from '@/dataset/events'
 import { formatDateToIST, getDateObj } from '@/util/date';
 import Image from 'next/image';
 import Link from 'next/link'
@@ -8,22 +7,56 @@ import { notFound, usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import EventDetailSkeleton from '@/components/event/skeleton';
 import Countdown from '@/components/event/countdown'
-import { fetchEvents } from '@/app/apis';
+import { fetchEvent, fetchEvents } from '@/app/apis';
 import Card from '@/components/card/card';
+
+const getBookingStatus = (startDate: string, endDate: string, eventDate: string, remaining: number) => {
+	const now = new Date();
+	const start = new Date(startDate);
+	const end = new Date(endDate);
+	const event = new Date(eventDate);
+	if (now < start) {
+		return { status: 'upcoming', text: 'Opens Soon' };
+	} else if (now > end || now > event) {
+		return { status: 'ended', text: 'Event Ended' };
+	} else if (remaining <= 0) {
+		return { status: 'soldout', text: 'Sold Out' };
+	} else {
+		return { status: 'active', text: 'Book Now' };
+	}
+};
 
 export default function EventDetail() {
 	
 	const pathname = usePathname();
-	const [event, setEvent] = useState<Event | null>(null)
-	const [events, setEvents] = useState<Event[]>([])
+	const [event, setEvent] = useState<EventFullDetail | null>(null)
+	const [events, setEvents] = useState<EventType[]>([])
 	const [loading, setLoading] = useState(true)
 	
 	useEffect(() => {
-		fetchEvents().then((events: Event[]) => {
-			const id = pathname.split('/')[2];
-			const event = events.find((event) => event.id === id)
-			setEvent(event ?? null)
-			setEvents(events)
+		const id = pathname.split('/')[2];
+		
+		// Add loading state and error handling
+		setLoading(true);
+		fetchEvent(id)
+			.then((event: EventFullDetail) => {
+				if (!event) {
+					notFound() // Redirect if event not found
+					return;
+				}
+				setEvent(event);
+			})
+			.catch((error) => {
+				console.error('Error fetching event:', error);
+				notFound(); // Redirect on error
+			})
+			.finally(() => {
+				setLoading(false);
+			});
+		
+		fetchEvents().then((events: EventType[]) => {
+			const remainingEvents = events.filter((event) => event.id !== id)
+			setEvents(remainingEvents)
 			setLoading(false)
 
 			setTimeout(() => {
@@ -78,14 +111,14 @@ export default function EventDetail() {
 	const handleSetRemainder = (product: string) => {
 		// Format end time by adding duration hours to start time
 		const endTime = new Date(dateTime);
-		endTime.setHours(endTime.getHours() + event!.duration);
+		endTime.setHours(endTime.getHours() + event!.eventDuration);
 		
 		// Format description by removing line breaks and HTML
 		const description = event!.description.replace(/\n/g, ' ').replace(/<[^>]*>/g, '');
 		
 		// Base calendar event details
 		const details = {
-			title: event!.title,
+			title: event!.name,
 			description: description,
 			startTime: dateTime.toISOString(),
 			endTime: endTime.toISOString(),
@@ -121,18 +154,13 @@ END:VCALENDAR`;
 		}
 	}
 
-	if (loading) {
+	if (loading || !event) {
 		return <EventDetailSkeleton />
 	}
 
-	if (!event) {
-		return notFound()
-	}
-	
 	const src = `/images/event-imgs/${event.image}`
-	const dateTime = getDateObj(event.dateTime)
-	const [dollary, price] = event.price.split(' ')
-
+	const dateTime = getDateObj(event.eventDate)
+	
 	return (
 		<div className="wrapper">
 			<div className="breadcrumb-block">
@@ -162,11 +190,11 @@ END:VCALENDAR`;
 									<span className="event-date">{dateTime.getDate()}</span>
 								</div>
 								<div className="event-top-dt">
-									<h3 className="event-main-title">{event.title}</h3>
+									<h3 className="event-main-title">{event.name}</h3>
 									<div className="event-top-info-status">
 										<span className="event-type-name"><i className="fa-solid fa-video"></i>{event.type === 'online' ? 'Online' : 'Venue'} Event</span>
 										<span className="event-type-name details-hr">Starts on <span className="ev-event-date">{formatDateToIST(dateTime)}</span></span>
-										<span className="event-type-name details-hr">{event.duration}h</span>
+										<span className="event-type-name details-hr">{event.eventDuration}h</span>
 									</div>
 								</div>
 							</div>
@@ -174,7 +202,7 @@ END:VCALENDAR`;
 						<div className="col-xl-8 col-lg-7 col-md-12">
 							<div className="main-event-dt">
 								<div className="event-img">
-									<Image src={src} alt={event.title} width={100} height={500} layout="responsive" />		
+									<Image src={src} alt={event.name} width={100} height={500} layout="responsive" />		
 								</div>
 								<div className="share-save-btns dropdown">
 									<button className="sv-btn" data-bs-toggle="dropdown" aria-expanded="false"><i className="fa-solid fa-share-nodes me-2"></i>Share</button>
@@ -205,8 +233,8 @@ END:VCALENDAR`;
 									</div>
 									<div className="event-dt-right-content">
 										<h4>Organised by</h4>
-										<h5>{event.organizer.name}</h5>
-										<Link href={`/user/${event.organizer.id}`}>View Profile</Link>
+										<h5>{event.createdByName}</h5>
+										<Link href={`/user/${event.createdBy}`}>View Profile</Link>
 									</div>
 								</div>
 								<div className="event-dt-right-group">
@@ -245,12 +273,24 @@ END:VCALENDAR`;
 										<i className="fa-solid fa-money-check-dollar"></i>
 									</div>
 									<div className="event-dt-right-content">
-										<h4>{dollary}</h4>
-										<h5 className="mb-0">{price}</h5>
+										<h4>{event.locale}</h4>
+										<h5 className="mb-0">{event.price.toLocaleString('en-IN')}</h5>
 									</div>
 								</div>
 								<div className="booking-btn">
-									<a href="checkout.html" className="main-btn btn-hover w-100">Book Now</a>
+									{(() => {
+										const { status, text } = getBookingStatus(event.startDate, event.endDate, event.eventDate, event.remaining);
+										
+										if (status === 'active') {
+											return <Link href="/checkout" className="main-btn btn-hover w-100">{text}</Link>;
+										}
+										
+										return (
+											<div className="main-btn btn-hover w-100">
+												{text}
+											</div>
+										);
+									})()}
 								</div>
 							</div>
 						</div>
@@ -262,8 +302,10 @@ END:VCALENDAR`;
 								</div>
 								<div className="owl-carousel moreEvents-slider owl-theme">
 									{events.map((event) => {
+										const price = event.isFreeEvent ? "Free" : `${event.locale} ${event.price.toLocaleString('en-IN')}`;
+										const inHour = `${Math.floor(event.eventDuration / 60)}h ${event.eventDuration % 60}m`;
 										return (<div className='item' key={event.id}>
-											<Card title={event.title} dateTime={getDateObj(event.dateTime)} duration={event.duration} price={event.price} image={event.image} remaining={event.remaining} id={event.id} />
+											<Card title={event.name} dateTime={getDateObj(event.eventDate)} duration={inHour} price={price} image={event.image} remaining={event.remaining} id={event.id} />
 										</div>)
 									})}
 								</div>

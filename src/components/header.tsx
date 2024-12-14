@@ -1,17 +1,25 @@
 'use client'
 
+import { signout } from '@/app/apis';
+import { useUser } from '@/context/UserContext';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React from 'react'
 
 export default function Header() {
+	const router = useRouter();
 	const pathname = usePathname();
+	const { user } = useUser();
 	const isActive = (pattern: string) => {
 		// Check if pathname matches the pattern with wildcard
 		const regex = new RegExp(pattern.replace('*', '.*'));
 		return regex.test(pathname!);
 	};
 	
+	const handleSignout = async () => {
+		await signout();
+		router.push('/auth/signin');
+	}
 
 	return (
 		<header className="header">
@@ -173,7 +181,7 @@ export default function Header() {
 									</li> */}
 								</ul>
 							</div>
-							<div className="offcanvas-footer">
+							{/* <div className="offcanvas-footer">
 								<div className="offcanvas-social">
 									<h5>Follow Us</h5>
 									<ul className="social-links">
@@ -204,7 +212,7 @@ export default function Header() {
 										</li>
 									</ul>
 								</div>
-							</div>
+							</div> */}
 						</div>
 						<div className="right-header order-2">
 							<ul className="align-self-stretch">
@@ -225,14 +233,20 @@ export default function Header() {
 												<div className="account-holder-avatar">
 													<img src="/images/profile-imgs/img-13.jpg" alt="" />
 												</div>
-												<h5>John Doe</h5>
-												<p>johndoe@example.com</p>
+												<h5>{user ? `${user?.firstName} ${user?.lastName}` : 'Guest'}</h5>
+												<p>{user?.email}</p>
 											</div>
 										</li>
 										<li className="profile-link">
-											<a href="my_organisation_dashboard.html" className="link-item">My Organisation</a>
-											<a href="organiser_profile_view.html" className="link-item">My Profile</a>
-											<a href="sign_in.html" className="link-item">Sign Out</a>
+											{/* <a href="my_organisation_dashboard.html" className="link-item">My Organisation</a> */}
+											{user ? (
+												<>
+													<Link href="/myprofile" className="link-item">My Profile</Link>
+													<button onClick={handleSignout} className="link-item">Sign Out</button>
+												</>
+											) : (
+												<Link href="/auth/signin" className="link-item">Sign In</Link>
+											)}
 										</li>
 									</ul>
 								</li>

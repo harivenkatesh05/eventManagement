@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 
 export default function Contact() {
@@ -10,7 +11,7 @@ export default function Contact() {
 							<div className="barren-breadcrumb">
 								<nav aria-label="breadcrumb">
 									<ol className="breadcrumb">
-										<li className="breadcrumb-item"><a href="index.html">Home</a></li>
+										<li className="breadcrumb-item"><Link href="/">Home</Link></li>
 										<li className="breadcrumb-item active" aria-current="page">Contact Us</li>
 									</ol>
 								</nav>
@@ -25,7 +26,7 @@ export default function Contact() {
 						<div className="col-lg-12 col-md-12">
 							<div className="main-title checkout-title text-center">
 								<h3>Contact Us</h3>
-								<p className="mb-0">Have any questions? We'd love to hear from you.</p>
+								<p className="mb-0">Have any questions? We&apos;d love to hear from you.</p>
 							</div>
 						</div>
 						<div className="col-lg-10">

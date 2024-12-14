@@ -26,7 +26,7 @@ export default function VenueEvent() {
 
 	const handleCreateEvent = () => {
 		// Required fields validation
-		const requiredFields = ['name', 'tags', 'eventDate', 'eventDuration', 'venue', 'address1', 'country', 'state', 'city', 'zipCode'];
+		const requiredFields = ['name', 'tags', 'eventDate', 'eventDuration', 'venue', 'address1', 'country', 'state', 'city', 'zipCode', 'totalTickets'];
 
 		const emptyFields = requiredFields.filter((key) => {
 			if (key === 'tags') {
@@ -231,20 +231,17 @@ export default function VenueEvent() {
 	};
 
 	useEffect(() => {
+		// Check if script is already loaded
+		if ((window as any).google?.maps) {
+			return;
+		}
+
+		// Load script if not present
 		const script = document.createElement('script');
 		script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
 		script.async = true;
-		script.onload = () => {
-			initMap();
-		};
+		script.onload = initMap;
 		document.head.appendChild(script);
-
-		return () => {
-			const scriptElement = document.querySelector(`script[src*="maps.googleapis.com"]`);
-			if (scriptElement) {
-				document.head.removeChild(scriptElement);
-			}
-		};
 	}, []);
 
 	useEffect(() => {
@@ -656,7 +653,7 @@ export default function VenueEvent() {
 																		<div className="form-group">
 																			<div className="d-flex align-items-start">
 																				<label className="btn-switch m-0 me-3">
-																					<input type="checkbox" className="" id="free-event-ticketing" value="" onChange={handleChange} name='isFreeEvent'/>
+																					<input type="checkbox" className="" id="free-event-ticketing" value="" onChange={handleChange} name='isFreeEvent' defaultChecked={false}/>
 																					<span className="checkbox-slider"></span>
 																				</label>
 																				<div className="d-flex flex-column">
@@ -667,7 +664,7 @@ export default function VenueEvent() {
 																	</div>
 																</div>
 															</div>
-															<div className="stepper-data-set pt_30 disabled-action">
+															{/* <div className="stepper-data-set pt_30 disabled-action">
 																<div className="content-holder">
 																	<div className="form-group">
 																		<div className="d-flex align-items-start">
@@ -703,7 +700,7 @@ export default function VenueEvent() {
 																		</div>
 																	</div>
 																</div>
-															</div>
+															</div> */}
 														</div>
 													</div>
 												</div>
@@ -759,7 +756,7 @@ export default function VenueEvent() {
 																				</div>
 																			</div>
 																		</div>
-																		<div className="setting-item border_bottom pb_30 pt_30">
+																		{/* <div className="setting-item border_bottom pb_30 pt_30">
 																			<div className="d-flex align-items-start">
 																				<label className="btn-switch m-0 me-3">
 																					<input type="checkbox" className="" id="refund-policies-btn" value="" onChange={handleChange} name='isRefundPolicies' defaultChecked={true}/>
@@ -822,7 +819,7 @@ export default function VenueEvent() {
 																					<textarea className="form-textarea" placeholder="About" onChange={handleChange} name='specialInstructions' value={event.specialInstructions}></textarea>
 																				</div>
 																			</div>
-																		</div>
+																		</div> */}
 																		{/* <div className="setting-item pb-0 pt_30">
 																			<div className="d-flex align-items-start">
 																				<label className="btn-switch m-0 me-3">

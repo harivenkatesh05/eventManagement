@@ -7,7 +7,7 @@ export const defaultEvent: EventForm = {
     eventDuration: 60,
 
     price: 0,
-    locale: "",
+    locale: "INR",
     totalTickets: 0,
     isFreeEvent: false,
     isDiscount: false,

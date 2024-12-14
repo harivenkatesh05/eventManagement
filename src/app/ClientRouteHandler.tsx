@@ -2,6 +2,7 @@
 
 import Footer from '@/components/footer';
 import Header from '@/components/header';
+import { UserProvider } from '@/context/UserContext';
 import { usePathname } from 'next/navigation';
 
 export default function ClientRouteHandler({children}: {children:  React.ReactNode}) {
@@ -10,9 +11,14 @@ export default function ClientRouteHandler({children}: {children:  React.ReactNo
 
 	return (
 		<div className={isAuthRoute ? 'auth-layout' : 'main-layout'}>
-			{!isAuthRoute && <Header />}
-			{children}
-			{!isAuthRoute && <Footer />}
+			{isAuthRoute ? 
+				(<>{children}</>) : 
+				(<UserProvider>
+					<Header />
+					{children}
+					<Footer />
+				</UserProvider>)
+			}
 		</div>
 	);
 }

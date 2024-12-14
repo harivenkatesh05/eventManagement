@@ -6,7 +6,7 @@ interface IEvent extends Document{
 	eventDate: string
 	eventDuration: number,
 	description: string,
-	image: File
+	image: string
 	type: string
 	
 	price: number,
@@ -31,10 +31,14 @@ interface IEvent extends Document{
 	isSpecialInstructions: boolean,
 	specialInstructions: string,
 
+	linkedEvent: string,
+
 	createdBy: string,
 	createdAt: Date,
 	updatedAt: Date,
-	status: string
+	status: string,
+
+	remaining: number
 }
 
 const EventSchema: Schema<IEvent> = new Schema({
@@ -45,6 +49,18 @@ const EventSchema: Schema<IEvent> = new Schema({
 	description: { type: String, default: "" },
 	image: { type: String },
 	type: { type: String, required: true },
+	
+	price: { type: Number, required: true },
+	locale: { type: String, required: true },
+	totalTickets: { type: Number, required: true },
+	isFreeEvent: { type: Boolean, required: true },
+	isDiscount: { type: Boolean, required: true },
+	discount: { type: Number },
+	discountType: { type: String },
+	discountPrice: { type: Number },
+	discountEndDateTime: { type: String },
+
+	linkedEvent: { type: String },
 	
 	isBookingStartImmediately: { type: Boolean, required: true },
 	bookingStartDateTime: { type: String },
@@ -61,7 +77,8 @@ const EventSchema: Schema<IEvent> = new Schema({
 	createdBy: { type: String, required: true },
 	createdAt: { type: Date, required: true },
 	updatedAt: { type: Date, required: true },
-	status: { type: String, required: true }
+	status: { type: String, required: true },
+	remaining: { type: Number, default: 0 }
 });
 
 export default mongoose.models.Event || mongoose.model<IEvent>("Event", EventSchema);

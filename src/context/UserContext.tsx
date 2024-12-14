@@ -1,6 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { getUserDetails } from '@/app/apis';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 interface UserContextType {
 	user: User | null;
@@ -12,6 +13,14 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
 	const [user, setUser] = useState<User | null>(null);
+
+	useEffect(() => {
+		// Check if there is already a user
+		if(user) return;
+
+		getUserDetails().then(setUser);
+	}, []);
+	
 	return (
 		<UserContext.Provider value={{ user, setUser }}>
 			{children}
