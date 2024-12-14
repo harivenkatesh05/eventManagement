@@ -5,11 +5,13 @@ import TimePicker from './TimePicker'
 import DatePicker from './DatePicker'
 
 interface DateTimePickerProps {
-	onDateChange?: (date: string) => void
-	onDurationChange?: (duration: string) => void
+	duration: number
+	dateTime: string
+	onDateChange: (date: string) => void
+	onDurationChange: (duration: string) => void
 }
 
-export default function DateTimePickerWithDuration({ onDateChange, onDurationChange }: DateTimePickerProps) {
+export default function DateTimePickerWithDuration({ duration, dateTime, onDateChange, onDurationChange }: DateTimePickerProps) {
 	useEffect(() => {
 		// // Initialize datepicker
 		// (globalThis as any).$('.datepicker-here').datepicker({
@@ -22,16 +24,16 @@ export default function DateTimePickerWithDuration({ onDateChange, onDurationCha
 	return (
 		<div className="row g-2">
 			<div className="col-md-6">
-				<DatePicker title="Event Date.*" placeholder="MM/DD/YYYY" />
+				<DatePicker title="Event Date.*" placeholder="MM/DD/YYYY" onChange={onDateChange} value={dateTime} />
 			</div>
 			<div className="col-md-6">																		
 				<div className="row g-2">
 					<div className="col-md-6">
-						<TimePicker />
+						<TimePicker onChange={onDateChange} value={dateTime}/>
 					</div>
 					<div className="col-md-6">
 						<label className="form-label mt-3 fs-6">Duration</label>	
-						<select className="selectpicker" data-size="5" data-live-search="true" defaultValue={"60"}>
+						<select className="selectpicker" data-size="5" data-live-search="true" value={duration + ""} onChange={(e) => onDurationChange(e.target.value)}>
 							<option value="15">15m</option>
 							<option value="30">30m</option>
 							<option value="45">45m</option>

@@ -1,57 +1,46 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react'
 import DatePicker from '../form/DatePicker'
 import TimePicker from '../form/TimePicker'
-import { Ticket, TicketForm } from '@/type'
 
 export default function GroupTicket({ticket, onSave, onCancel}: {ticket: Ticket, onSave: (ticket: TicketForm) => void, onCancel: () => void}) {
 	console.log(ticket)
-
-	const [ticketName, setTicketName] = useState(ticket.ticketName ?? "")
-	const [ticketLimitPerUser, setTicketLimitPerUser] = useState(ticket.ticketLimitPerUser ?? "")
-	const [ticketLimit, setTicketLimit] = useState(ticket.ticketLimit ?? "")
-	const [isTicketLimitEnabled, setIsTicketLimitEnabled] = useState(ticket.isTicketLimitEnabled ?? false)
-	const [isTicketLimitPerUserEnabled, setIsTicketLimitPerUserEnabled] = useState(ticket.isTicketLimitPerUserEnabled ?? false)
+	const [ticketModel, setTicketModel] = useState<TicketForm>(ticket)
 	
-	const [ticketPrice, setTicketPrice] = useState(ticket.ticketPrice ?? "")
-	const [isTicketDiscountEnabled, setIsTicketDiscountEnabled] = useState(ticket.isTicketDiscountEnabled ?? false)
-	const [discountPrice, setDiscountPrice] = useState(ticket.discountPrice ?? "")
-	const [discountType, setDiscountType] = useState(ticket.discountType ?? "Percentage")
-	const [discountEndDateTime, setDiscountEndDateTime] = useState(ticket.discountEndDateTime ?? "")
-
 	useEffect(() => {
-		setTicketName(ticket.ticketName ?? "")
-		setTicketLimitPerUser(ticket.ticketLimitPerUser ?? "")
-		setTicketLimit(ticket.ticketLimit ?? "")
-		setIsTicketLimitEnabled(ticket.isTicketLimitEnabled ?? false)
-		setIsTicketLimitPerUserEnabled(ticket.isTicketLimitPerUserEnabled ?? false)
-		setTicketPrice(ticket.ticketPrice ?? "")
-		setIsTicketDiscountEnabled(ticket.isTicketDiscountEnabled ?? false)
-		setDiscountPrice(ticket.discountPrice ?? "")
-		setDiscountType(ticket.discountType ?? "Percentage")
-		setDiscountEndDateTime(ticket.discountEndDateTime ?? "")
+		setTicketModel(ticket)
 	}, [ticket])
 
 	const reset = () => {
-		setTicketName("")
-		setTicketLimitPerUser(0)
-		setTicketLimit(0)
-		setIsTicketLimitEnabled(false)
-		setIsTicketLimitPerUserEnabled(false)
-		setTicketPrice(0)
-		setIsTicketDiscountEnabled(false)
-		setDiscountPrice(0)
-		setDiscountType("Percentage")
-		setDiscountEndDateTime("")
+		setTicketModel({
+			ticketName: "",
+			ticketLimit: 0,
+			ticketLimitPerUser: 0,
+			ticketPrice: 0,
+			isTicketDiscountEnabled: false,
+			discountPrice: 0,
+			discountEndDateTime: "",
+			discountType: "Percentage",
+			isTicketLimitEnabled: false,
+			isTicketLimitPerUserEnabled: false,
+		})
 	}
 
 	const handleSave = () => {
-		onSave({ticketName, ticketLimitPerUser, ticketLimit, isTicketLimitEnabled, isTicketLimitPerUserEnabled, ticketPrice, isTicketDiscountEnabled, discountPrice, discountType, discountEndDateTime, id: ticket.id})
+		onSave(ticketModel)
 		reset()
 	}
 
 	const handleCancel = () => {
 		reset()
 		onCancel()
+	}
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setTicketModel({
+			...ticketModel,
+			[e.target.name]: e.target.value
+		})
 	}
 
 	useEffect(() => {
@@ -86,7 +75,7 @@ export default function GroupTicket({ticket, onSave, onCancel}: {ticket: Ticket,
 								<div className="col-lg-12 col-md-12">
 									<div className="form-group mt-4">
 										<label className="form-label">Ticket Name*</label>
-										<input className="form-control h_40" type="text" placeholder="Enter Ticket Type - Group Name (E.g Gold - Family Pass)" value={ticketName} onChange={(e) => setTicketName(e.target.value)} />																								
+										<input className="form-control h_40" type="text" placeholder="Enter Ticket Type - Group Name (E.g Gold - Family Pass)" name="ticketName" value={ticketModel.ticketName ?? ""} onChange={handleChange} />																								
 									</div>
 								</div>
 								<div className="col-lg-12 col-md-12">
@@ -96,7 +85,7 @@ export default function GroupTicket({ticket, onSave, onCancel}: {ticket: Ticket,
 											<div className="d-flex align-items-center flex-wrap pb-4 flex-nowrap">
 												<h4 className="fs-14 mb-0 me-auto">Total number of tickets available</h4>
 												<label className="btn-switch m-0 me-3">
-													<input type="checkbox" id="is-restrict-total-ticket2" checked={!isTicketLimitEnabled} onChange={(e) => setIsTicketLimitEnabled(!e.target.checked)}/>
+													<input type="checkbox" id="is-restrict-total-ticket2" name='isTicketLimitEnabled' checked={!ticketModel.isTicketLimitEnabled} onChange={(e) => setTicketModel({...ticketModel, isTicketLimitEnabled: !e.target.checked})}/>
 													<span className="checkbox-slider"></span>
 												</label>
 												<div>
@@ -106,7 +95,7 @@ export default function GroupTicket({ticket, onSave, onCancel}: {ticket: Ticket,
 											<div className="p-0 mb-4 total_ticket_per_level2" style={{display:"none"}}>
 												<div className="form-group">
 													<div className="input-number">
-														<input className="form-control h_40" type="number" min="0" max="30" placeholder="Enter Total Tickets" value={Number.isNaN(ticketLimit) ? "" : ticketLimit} onChange={(e) => setTicketLimit(parseInt(e.target.value))}/>
+														<input className="form-control h_40" type="number" min="0" max="30" placeholder="Enter Total Tickets" name='ticketLimit' value={Number.isNaN(ticketModel.ticketLimit) ? "" : ticketModel.ticketLimit} onChange={handleChange}/>
 													</div>
 												</div>
 											</div>
@@ -115,7 +104,7 @@ export default function GroupTicket({ticket, onSave, onCancel}: {ticket: Ticket,
 											<div className="d-flex align-items-center flex-wrap pt-4 flex-nowrap">
 												<h4 className="fs-14 mb-0 me-auto">Maximum number of tickets for each customer</h4>
 												<label className="btn-switch m-0 me-3">
-													<input type="checkbox" id="is-restrict-ticket-per-user2" checked={!isTicketLimitPerUserEnabled} onChange={(e) => setIsTicketLimitPerUserEnabled(!e.target.checked)}/>
+													<input type="checkbox" id="is-restrict-ticket-per-user2" name='isTicketLimitPerUserEnabled' checked={!ticketModel.isTicketLimitPerUserEnabled} onChange={(e) => setTicketModel({...ticketModel, isTicketLimitPerUserEnabled: !e.target.checked})}/>
 													<span className="checkbox-slider"></span>
 												</label>
 												<div>
@@ -125,7 +114,7 @@ export default function GroupTicket({ticket, onSave, onCancel}: {ticket: Ticket,
 											<div className="p-0 mt-4 total_ticket_per_user2" style={{display:"none"}}>
 												<div className="form-group">
 													<div className="input-number">
-														<input className="form-control h_40" type="number" min="0" max="30" placeholder="Enter Max. per order" value={ticketLimitPerUser} onChange={(e) => setTicketLimitPerUser(parseInt(e.target.value))}/>
+														<input className="form-control h_40" type="number" min="0" max="30" placeholder="Enter Max. per order" name='ticketLimitPerUser' value={Number.isNaN(ticketModel.ticketLimitPerUser) ? "" : ticketModel.ticketLimitPerUser} onChange={handleChange}/>
 													</div>
 												</div>
 											</div>
@@ -135,7 +124,7 @@ export default function GroupTicket({ticket, onSave, onCancel}: {ticket: Ticket,
 								<div className="col-lg-12 col-md-12">
 									<div className="form-group mt-4">
 										<label className="form-label mb-2 fs-14">Ticket Price*</label>
-										<input className="form-control h_40" type="number" value={ticketPrice} placeholder="Enter Ticket Price" onChange={(e) => setTicketPrice(parseInt(e.target.value))}/>
+										<input className="form-control h_40" type="number" name='ticketPrice' value={Number.isNaN(ticketModel.ticketPrice) ? "" : ticketModel.ticketPrice} placeholder="Enter Ticket Price" onChange={handleChange}/>
 									</div>
 								</div>
 								
@@ -144,7 +133,7 @@ export default function GroupTicket({ticket, onSave, onCancel}: {ticket: Ticket,
 										<div className="form-group">
 											<div className="d-flex align-items-start">
 												<label className="btn-switch m-0 me-3">
-													<input type="checkbox" className="" id="bird-discount2" checked={isTicketDiscountEnabled} onChange={(e) => setIsTicketDiscountEnabled(e.target.checked)}/>
+													<input type="checkbox" className="" id="bird-discount2" name='isTicketDiscountEnabled' checked={!ticketModel.isTicketDiscountEnabled} onChange={(e) => setTicketModel({...ticketModel, isTicketDiscountEnabled: !e.target.checked})}/>
 													<span className="checkbox-slider"></span>
 												</label>
 												<div className="d-flex flex-column">
@@ -156,20 +145,20 @@ export default function GroupTicket({ticket, onSave, onCancel}: {ticket: Ticket,
 												<div className="row g-3">
 													<div className="col-md-3">
 														<label className="form-label mt-3 fs-6">Discount*</label>
-														<input className="form-control h_40" type="text" placeholder="0" value={discountPrice} onChange={(e) => setDiscountPrice(parseInt(e.target.value))}/>
+														<input className="form-control h_40" type="text" placeholder="0" name='discountPrice' value={Number.isNaN(ticketModel.discountPrice) ? "" : ticketModel.discountPrice} onChange={handleChange}/>
 													</div>
 													<div className="col-md-3">
 														<label className="form-label mt-3 fs-6">Price*</label>
-														<select className="selectpicker" value={discountType} onChange={(e) => setDiscountType(e.target.value)}>
+														<select className="selectpicker" name='discountType' value={ticketModel.discountType} onChange={(e) => setTicketModel({...ticketModel, discountType: e.target.value})}>
 															<option value="Percentage">Percent(%)</option>
 															<option value="Fixed">Fixed($)</option>
 														</select>
 													</div>
 													<div className="col-md-3">
-														<DatePicker title="Discount ends on*" value={discountEndDateTime} onChange={(discountEndDateTime) => setDiscountEndDateTime(discountEndDateTime)}/>
+														<DatePicker title="Discount ends on*" value={ticketModel.discountEndDateTime} onChange={(date) => setTicketModel({...ticketModel, discountEndDateTime: date})}/>
 													</div>
 													<div className="col-md-3">
-														<TimePicker value={discountEndDateTime} onChange={(discountEndDateTime) => setDiscountEndDateTime(discountEndDateTime)}/>
+														<TimePicker value={ticketModel.discountEndDateTime} onChange={(date) => setTicketModel({...ticketModel, discountEndDateTime: date})}/>
 													</div>
 												</div>
 											</div>

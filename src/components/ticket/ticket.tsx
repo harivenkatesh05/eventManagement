@@ -1,4 +1,3 @@
-import type { Ticket } from '@/type'
 import React from 'react'
 
 export default function Ticket({ticket, onEdit, onDelete}: {ticket: Ticket, onEdit: () => void, onDelete: () => void}) {

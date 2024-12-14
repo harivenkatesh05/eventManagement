@@ -2,7 +2,7 @@ import { Event } from '@/dataset/events';
 import { NextResponse } from 'next/server';
 
 // A simple GET handler to simulate adding a product reminder
-export async function GET(request: Request) {
+export async function GET() {
 	try {
 		const events: Event[] = [
 			{
@@ -156,7 +156,8 @@ export async function GET(request: Request) {
 		]
 
 		return NextResponse.json({ events }, { status: 200 });
-	} catch (error) {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	} catch (e) {
 		return NextResponse.json({ error: 'Failed to fetch events.' }, { status: 500 });
 	}
 }

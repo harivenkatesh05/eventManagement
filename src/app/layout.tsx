@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { UserProvider } from '../context/UserContext';
 
 import "../../public/vendor/unicons-2.0.1/css/unicons.css"
 import "../../public/css/style.css"
@@ -13,8 +14,7 @@ import "./global.css"
 
 import Script from "next/script";
 import { roboto } from './fonts'
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+import ClientRouteHandler from "./ClientRouteHandler";
 
 export const metadata: Metadata = {
 	title: "Barren - Simple Online Event Ticketing System",
@@ -49,13 +49,13 @@ export default function RootLayout({
 		<html lang="en" className={roboto.className}>
 			<body>
 				<div className="d-flex flex-column h-100">
-					<Header />
-					{children}
-					<Footer />
+					<UserProvider>
+						<ClientRouteHandler>
+								{children}
+						</ClientRouteHandler>
+					</UserProvider>
 				</div>
-				
 				<Script src="/js/jquery.min.js" />
-				<Script src="/vendor/ckeditor5/ckeditor.js"></Script>
 				<Script src="/js/jquery-steps.min.js"></Script>
 				<Script src="/js/datepicker.min.js"></Script>
 				<Script src="/vendor/bootstrap/js/bootstrap.bundle.min.js" />

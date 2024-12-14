@@ -38,3 +38,38 @@
 button.btn.btn-default.btn-hover.steps_btn{
   margin-left: 10px;
 }
+
+/* Add these styles for textarea */
+textarea.form-control {
+  min-height: 120px;
+  padding: 15px !important;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333;
+  background: #fff;
+  border-radius: 5px;
+  border: 1px solid #efefef !important;
+  resize: vertical;
+}
+
+textarea.form-control:focus {
+  border-color: #1da1f2;
+  box-shadow: none;
+  outline: none;
+}
+
+/* Match input height for single line inputs */
+.form-control.h_50 {
+  height: 50px;
+}
+
+/* Add consistent hover state */
+textarea.form-control:hover {
+  border-color: #1da1f2;
+}
+
+/* Add consistent disabled state */
+textarea.form-control:disabled {
+  background-color: #f9f9f9;
+  cursor: not-allowed;
+}

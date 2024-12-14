@@ -1,11 +1,12 @@
 import { getTimeFromDate, setTimeToDate } from '@/util/date'
 import React from 'react'
 
-export default function TimePicker({title = 'Time', value, onChange}: {title?: string, value?: string, onChange?: (value: string) => void}) {
+export default function TimePicker({title = 'Time', value, onChange}: {title?: string, value?: string, onChange: (value: string) => void}) {
 	const time = value ? getTimeFromDate(value) : ""
 	
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const handleTimeClick = (e: any) => {
-		onChange?.(setTimeToDate(value ?? "", e.target.value))
+		onChange(setTimeToDate(value ?? "", e.target.value))
 	}
 
 	return (
