@@ -177,8 +177,8 @@ export async function GET() {
 		// ]
 
 		// return NextResponse.json({ events }, { status: 200 });
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	} catch (e) {
-		return NextResponse.json({ error: 'Failed to fetch events.' }, { status: 500 });
+	} catch (error) {
+		console.error('Error:', error);
+		return new Response(JSON.stringify({ error: 'Failed to fetch events' }), { status: 500 });
 	}
 }

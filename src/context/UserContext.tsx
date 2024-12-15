@@ -19,7 +19,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 		if(user) return;
 
 		getUserDetails().then(setUser);
-	}, []);
+	}, [user]);
 	
 	return (
 		<UserContext.Provider value={{ user, setUser }}>

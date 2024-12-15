@@ -5,11 +5,21 @@ import CardSkeletons from '@/components/card/skeletonCollection'
 import { getDateObj, isDateSatisfies } from '@/util/date'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { Suspense, useCallback, useEffect, useState } from 'react'
 import { fetchEvents } from '../apis'
+import EventSkeleton from '@/components/skeleton/EventSkeleton'
 
 
 export default function Explore() {
+	return (
+		<Suspense fallback={<EventSkeleton />}>
+			<ExploreComponent />
+		</Suspense>
+	)
+}
+
+function ExploreComponent() {
+
 	const searchParams = useSearchParams()
 		
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

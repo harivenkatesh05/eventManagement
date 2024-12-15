@@ -14,8 +14,7 @@ export function verifyToken(req: Request, res: Response, next: () => void) {
 		jwt.verify(token, JWT_SECRET);
 		// (req as any).user = decoded;
 		next();
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	} catch (error) {
+	} catch {
 		return NextResponse.json({ message: "Invalid token" }, { status: 403 });
 	}
 }

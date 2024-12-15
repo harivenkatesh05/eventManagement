@@ -9,12 +9,12 @@ import BookingConfirmed from './bookingConfirmed';
 export default function Checkout({ event, tickets }: { event: EventFullDetail, tickets: number }) {
 	const { user } = useUser();
 	const [ticketID, setTicketID] = useState('');
+	const [loading, setLoading] = useState(false);
 	
 	if(getDateObj(event.eventDate) < new Date()) {
 		return <div>Event has already happened</div>
 	}
-
-	const [loading, setLoading] = useState(false);
+	
 	const handleConfirmBook = () => {
 		setLoading(true);
 		bookEvent(event.id, tickets)

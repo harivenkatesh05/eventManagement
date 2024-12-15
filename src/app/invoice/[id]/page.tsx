@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation';
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { fetchPurchase } from '@/app/apis';
@@ -9,7 +9,6 @@ import { useUser } from '@/context/UserContext';
 import { getDateObj } from '@/util/date';
 import Link from 'next/link';
 import InvoiceSkeleton from '@/components/invoice/skeleton';
-import Image from 'next/image';
 
 export default function Invoice() {
 	const pathname = usePathname();
@@ -31,8 +30,8 @@ export default function Invoice() {
 	
 	const handleDownload = async () => {
 		const element = document.querySelector('.invoice-body');
-		if (!element) return;
-
+		if (!purchase || !element) return;
+		
 		try {
 			const images = element.getElementsByTagName('img');
 			await Promise.all(Array.from(images).map(img => {
@@ -88,16 +87,17 @@ export default function Invoice() {
 				});
 			
 			pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-			pdf.save(`ticket-${purchase?.id}.pdf`);
+			pdf.save(`ticket-${purchase.id}.pdf`);
 		} catch (error) {
 			console.error('Error generating PDF:', error);
 		}
 	};
 	
-	if (loading) {
+	if (loading || !purchase || !user) {
 		return <InvoiceSkeleton />;
 	}
 	
+
 	return (
 		<div className="invoice clearfix">
 			<div className="container">
@@ -126,8 +126,8 @@ export default function Invoice() {
 									<div className="col-md-6">
 										<div className="vhls140">
 											<ul>
-												<li><div className="vdt-list">Invoice to {user?.firstName} {user?.lastName}</div></li>
-												<li><div className="vdt-list">{user?.email}</div></li>
+												<li><div className="vdt-list">Invoice to {user.firstName} {user.lastName}</div></li>
+												<li><div className="vdt-list">{user.email}</div></li>
 												{/* <li><div className="vdt-list">Melbourne, Victoria</div></li>
 												<li><div className="vdt-list">3000, Australia</div></li> */}
 											</ul>
@@ -136,8 +136,8 @@ export default function Invoice() {
 									<div className="col-md-6">
 										<div className="vhls140">
 											<ul>
-												<li><div className="vdt-list">Invoice ID : {purchase?.id}</div></li>
-												<li><div className="vdt-list">Order Date : {getDateObj(purchase?.purchaseDate!).toLocaleDateString()}</div></li>
+												<li><div className="vdt-list">Invoice ID : {purchase.id}</div></li>
+												<li><div className="vdt-list">Order Date : {getDateObj(purchase.purchaseDate!).toLocaleDateString()}</div></li>
 												{/* <li><div className="vdt-list">Near MBD Mall,</div></li> */}
 											</ul>
 										</div>
@@ -153,7 +153,7 @@ export default function Invoice() {
 												<th scope="col">Event Details</th>
 												<th scope="col">Type</th>
 												<th scope="col">Qty</th>
-												{!purchase?.event.isFreeEvent && <>
+												{!purchase.event.isFreeEvent && <>
 													<th scope="col">Unit Price</th>
 													<th scope="col">Total</th>
 												</>}
@@ -162,19 +162,19 @@ export default function Invoice() {
 										<tbody>
 											<tr>										
 												<td>1</td>	
-												<td><Link href={`/events/${purchase?.eventId}`} target="_blank">{purchase?.event.name}</Link></td>	
-												<td>{purchase?.event.type}</td>	
-												<td>{purchase?.tickets}</td>
-												{!purchase?.event.isFreeEvent && <>
-													<td>${purchase?.totalAmount! / purchase?.tickets!}</td>
-													<td>${purchase?.totalAmount}</td>
+												<td><Link href={`/events/${purchase.eventId}`} target="_blank">{purchase.event.name}</Link></td>	
+												<td>{purchase.event.type}</td>	
+												<td>{purchase.tickets}</td>
+												{!purchase.event.isFreeEvent && <>
+													<td>${purchase.totalAmount / purchase.tickets}</td>
+													<td>${purchase.totalAmount}</td>
 												</>}
 											</tr>
-											{!purchase?.event.isFreeEvent && <tr>
+											{!purchase.event.isFreeEvent && <tr>
 												<td colSpan={1}></td>
 												<td colSpan={5}>
 													<div className="user_dt_trans text-end pe-xl-4">
-														<div className="totalinv2">Invoice Total : {`${purchase?.event.locale} ${purchase?.totalAmount}`}</div>
+														<div className="totalinv2">Invoice Total : {`${purchase.event.locale} ${purchase.totalAmount}`}</div>
 														<p>Paid via PhonePe</p>
 													</div>
 												</td>
@@ -183,7 +183,7 @@ export default function Invoice() {
 									</table>
 								</div>
 							</div>
-							{purchase?.event.type === 'venue' && (
+							{purchase.event.type === 'venue' && (
 								<div className="invoice_footer">
 									<div className="cut-line" style={{ 
 										position: 'relative',
@@ -208,18 +208,18 @@ export default function Invoice() {
 											<div className="col-lg-7">
 												<div className="event-order-dt p-4">
 													<div className="event-thumbnail-img">
-														<img src={purchase?.event.image} alt="" />
+														<img src={purchase.event.image} alt="" />
 													</div>
 													<div className="event-order-dt-content">
-														<h5>{purchase?.event.name}</h5>
-														<span>{getDateObj(purchase?.event.date!).toLocaleDateString()}</span>
-														<div className="buyer-name">{user?.firstName} {user?.lastName}</div>
+														<h5>{purchase.event.name}</h5>
+														<span>{getDateObj(purchase.event.date!).toLocaleDateString()}</span>
+														<div className="buyer-name">{user.firstName} {user.lastName}</div>
 														<div className="booking-total-tickets">
 															<i className="fa-solid fa-ticket rotate-icon"></i>
-															<span className="booking-count-tickets mx-2">{purchase?.tickets}</span>x Ticket
+															<span className="booking-count-tickets mx-2">{purchase.tickets}</span>x Ticket
 														</div>
-														{!purchase?.event.isFreeEvent && <div className="booking-total-grand">
-															Total : <span>${purchase?.totalAmount}</span>
+														{!purchase.event.isFreeEvent && <div className="booking-total-grand">
+															Total : <span>${purchase.totalAmount}</span>
 														</div>}
 													</div>
 												</div>
@@ -227,8 +227,8 @@ export default function Invoice() {
 											<div className="col-lg-5">
 												<div className="QR-dt p-4">
 													<ul className="QR-counter-type">
-														<li>{purchase?.event.type}</li>
-														<li>{purchase?.id}</li>
+														<li>{purchase.event.type}</li>
+														<li>{purchase.id}</li>
 													</ul>
 													<div className="barcode-container" style={{ 
 														width: '100%',
@@ -246,7 +246,7 @@ export default function Invoice() {
 														border: '1px solid #eee'
 													}}>
 														<img 
-															src={purchase?.barcode} 
+															src={purchase.barcode} 
 															alt="Barcode" 
 															style={{ 
 																width: '260px',

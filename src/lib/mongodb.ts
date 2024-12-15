@@ -5,10 +5,11 @@ const MONGODB_URI = process.env.MONGODB_URI;
 if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
 }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let cached = (globalThis as any).mongoose;
 
 if (!cached) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
   cached = (globalThis as any).mongoose = { conn: null, promise: null };
 }
 
@@ -25,7 +26,7 @@ export const connectDatabase = async () => {
 		cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
 		  	return mongoose.connection;
 		});
-	  }
+	}
 	
 	cached.conn = await cached.promise;
 	return cached.conn;

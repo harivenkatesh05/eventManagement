@@ -7,10 +7,10 @@ import Purchase from "@/models/Purchase";
 
 export async function POST(
 	request: NextRequest,
-	{ params }: { params: { id: string } }
+	{ params }: { params: Promise<{ id: string }> }
 ) {
 	try {
-		const { id } = await Promise.resolve(params);
+		const { id } = await params;
 		const { tickets } = await request.json();
 		await connectDatabase();
 

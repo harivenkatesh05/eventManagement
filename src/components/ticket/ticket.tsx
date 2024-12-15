@@ -21,7 +21,7 @@ export default function Ticket({ticket, onEdit, onDelete}: {ticket: Ticket, onEd
 					}
 
 					<label className="btn-switch tfs-8 mb-0 me-4 mt-1">
-						<input type="checkbox" value="" defaultChecked={ticket.isTicketEnabled} onChange={(e) => {}}></input>
+						<input type="checkbox" value="" defaultChecked={ticket.isTicketEnabled}></input>
 						<span className="checkbox-slider"></span>
 					</label>
 					<div className="dropdown dropdown-default dropdown-text dropdown-icon-item">
@@ -30,7 +30,7 @@ export default function Ticket({ticket, onEdit, onDelete}: {ticket: Ticket, onEd
 						</button>
 						<div className="dropdown-menu dropdown-menu-end">
 							<button className="dropdown-item" onClick={onEdit}><i className="fa-solid fa-pen me-3"></i>Edit</button>
-							<button className="dropdown-item" onClick={onDelete}><i className="fa-solid fa-trash-can me-3"></i>Delete</button>
+							<button className="dropdown-item" onClick={() => onDelete()}><i className="fa-solid fa-trash-can me-3"></i>Delete</button>
 						</div>
 					</div>
 				</div>

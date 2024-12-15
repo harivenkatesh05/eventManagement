@@ -7,10 +7,10 @@ import { ObjectId } from 'mongodb';
 
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await Promise.resolve(context.params);
+    const { id } = await context.params;
     await connectDatabase();
 
     // Validate ID format
