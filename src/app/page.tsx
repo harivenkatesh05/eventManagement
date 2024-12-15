@@ -196,7 +196,7 @@ export default function Home() {
 					</div>
 				</div>
 			</div>
-			<div className="feature-block p-80">
+			{/* <div className="feature-block p-80">
 				<div className="container">
 					<div className="row">
 						<div className="col-lg-10">
@@ -763,7 +763,7 @@ export default function Home() {
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> */}
 		</div>
 	);
 }
