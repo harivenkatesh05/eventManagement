@@ -9,6 +9,7 @@ import EventDetailSkeleton from '@/components/event/skeleton';
 import Countdown from '@/components/event/countdown'
 import { fetchEvent, fetchEvents } from '@/app/apis';
 import Card from '@/components/card/card';
+import Checkout from '@/components/checkout';
 
 const getBookingStatus = (startDate: string, endDate: string, eventDate: string, remaining: number) => {
 	const now = new Date();
@@ -32,46 +33,6 @@ export default function EventDetail() {
 	const [event, setEvent] = useState<EventFullDetail | null>(null)
 	const [events, setEvents] = useState<EventType[]>([])
 	const [loading, setLoading] = useState(true)
-	
-	useEffect(() => {
-		const id = pathname.split('/')[2];
-		
-		// Add loading state and error handling
-		setLoading(true);
-		fetchEvent(id)
-			.then((event: EventFullDetail) => {
-				if (!event) {
-					notFound() // Redirect if event not found
-					return;
-				}
-				setEvent(event);
-			})
-			.catch((error) => {
-				console.error('Error fetching event:', error);
-				notFound(); // Redirect on error
-			})
-			.finally(() => {
-				setLoading(false);
-			});
-		
-		fetchEvents().then((events: EventType[]) => {
-			const remainingEvents = events.filter((event) => event.id !== id)
-			setEvents(remainingEvents)
-			setLoading(false)
-
-			setTimeout(() => {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				$(".owl-carousel").owlCarousel({
-					items: 3, // Number of items to display
-					loop: true,
-					margin: 10,
-					nav: true,
-					autoplay: true,
-				});
-			}, 200)
-		})
-	}, [pathname])
 	
 	const handleShare = async (platform: string) => {
 		// if (navigator.share) {
@@ -154,6 +115,60 @@ END:VCALENDAR`;
 		}
 	}
 
+	const [count, setCount] = useState(1)
+	const [checkout, setCheckout] = useState(false)
+
+	const handleDecreaseCount = () => {
+		setCount(count - 1 < 0 ? 0 : count - 1)
+	}
+	const handleIncreaseCount = () => {
+		setCount(count + 1 > event!.remaining ? event!.remaining : count + 1)
+	}
+
+	const handleConfirmBook = () => {
+		setCheckout(true)
+	}
+
+	useEffect(() => {
+		const id = pathname.split('/')[2];
+		
+		// Add loading state and error handling
+		setLoading(true);
+		fetchEvent(id)
+			.then((event: EventFullDetail) => {
+				if (!event) {
+					notFound() // Redirect if event not found
+					return;
+				}
+				setEvent(event);
+			})
+			.catch((error) => {
+				console.error('Error fetching event:', error);
+				notFound(); // Redirect on error
+			})
+			.finally(() => {
+				setLoading(false);
+			});
+		
+		fetchEvents().then((events: EventType[]) => {
+			const remainingEvents = events.filter((event) => event.id !== id)
+			setEvents(remainingEvents)
+			setLoading(false)
+
+			setTimeout(() => {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				$(".owl-carousel").owlCarousel({
+					items: 3, // Number of items to display
+					loop: true,
+					margin: 10,
+					nav: true,
+					autoplay: true,
+				});
+			}, 200)
+		})
+	}, [pathname])
+	
 	if (loading || !event) {
 		return <EventDetailSkeleton />
 	}
@@ -182,140 +197,206 @@ END:VCALENDAR`;
 					</div>
 				</div>
 			</div>
-			<div className="event-dt-block p-80">
-				<div className="container">
-					<div className="row">
-						<div className="col-xl-12 col-lg-12 col-md-12">
-							<div className="event-top-dts">
-								<div className="event-top-date">
-									<span className="event-month">{dateTime.toLocaleString('default', { month: 'short' })}</span>
-									<span className="event-date">{dateTime.getDate()}</span>
-								</div>
-								<div className="event-top-dt">
-									<h3 className="event-main-title">{event.name}</h3>
-									<div className="event-top-info-status">
-										<span className="event-type-name"><i className="fa-solid fa-video"></i>{event.type === 'online' ? 'Online' : 'Venue'} Event</span>
-										<span className="event-type-name details-hr">Starts on <span className="ev-event-date">{formatDateToIST(dateTime)}</span></span>
-										<span className="event-type-name details-hr">{inHour}</span>
+			{checkout ? <Checkout event={event} tickets={count} /> : (	
+				<div className="event-dt-block p-80">
+						<div className="container">
+							<div className="row">
+							<div className="col-xl-12 col-lg-12 col-md-12">
+								<div className="event-top-dts">
+									<div className="event-top-date">
+										<span className="event-month">{dateTime.toLocaleString('default', { month: 'short' })}</span>
+										<span className="event-date">{dateTime.getDate()}</span>
 									</div>
-								</div>
-							</div>
-						</div>
-						<div className="col-xl-8 col-lg-7 col-md-12">
-							<div className="main-event-dt">
-								<div className="event-img">
-									<Image src={src} alt={event.name} width={100} height={500} layout="responsive" />		
-								</div>
-								<div className="share-save-btns dropdown">
-									<button className="sv-btn" data-bs-toggle="dropdown" aria-expanded="false"><i className="fa-solid fa-share-nodes me-2"></i>Share</button>
-									<ul className="dropdown-menu">
-										<li><button className="dropdown-item" onClick={() => {handleShare('facebook')}}><i className="fa-brands fa-facebook me-3"></i>Facebook</button></li>
-										<li><button className="dropdown-item" onClick={() => {handleShare('twitter')}}><i className="fa-brands fa-twitter me-3"></i>Twitter</button></li>
-										<li><button className="dropdown-item" onClick={() => {handleShare('linkedin')}}><i className="fa-brands fa-linkedin-in me-3"></i>LinkedIn</button></li>
-										<li><button className="dropdown-item" onClick={() => {handleShare('email')}}><i className="fa-regular fa-envelope me-3"></i>Email</button></li>
-									</ul>
-								</div>
-								<div className="main-event-content">
-									<h4>About This Event</h4>
-									{event.description.split('\n').map((text, index) => <p key={index}>{text}</p>)}
-								</div>							
-							</div>
-						</div>
-						<div className="col-xl-4 col-lg-5 col-md-12">
-							<div className="main-card event-right-dt">
-								<div className="bp-title">
-									<h4>Event Details</h4>
-								</div>
-								<div className="time-left">
-									<Countdown targetDate={dateTime} />
-								</div>
-								<div className="event-dt-right-group mt-5">
-									<div className="event-dt-right-icon">
-										<i className="fa-solid fa-circle-user"></i>
-									</div>
-									<div className="event-dt-right-content">
-										<h4>Organised by</h4>
-										<h5>{event.createdByName}</h5>
-										<Link href={`/user/${event.createdBy}`}>View Profile</Link>
-									</div>
-								</div>
-								<div className="event-dt-right-group">
-									<div className="event-dt-right-icon">
-										<i className="fa-solid fa-calendar-day"></i>
-									</div>
-									<div className="event-dt-right-content">
-										<h4>Date and Time</h4>
-										<h5>{formatDateToIST(dateTime)}</h5>
-										<div className="add-to-calendar">
-											<Link href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-												<i className="fa-regular fa-calendar-days me-3"></i>Add to Calendar
-											</Link>
-											<ul className="dropdown-menu">
-												<li><button className="dropdown-item" onClick={() => {handleSetRemainder('outlook')}}><i className="fa-brands fa-windows me-3"></i>Outlook</button></li>
-												<li><button className="dropdown-item" onClick={() => {handleSetRemainder('apple')}}><i className="fa-brands fa-apple me-3"></i>Apple</button></li>
-												<li><button className="dropdown-item" onClick={() => {handleSetRemainder('google')}}><i className="fa-brands fa-google me-3"></i>Google</button></li>
-											</ul>
+									<div className="event-top-dt">
+										<h3 className="event-main-title">{event.name}</h3>
+										<div className="event-top-info-status">
+											<span className="event-type-name"><i className="fa-solid fa-video"></i>{event.type === 'online' ? 'Online' : 'Venue'} Event</span>
+											<span className="event-type-name details-hr">Starts on <span className="ev-event-date">{formatDateToIST(dateTime)}</span></span>
+											<span className="event-type-name details-hr">{inHour}</span>
 										</div>
 									</div>
 								</div>
-								<div className="event-dt-right-group">
-									<div className="event-dt-right-icon">
-										<i className="fa-solid fa-location-dot"></i>
+							</div>
+							<div className="col-xl-8 col-lg-7 col-md-12">
+								<div className="main-event-dt">
+									<div className="event-img">
+										<Image src={src} alt={event.name} width={100} height={500} layout="responsive" />		
 									</div>
-									<div className="event-dt-right-content">
-										<h4>Location</h4>
-										{event.type === 'online' ? <h5 className="mb-0">Online</h5> : (<>
-											<h5 className="mb-0">{event.venue?.location}</h5>
-											<a href={`https://www.google.com/maps?q=${event.venue?.latitude},${event.venue?.longitude}`} target="_blank" rel="noopener noreferrer"><i className="fa-solid fa-location-dot me-2"></i>View Map</a>
-										</>)}
+									<div className="share-save-btns dropdown">
+										<button className="sv-btn" data-bs-toggle="dropdown" aria-expanded="false"><i className="fa-solid fa-share-nodes me-2"></i>Share</button>
+										<ul className="dropdown-menu">
+											<li><button className="dropdown-item" onClick={() => {handleShare('facebook')}}><i className="fa-brands fa-facebook me-3"></i>Facebook</button></li>
+											<li><button className="dropdown-item" onClick={() => {handleShare('twitter')}}><i className="fa-brands fa-twitter me-3"></i>Twitter</button></li>
+											<li><button className="dropdown-item" onClick={() => {handleShare('linkedin')}}><i className="fa-brands fa-linkedin-in me-3"></i>LinkedIn</button></li>
+											<li><button className="dropdown-item" onClick={() => {handleShare('email')}}><i className="fa-regular fa-envelope me-3"></i>Email</button></li>
+										</ul>
 									</div>
-								</div>
-								<div className="event-dt-right-group">
-									<div className="event-dt-right-icon">
-										<i className="fa-solid fa-money-check-dollar"></i>
-									</div>
-									<div className="event-dt-right-content">
-										<h4>{event.locale}</h4>
-										<h5 className="mb-0">{event.price.toLocaleString('en-IN')}</h5>
-									</div>
-								</div>
-								<div className="booking-btn">
-									{(() => {
-										const { status, text } = getBookingStatus(event.startDate, event.endDate, event.eventDate, event.remaining);
-										
-										if (status === 'active') {
-											return <Link href="/checkout" className="main-btn btn-hover w-100">{text}</Link>;
-										}
-										
-										return (
-											<div className="main-btn btn-hover w-100">
-												{text}
-											</div>
-										);
-									})()}
+									<div className="main-event-content">
+										<h4>About This Event</h4>
+										{event.description.split('\n').map((text, index) => <p key={index}>{text}</p>)}
+									</div>							
 								</div>
 							</div>
-						</div>
-						<div className="col-xl-12 col-lg-12 col-md-12">
-							<div className="more-events">
-								<div className="main-title position-relative">
-									<h3>More Events</h3>
-									<Link href="/explore" className="view-all-link">Browse All<i className="fa-solid fa-right-long ms-2"></i></Link>
+							<div className="col-xl-4 col-lg-5 col-md-12">
+								<div className="main-card event-right-dt">
+									<div className="bp-title">
+										<h4>Event Details</h4>
+									</div>
+									<div className="time-left">
+										<Countdown targetDate={dateTime} />
+									</div>
+									<div className="event-dt-right-group mt-5">
+										<div className="event-dt-right-icon">
+											<i className="fa-solid fa-circle-user"></i>
+										</div>
+										<div className="event-dt-right-content">
+											<h4>Organised by</h4>
+											<h5>{event.createdByName}</h5>
+											{/* <Link href={`/user/${event.createdBy}`}>View Profile</Link> */}
+										</div>
+									</div>
+									<div className="event-dt-right-group">
+										<div className="event-dt-right-icon">
+											<i className="fa-solid fa-calendar-day"></i>
+										</div>
+										<div className="event-dt-right-content">
+											<h4>Date and Time</h4>
+											<h5>{formatDateToIST(dateTime)}</h5>
+											<div className="add-to-calendar">
+												<Link href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+													<i className="fa-regular fa-calendar-days me-3"></i>Add to Calendar
+												</Link>
+												<ul className="dropdown-menu">
+													<li><button className="dropdown-item" onClick={() => {handleSetRemainder('outlook')}}><i className="fa-brands fa-windows me-3"></i>Outlook</button></li>
+													<li><button className="dropdown-item" onClick={() => {handleSetRemainder('apple')}}><i className="fa-brands fa-apple me-3"></i>Apple</button></li>
+													<li><button className="dropdown-item" onClick={() => {handleSetRemainder('google')}}><i className="fa-brands fa-google me-3"></i>Google</button></li>
+												</ul>
+											</div>
+										</div>
+									</div>
+									<div className="event-dt-right-group">
+										<div className="event-dt-right-icon">
+											<i className="fa-solid fa-location-dot"></i>
+										</div>
+										<div className="event-dt-right-content">
+											<h4>Location</h4>
+											{event.type === 'online' ? <h5 className="mb-0">Online</h5> : (<>
+												<h5 className="mb-0">{event.venue?.location}</h5>
+												<a href={`https://www.google.com/maps?q=${event.venue?.latitude},${event.venue?.longitude}`} target="_blank" rel="noopener noreferrer"><i className="fa-solid fa-location-dot me-2"></i>View Map</a>
+											</>)}
+										</div>
+									</div>
+									{event.remaining > 0 && (event.type === 'online' ? (
+										<div className="event-dt-right-group">
+											<div className="event-dt-right-icon">
+												<i className="fa-solid fa-money-check-dollar"></i>
+											</div>
+											<div className="event-dt-right-content">
+												<h4>{event.locale}</h4>
+												<h5 className="mb-0">{event.price.toLocaleString('en-IN')}</h5>
+											</div>
+										</div>
+									) : (
+										<div className="select-tickets-block">
+											{
+												event.isFreeEvent ? (<>
+													<div className="select-ticket-action">
+														<div className='ticket-price'>Select Tickets</div>
+														<div className="quantity">
+															<div className="counter">
+																<span className="down" onClick={handleDecreaseCount}>-</span>
+																<input type="text" value={count} />
+																<span className="up" onClick={handleIncreaseCount}>+</span>
+															</div>
+														</div>
+													</div>
+												</>) : (<>
+													<h6>Select Tickets</h6>
+													<div className="select-ticket-action">
+														<div className="ticket-price">{`${event.locale} ${event.price.toLocaleString('en-IN')}`}</div>
+														<div className="quantity">
+															<div className="counter">
+																<span className="down" onClick={handleDecreaseCount}>-</span>
+																<input type="text" value={count} />
+																<span className="up" onClick={handleIncreaseCount}>+</span>
+															</div>
+														</div>
+													</div>
+												</>)
+											}
+											{/* <h6>Select Tickets</h6>
+											<div className="select-ticket-action">
+												<div className="ticket-price">{`${event.locale} ${event.price.toLocaleString('en-IN')}`}</div>
+												<div className="quantity">
+													<div className="counter">
+														<span className="down" onClick={handleDecreaseCount}>-</span>
+														<input type="text" value={count} />
+														<span className="up" onClick={handleIncreaseCount}>+</span>
+													</div>
+												</div>
+											</div> */}
+											{event.specialInstructions && <p>{event.specialInstructions}</p>}
+											{count > 0 && <div className="xtotel-tickets-count">
+												<div className="x-title">{count}x Ticket(s)</div>
+												{!event.isFreeEvent && <h4>{event.locale} <span>{(count * event.price).toLocaleString('en-IN')}</span></h4>}
+											</div>}
+										</div>
+									))}
+									<div className="booking-btn">
+										{(() => {
+											const { status, text } = getBookingStatus(event.startDate, event.endDate, event.eventDate, event.remaining);
+											
+											if (status === 'active') {
+												return <>
+													{event.specialInstructions && <p>{event.specialInstructions}</p>}
+													<button 
+														className="main-btn btn-hover w-100" 
+														onClick={handleConfirmBook} 
+														disabled={count === 0}
+														style={{ 
+															opacity: count === 0 ? '0.5' : '1',
+															cursor: count === 0 ? 'not-allowed' : 'pointer',
+															transition: 'opacity 0.3s ease'
+														}}
+													>
+														{text}
+													</button>
+												</>
+											}
+											
+											return (
+												<>
+													{event.specialInstructions && <p>{event.specialInstructions}</p>}
+													<div className="main-btn btn-hover w-100">
+														{text}
+													</div>
+												</>
+											);
+										})()}
+									</div>
 								</div>
-								<div className="owl-carousel moreEvents-slider owl-theme">
-									{events.map((event) => {
-										const price = event.isFreeEvent ? "Free" : `${event.locale} ${event.price.toLocaleString('en-IN')}`;
-										const inHour = `${Math.floor(event.eventDuration / 60)}h ${event.eventDuration % 60}m`;
-										return (<div className='item' key={event.id}>
-											<Card title={event.name} dateTime={getDateObj(event.eventDate)} duration={inHour} price={price} image={event.image} remaining={event.remaining} id={event.id} />
-										</div>)
-									})}
+							</div>
+							<div className="col-xl-12 col-lg-12 col-md-12">
+								<div className="more-events">
+									<div className="main-title position-relative">
+										<h3>More Events</h3>
+										<Link href="/explore" className="view-all-link">Browse All<i className="fa-solid fa-right-long ms-2"></i></Link>
+									</div>
+									<div className="owl-carousel moreEvents-slider owl-theme">
+										{events.map((event) => {
+											const price = event.isFreeEvent ? "Free" : `${event.locale} ${event.price.toLocaleString('en-IN')}`;
+											const inHour = `${Math.floor(event.eventDuration / 60)}h ${event.eventDuration % 60}m`;
+											return (<div className='item' key={event.id}>
+												<Card title={event.name} dateTime={getDateObj(event.eventDate)} duration={inHour} price={price} image={event.image} remaining={event.remaining} id={event.id} />
+											</div>)
+										})}
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			)}
 		</div>
 	)
 }

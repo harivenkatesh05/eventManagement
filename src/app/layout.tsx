@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { Toaster } from 'react-hot-toast';
 
 import "../../public/vendor/unicons-2.0.1/css/unicons.css"
 import "../../public/css/style.css"
@@ -94,6 +95,7 @@ export default function RootLayout({
 						});
 					`}
 				</Script>
+				<Toaster position="bottom-left" />
 			</body>
 		</html>
 	);

@@ -14,51 +14,88 @@ import Link from 'next/link'
 import { createVenueEvent } from '@/app/apis'
 import { useRouter } from 'next/navigation'
 import { loadGoogleMapsScript } from '@/util/googleMaps'
+import toast from 'react-hot-toast'
+
+// Define error state interface
+interface FormErrors {
+	name: boolean;
+	tags: boolean;
+	eventDate: boolean;
+	totalTickets: boolean;
+	venue: boolean;
+	address: boolean;
+}
 
 export default function VenueEvent() {
 	const router = useRouter();
 
 	// const [tickets, setTickets] = useState<Ticket[]>([])
 	const [event, setEvent] = useState<VenueEventForm>(defaultVenueEvent)
+	
 	const [loading, setLoading] = useState(false)
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
+	const [errors, setErrors] = useState<FormErrors>({
+		name: false,
+		tags: false,
+		eventDate: false,
+		totalTickets: false,
+		venue: false,
+		address: false
+	});
 
-	const handleCreateEvent = () => {
-		// Required fields validation
-		const requiredFields = ['name', 'tags', 'eventDate', 'eventDuration', 'venue', 'address1', 'country', 'state', 'city', 'zipCode', 'totalTickets'];
-
-		const emptyFields = requiredFields.filter((key) => {
-			if (key === 'tags') {
-				return event.tags.length === 0;
-			}
-			return !event[key as keyof typeof event];
-		})
-
-		if (emptyFields.length > 0) {
-			alert(`Please fill the required fields ${emptyFields.join(', ')}`);
-			return;
+	const handleCreateEvent = async () => {
+		try {
+			if (!validateForm()) return;
+			
+			setLoading(true);
+			await createVenueEvent(event);
+			router.push(`/event/created`);
+		} catch (error) {
+			console.error('Error creating event:', error);
+			toast.error(error instanceof Error ? error.message : 'Failed to create event. Please try again.');
+		} finally {
+			setLoading(false);
 		}
-
-		// Create form data for image upload
-		setLoading(true);
-		createVenueEvent(event).then(({}) => {
-				setLoading(false);
-				router.push(`/event/created`);
-			}).catch((err: any) => {
-				console.error('Error creating event:', err);
-				alert('Failed to create event. Please try again.');
-			}).finally(() => {
-				setLoading(false);
-			});
-	}
+	};
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+		const field = e.target.name as keyof FormErrors;
+		if (field in errors) {
+			clearError(field);
+		}
+
+		if(e.target.name === "name") {
+			setErrors({ ...errors, name: false });
+		}
+		if(e.target.name === "tags") {
+			setErrors({ ...errors, tags: false });
+		}
+		if(e.target.name === "eventDate") {
+			setErrors({ ...errors, eventDate: false });
+		}
+		if(e.target.name === "totalTickets") {
+			setErrors({ ...errors, totalTickets: false });
+		}	
+
 		if (e.target.name === 'tags') {
 			// Handle multiple select
 			const options = e.target as HTMLSelectElement;
 			const values = Array.from(options.selectedOptions).map(option => option.value);
 			setEvent({ ...event, tags: values });
 		} else if (e.target.type === 'checkbox') {
+			if(e.target.name === "isFreeEvent" && (e.target as HTMLInputElement).checked) { 
+				setEvent({ ...event, price: 0 });
+			} 
+			if(e.target.name === "isBookingStartImmediately" && !(e.target as HTMLInputElement).checked) {
+				setEvent({ ...event, bookingStartDateTime: "" });
+			}
+			if(e.target.name === "isBookingEndImmediately" && !(e.target as HTMLInputElement).checked) {
+				setEvent({ ...event, bookingEndDateTime: "" });
+			}
+			if(e.target.name === "isSpecialInstructions" && (e.target as HTMLInputElement).checked) {
+				setEvent({ ...event, specialInstructions: "" });
+			}
+			
 			setEvent({ ...event, [e.target.name]: (e.target as HTMLInputElement).checked });
 		} else {
 			setEvent({ ...event, [e.target.name]: e.target.value });
@@ -201,8 +238,8 @@ export default function VenueEvent() {
 	// Helper function to update event address
 	const updateEventAddress = (place: any, position: any) => {
 		const addressComponents = place.address_components;
-		setEvent({
-			...event,
+		setEvent(prevEvent => ({
+			...prevEvent,  // Keep all existing values
 			venue: place.formatted_address,
 			address1: getAddressComponent(addressComponents, 'street_number') + ' ' + 
 					 getAddressComponent(addressComponents, 'route'),
@@ -213,7 +250,7 @@ export default function VenueEvent() {
 			zipCode: getAddressComponent(addressComponents, 'postal_code'),
 			latitude: position.lat,
 			longitude: position.lng
-		});
+		}));
 	};
 
 	// Helper function to get address components
@@ -271,6 +308,38 @@ export default function VenueEvent() {
 		}
 	}, [event.country]);
 
+	// Add error handling helpers
+	const clearError = (field: keyof FormErrors) => {
+		setErrors(prev => ({ ...prev, [field]: false }));
+	};
+
+	const validateForm = () => {
+		const newErrors = {
+			name: event.name.trim() === "",
+			tags: event.tags.length === 0,
+			eventDate: event.eventDate === "",
+			totalTickets: event.totalTickets === 0,
+			venue: event.venue.trim() === "",
+			address: event.address1.trim() === ""
+		};
+		
+		setErrors(newErrors);
+		
+		if (newErrors.name || newErrors.tags || newErrors.eventDate || newErrors.venue || newErrors.address) {
+			(globalThis as any).$('#tab_step1_link').click();
+			toast.error('Please fill the required fields');
+			return false;
+		}
+		
+		if (newErrors.totalTickets) {
+			(globalThis as any).$('#tab_step2_link').click();
+			toast.error('Please fill the required fields');
+			return false;
+		}
+		
+		return true;
+	};
+
 	return (
 		<>
        		{/* <GroupTicket ticket={ticket ?? {} as Ticket} onSave={handleSaveTicket} onCancel={handleCancelTicket} /> */}
@@ -305,19 +374,19 @@ export default function VenueEvent() {
 									<div id="add-event-tab" className="step-app">
 										<ul className="step-steps">
 											<li className="active">
-												<a href="#tab_step1">
+												<a href="#tab_step1" id="tab_step1_link">
 													<span className="number"></span>
 													<span className="step-name">Details</span>
 												</a>
 											</li>
 											<li>
-												<a href="#tab_step2">
+												<a href="#tab_step2" id="tab_step2_link">
 													<span className="number"></span>
 													<span className="step-name">Tickets</span>
 												</a>
 											</li>
 											<li>
-												<a href="#tab_step3">
+												<a href="#tab_step3" id="tab_step3_link">
 													<span className="number"></span>
 													<span className="step-name">Setting</span>
 												</a>
@@ -336,21 +405,45 @@ export default function VenueEvent() {
 																	<div className="form-group border_bottom pb_30">
 																		<label className="form-label fs-16">Give your event a name.*</label>
 																		<p className="mt-2 d-block fs-14 mb-3">See how your name appears on the event page and a list of all places where your event name will be used.</p>
-																		<input className="form-control h_50" type="text" placeholder="Enter event name here" value={event.name} onChange={handleChange} name="name" />
+																		<input 
+																			className={`form-control h_50 ${errors.name ? 'error-input' : ''}`}
+																			type="text"
+																			placeholder="Enter event name here"
+																			value={event.name}
+																			onChange={handleChange}
+																			name="name"
+																		/>
+																		{errors.name && (
+																			<div className="error-message">Event name is required</div>
+																		)}
 																	</div>
 																	<div className="form-group border_bottom pt_30 pb_30">
 																		<label className="form-label fs-16">Choose a category for your event.*</label>
 																		<p className="mt-2 d-block fs-14 mb-3">Choosing relevant categories helps to improve the discoverability of your event.</p>
-																		<select className="selectpicker" multiple={true} data-selected-text-format="count > 4" data-size="5" title="Select category" data-live-search="true" onChange={handleChange} name="tags">
+																		<select className={`selectpicker ${errors.tags ? 'error-input' : ''}`} multiple={true} data-selected-text-format="count > 4" data-size="5" title="Select category" data-live-search="true" onChange={handleChange} name="tags">
 																			{Object.keys(TAG_CONSTANTS).map((tag: string) => {
 																				return <option value={tag} key={tag}> {TAG_CONSTANTS[tag as keyof typeof TAG_CONSTANTS]}</option>
 																			})}
 																		</select>
+																		{errors.tags && (
+																			<div className="error-message">Please select at least one category</div>
+																		)}
 																	</div>
 																	<div className="form-group border_bottom pt_30 pb_30">
 																		<label className="form-label fs-16">When is your event?*</label>
 																		<p className="mt-2 fs-14 d-block mb-3">Tell your attendees when your event starts so they can get ready to attend.</p>
-																		<DateTimePickerWithDuration duration={event.eventDuration} dateTime={event.eventDate} onDateChange={(date) => setEvent({...event, eventDate: date})} onDurationChange={(duration) => setEvent({...event, eventDuration: parseInt(duration)})}/>
+																		<DateTimePickerWithDuration 
+																			duration={event.eventDuration} 
+																			dateTime={event.eventDate} 
+																			onDateChange={(date) => {
+																				clearError('eventDate');
+																				setEvent({...event, eventDate: date});
+																			}} 
+																			onDurationChange={(duration) => setEvent({...event, eventDuration: parseInt(duration)})}
+																		/>
+																		{errors.eventDate && (
+																			<div className="error-message">Please select a valid date and time</div>
+																		)}
 																	</div>
 																	<div className="form-group pt_30 pb_30">
 																		<label className="form-label fs-16">Add a few images to your event banner.</label>
@@ -389,36 +482,45 @@ export default function VenueEvent() {
 																						<div className="form-group mt-1">
 																							<label className="form-label fs-6">Venue*</label>
 																							<input 
-																								className="form-control h_50" 
+																								className={`form-control h_50 ${errors.venue ? 'error-input' : ''}`}
 																								type="text" 
-																								placeholder="Venue name"
+																								placeholder="Enter venue name"
 																								value={event.venue}
 																								onChange={(e) => setEvent({...event, venue: e.target.value})}
 																							/>
+																							{errors.venue && (
+																								<div className="error-message">Venue name is required</div>
+																							)}
 																						</div>
 																					</div>
 																					<div className="col-md-6">
 																						<div className="form-group mt-1">
 																							<label className="form-label fs-6">Address line 1*</label>
 																							<input 
-																								className="form-control h_50" 
-																								type="text" 
-																								placeholder="Address line 1"
-																								value={event.address1}
-																								onChange={(e) => setEvent({...event, address1: e.target.value})}
+																									className={`form-control h_50 ${errors.address ? 'error-input' : ''}`}
+																									type="text" 
+																									placeholder="Address line 1"
+																									value={event.address1}
+																									onChange={(e) => setEvent({...event, address1: e.target.value})}
 																							/>
+																							{errors.address && (
+																								<div className="error-message">Address line 1 is required</div>
+																							)}
 																						</div>
 																					</div>
 																					<div className="col-md-6">
 																						<div className="form-group mt-1">
 																							<label className="form-label fs-6">Address line 2*</label>
 																							<input 
-																								className="form-control h_50" 
-																								type="text" 
-																								placeholder="Address line 2"
-																								value={event.address2}
-																								onChange={(e) => setEvent({...event, address2: e.target.value})}
+																									className={`form-control h_50 ${errors.address ? 'error-input' : ''}`}
+																									type="text" 
+																									placeholder="Address line 2"
+																									value={event.address2}
+																									onChange={(e) => setEvent({...event, address2: e.target.value})}
 																							/>
+																							{errors.address && (
+																								<div className="error-message">Address line 2 is required</div>
+																							)}
 																						</div>
 																					</div>
 																					<div className="col-md-6">
@@ -616,7 +718,7 @@ export default function VenueEvent() {
 																				<label className="form-label mt-3 fs-6">Total number of tickets available*</label>
 																				<div className="input-number">
 																					<input 
-																						className="form-control h_50" 
+																						className={`form-control h_50 ${errors.totalTickets ? 'error-input' : ''}`}
 																						type="text" 
 																						placeholder="Enter number of tickets" 
 																						name="totalTickets"
@@ -627,6 +729,9 @@ export default function VenueEvent() {
 																							setEvent({ ...event, totalTickets: value });
 																						}}
 																					/>
+																					{errors.totalTickets && (
+																						<div className="error-message">Please enter number of tickets</div>
+																					)}
 																				</div>
 																			</div>
 																		</div>
@@ -786,11 +891,11 @@ export default function VenueEvent() {
 																					</div>																	
 																				</div>
 																			</div>
-																		</div>
+																		</div> */}
 																		<div className="setting-item border_bottom pb_30 pt_30">
 																			<div className="d-flex align-items-start">
 																				<label className="btn-switch m-0 me-3">
-																					<input type="checkbox" className="" id="ticket-instructions-btn" value="" defaultChecked={true} onChange={handleChange} name='isSpecialInstructions'></input>
+																					<input type="checkbox" className="" id="ticket-instructions-btn" value="" onChange={handleChange} name='isSpecialInstructions' checked={event.isSpecialInstructions}></input>
 																					<span className="checkbox-slider"></span>
 																				</label>
 																				<div className="d-flex flex-column">
@@ -798,12 +903,12 @@ export default function VenueEvent() {
 																					<p className="mt-2 fs-14 d-block mb-0">Use this space to provide any last minute checklists your attendees must know in order to attend your event. Anything you provide here will be printed on your ticket.</p>
 																				</div>
 																			</div>		
-																			<div className="ticket-instructions-holder" style={{display:'none'}}>
+																			<div className="ticket-instructions-holder" style={{display: event.isSpecialInstructions ? 'none' : 'block'}}>
 																				<div className="ticket-instructions-content mt-4">
 																					<textarea className="form-textarea" placeholder="About" onChange={handleChange} name='specialInstructions' value={event.specialInstructions}></textarea>
 																				</div>
 																			</div>
-																		</div> */}
+																		</div>
 																		{/* <div className="setting-item pb-0 pt_30">
 																			<div className="d-flex align-items-start">
 																				<label className="btn-switch m-0 me-3">

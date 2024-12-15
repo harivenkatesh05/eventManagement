@@ -94,3 +94,20 @@ type EventFullDetail = EventType & {
 		longitude: number;
 	}
 }
+
+type PurchaseType = {
+	id: string;
+	eventId: string;
+	purchaseDate: string;
+	event: {
+		name: string;
+		image: string;
+		locale: string;
+		isFreeEvent: boolean;
+		type: string;
+		date: string;
+	},
+	totalAmount: number;
+	tickets: number;
+	barcode: string;
+}

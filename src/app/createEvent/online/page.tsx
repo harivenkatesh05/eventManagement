@@ -14,20 +14,54 @@ import DateTimePicker from '@/components/form/DateTimePicker'
 import { createOnlineEvent } from '@/app/apis';
 import { defaultOnlineEvent } from '@/app/defaultValues'
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-hot-toast'
+
+// Define error state interface
+interface FormErrors {
+	name: boolean;
+	tags: boolean;
+	eventDate: boolean;
+	totalTickets: boolean;
+}
 
 export default function OnlineEvent() {
 	const router = useRouter();
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
+	const [errors, setErrors] = useState<FormErrors>({
+		name: false,
+		tags: false,
+		eventDate: false,
+		totalTickets: false
+	});
 
 	const [event, setEvent] = useState<OnlineEventForm>(defaultOnlineEvent)
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+		const field = e.target.name as keyof FormErrors;
+		if (field in errors) {
+			clearError(field);
+		}
+
 		if (e.target.name === 'tags') {
 			// Handle multiple select
 			const options = e.target as HTMLSelectElement;
 			const values = Array.from(options.selectedOptions).map(option => option.value);
 			setEvent({ ...event, tags: values });
 		} else if (e.target.type === 'checkbox') {
+
+			if(e.target.name === "isFreeEvent" && (e.target as HTMLInputElement).checked) { 
+				setEvent({ ...event, price: 0 });
+			} 
+			if(e.target.name === "isBookingStartImmediately" && !(e.target as HTMLInputElement).checked) {
+				setEvent({ ...event, bookingStartDateTime: event.eventDate });
+			}
+			if(e.target.name === "isBookingEndImmediately" && !(e.target as HTMLInputElement).checked) {
+				setEvent({ ...event, bookingEndDateTime: event.eventDate });
+			}
+			if(e.target.name === "isSpecialInstructions" && (e.target as HTMLInputElement).checked) {
+				setEvent({ ...event, specialInstructions: "" });
+			} 
+			
 			setEvent({ ...event, [e.target.name]: (e.target as HTMLInputElement).checked });
 		} else {
 			setEvent({ ...event, [e.target.name]: e.target.value });
@@ -59,30 +93,47 @@ export default function OnlineEvent() {
 		}
 	};
 
+	// Clear errors helper
+	const clearError = (field: keyof FormErrors) => {
+		setErrors(prev => ({ ...prev, [field]: false }));
+	};
+
+	// Validate form helper
+	const validateForm = () => {
+		const newErrors = {
+			name: event.name.trim() === "",
+			tags: event.tags.length === 0,
+			eventDate: event.eventDate === "",
+			totalTickets: event.totalTickets === 0
+		};
+		
+		setErrors(newErrors);
+		
+		if (newErrors.name || newErrors.tags || newErrors.eventDate) {
+			(globalThis as any).$('#tab_step1_link').click();
+			toast.error('Please fill the required fields');
+			return false;
+		}
+		
+		if (newErrors.totalTickets) {
+			(globalThis as any).$('#tab_step2_link').click();
+			toast.error('Please fill the required fields');
+			return false;
+		}
+		
+		return true;
+	};
+
 	const handleCreateEvent = async () => {
 		try {
-			// Required fields validation
-			const requiredFields = ['name', 'tags', 'eventDate', 'eventDuration', 'type', 'totalTickets'];
-
-			const emptyFields = requiredFields.filter((key) => {
-				if (key === 'tags') {
-					return event.tags.length === 0;
-				}
-				return !event[key as keyof typeof event];
-			});
-
-			if (emptyFields.length > 0) {
-				alert(`Please fill the required fields ${emptyFields.join(', ')}`);
-				return;
-			}
-
+			if (!validateForm()) return;
+			
 			setLoading(true);
 			await createOnlineEvent(event);
 			router.push(`/event/created`);
-
 		} catch (error) {
 			console.error('Error creating event:', error);
-			alert(error instanceof Error ? error.message : 'Failed to create event. Please try again.');
+			toast.error(error instanceof Error ? error.message : 'Failed to create event. Please try again.');
 		} finally {
 			setLoading(false);
 		}
@@ -162,19 +213,19 @@ export default function OnlineEvent() {
 								<div id="add-event-tab" className="step-app">
 									<ul className="step-steps">
 										<li className="active">
-											<Link href="#tab_step1">
+											<Link href="#tab_step1" id="tab_step1_link">
 												<span className="number"></span>
 												<span className="step-name">Details</span>
 											</Link>
 										</li>
 										<li>
-											<Link href="#tab_step2">
+											<Link href="#tab_step2" id="tab_step2_link">
 												<span className="number"></span>
 												<span className="step-name">Tickets</span>
 											</Link>
 										</li>
 										<li>
-											<Link href="#tab_step3">
+											<Link href="#tab_step3" id="tab_step3_link">
 												<span className="number"></span>
 												<span className="step-name">Setting</span>
 											</Link>
@@ -193,21 +244,55 @@ export default function OnlineEvent() {
 																<div className="form-group border_bottom pb_30">
 																	<label className="form-label fs-16">Give your event a name.*</label>
 																	<p className="mt-2 d-block fs-14 mb-3">See how your name appears on the event page and a list of all places where your event name will be used.</p>
-																	<input className="form-control h_50" type="text" placeholder="Enter event name here" value={event.name} onChange={handleChange} name="name" />
+																	<input 
+																		className={`form-control h_50 ${errors.name ? 'error-input' : ''}`} 
+																		type="text" 
+																		placeholder="Enter event name here" 
+																		value={event.name} 
+																		onChange={handleChange} 
+																		name="name"
+																	/>
+																	{errors.name && (
+																		<div className="error-message">Event name is required</div>
+																	)}
 																</div>
 																<div className="form-group border_bottom pt_30 pb_30">
 																	<label className="form-label fs-16">Choose a category for your event.*</label>
 																	<p className="mt-2 d-block fs-14 mb-3">Choosing relevant categories helps to improve the discoverability of your event.</p>
-																	<select className="selectpicker" multiple={true} data-selected-text-format="count > 4" data-size="5" title="Select category" data-live-search="true" value={event.tags} onChange={handleChange} name="tags">
+																	<select 
+																		className={`selectpicker ${errors.tags ? 'error-input' : ''}`} 
+																		multiple={true} 
+																		data-selected-text-format="count > 4" 
+																		data-size="5" 
+																		title="Select category" 
+																		data-live-search="true" 
+																		value={event.tags} 
+																		onChange={handleChange} 
+																		name="tags"
+																	>
 																		{Object.keys(TAG_CONSTANTS).map((tag: string) => {
 																			return <option value={tag} key={tag}> {TAG_CONSTANTS[tag as keyof typeof TAG_CONSTANTS]}</option>
 																		})}
 																	</select>
+																	{errors.tags && (
+																		<div className="error-message">Please select at least one category</div>
+																		)}
 																</div>
 																<div className="form-group border_bottom pt_30 pb_30">
 																	<label className="form-label fs-16">When is your event?*</label>
 																	<p className="mt-2 fs-14 d-block mb-3">Tell your attendees when your event starts so they can get ready to attend.</p>
-																	<DateTimePickerWithDuration duration={event.eventDuration} dateTime={event.eventDate} onDateChange={(date) => setEvent({...event, eventDate: date})} onDurationChange={(duration) => setEvent({...event, eventDuration: parseInt(duration)})}/>
+																	<DateTimePickerWithDuration 
+																		duration={event.eventDuration} 
+																		dateTime={event.eventDate} 
+																		onDateChange={(date) => {
+																			clearError('eventDate');
+																			setEvent({...event, eventDate: date});
+																		}} 
+																		onDurationChange={(duration) => setEvent({...event, eventDuration: parseInt(duration)})}
+																	/>
+																	{errors.eventDate && (
+																		<div className="error-message">Please select event date and time</div>
+																	)}
 																</div>
 																<div className="form-group pt_30 pb_30">
 																	<label className="form-label fs-16">Add a few images to your event banner.</label>
@@ -329,17 +414,20 @@ export default function OnlineEvent() {
 																			<label className="form-label mt-3 fs-6">Total number of tickets available*</label>
 																			<div className="input-number">
 																				<input 
-																					className="form-control h_50" 
+																					className={`form-control h_50 ${errors.totalTickets ? 'error-input' : ''}`}
 																					type="text" 
 																					placeholder="Enter number of tickets" 
 																					name="totalTickets"
 																					value={event.totalTickets ? event.totalTickets.toLocaleString('en-IN') : ''}
 																					onChange={(e) => {
-																						// Remove non-numeric characters and parse
+																						clearError('totalTickets');
 																						const value = parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0;
 																						setEvent({ ...event, totalTickets: value });
 																					}}
 																				/>
+																				{errors.totalTickets && (
+																					<div className="error-message">Please enter number of tickets</div>
+																				)}
 																			</div>
 																		</div>
 																	</div>
@@ -500,10 +588,10 @@ export default function OnlineEvent() {
 																			</div>
 																		</div>
 																	</div> */}
-																	{/* <div className="setting-item border_bottom pb_30 pt_30">
+																	<div className="setting-item border_bottom pb_30 pt_30">
 																		<div className="d-flex align-items-start">
 																			<label className="btn-switch m-0 me-3">
-																				<input type="checkbox" className="" id="ticket-instructions-btn" value="" onChange={handleChange} name='isSpecialInstructions' defaultChecked={true}/>
+																				<input type="checkbox" className="" id="ticket-instructions-btn" value="" onChange={handleChange} name='isSpecialInstructions' checked={event.isSpecialInstructions}/>
 																				<span className="checkbox-slider"></span>
 																			</label>
 																			<div className="d-flex flex-column">
@@ -511,12 +599,12 @@ export default function OnlineEvent() {
 																				<p className="mt-2 fs-14 d-block mb-0">Use this space to provide any last minute checklists your attendees must know in order to attend your event. Anything you provide here will be printed on your ticket.</p>
 																			</div>		
 																		</div>
-																		<div className="ticket-instructions-holder" style={{display:"none"}}>
+																		<div className="ticket-instructions-holder" style={{display: event.isSpecialInstructions ? 'none' : 'block'}}>
 																			<div className="ticket-instructions-content mt-4">
 																				<textarea className="form-textarea" placeholder="About" onChange={handleChange} name='specialInstructions'></textarea>
 																			</div>
 																		</div>
-																	</div> */}
+																	</div>
 																	{/* <div className="setting-item pb-0 pt_30">
 																		<div className="d-flex align-items-start">
 																			<label className="btn-switch m-0 me-3">

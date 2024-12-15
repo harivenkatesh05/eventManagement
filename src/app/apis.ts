@@ -98,3 +98,19 @@ export const getUserDetails = async () => {
 	if (!response.ok) throw new Error('Failed to fetch user details');
 	return response.json();
 };
+
+export const bookEvent = async (eventId: string, tickets: number) => {
+	const response = await fetch(`/api/events/${eventId}/book`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json'},
+		body: JSON.stringify({ tickets }),
+	});
+	if (!response.ok) throw new Error('Failed to book event');
+	return response.json();
+}
+
+export const fetchPurchase = async (id: string) => {
+	const response = await fetch(`/api/purchase/${id}`);
+	if (!response.ok) throw new Error('Failed to fetch purchase');
+	return response.json();
+}

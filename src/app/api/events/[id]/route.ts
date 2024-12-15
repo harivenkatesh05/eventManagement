@@ -60,6 +60,7 @@ export async function GET(
         isFreeEvent: event.isFreeEvent,
         startDate: event.bookingStartDateTime,
         endDate: event.bookingEndDateTime,
+        specialInstructions: event.specialInstructions,
       }
     }, { status: 200 });
 

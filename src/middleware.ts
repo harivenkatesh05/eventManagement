@@ -11,7 +11,8 @@ export function middleware(request: NextRequest) {
 	const protectedPaths = [
 		'/createEvent',
 		'/createEvent/online',
-		'/createEvent/venue'
+		'/createEvent/venue',
+		'/invoice'
 	]
 
 	const isProtectedPath = protectedPaths.some(path => 

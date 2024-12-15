@@ -26,7 +26,7 @@ export const defaultEvent: EventForm = {
 	refundAmount: 0,
 	refundPrecentage: 0,
 
-	isSpecialInstructions: false,
+	isSpecialInstructions: true,
 	specialInstructions: "",
 }
 
