@@ -9,8 +9,7 @@ function Card({ title, dateTime, duration, price, image, remaining, id }: { titl
 	const time = dateTime.toLocaleDateString('en-US', { weekday: 'short' }) + ', ' + dateTime.toLocaleString('default', { hour: '2-digit', minute: '2-digit', hour12: true });
 	// const src = `/images/event-imgs/${image}`
 
-	const [imageSrc, setImageSrc] = useState(`/images/event-imgs/${image}`);
-
+	const [imageSrc, setImageSrc] = useState(image ?? '/images/event-imgs/big-1.jpg');
 	const handleError = () => {
 		setImageSrc(`/images/event-imgs/big-1.jpg`);
 	}

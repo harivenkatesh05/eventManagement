@@ -16,7 +16,7 @@ const getBookingStatus = (startDate: string, endDate: string, eventDate: string,
 	const end = new Date(endDate);
 	const event = new Date(eventDate);
 	if (now < start) {
-		return { status: 'upcoming', text: 'Opens Soon' };
+		return { status: 'upcoming', text: 'Tickets will be available from ' + formatDateToIST(start) };
 	} else if (now > end || now > event) {
 		return { status: 'ended', text: 'Event Ended' };
 	} else if (remaining <= 0) {
@@ -69,7 +69,7 @@ export default function EventDetail() {
 					nav: true,
 					autoplay: true,
 				});
-			}, 20)
+			}, 200)
 		})
 	}, [pathname])
 	
@@ -158,9 +158,11 @@ END:VCALENDAR`;
 		return <EventDetailSkeleton />
 	}
 
-	const src = `/images/event-imgs/${event.image}`
+	const src = event.image ?? '/images/event-imgs/big-1.jpg'
 	const dateTime = getDateObj(event.eventDate)
-	
+	const mins = event.eventDuration % 60;
+	const inHour = mins > 0 ? `${Math.floor(event.eventDuration / 60)}h ${mins}m` : `${Math.floor(event.eventDuration / 60)}h`
+
 	return (
 		<div className="wrapper">
 			<div className="breadcrumb-block">
@@ -194,7 +196,7 @@ END:VCALENDAR`;
 									<div className="event-top-info-status">
 										<span className="event-type-name"><i className="fa-solid fa-video"></i>{event.type === 'online' ? 'Online' : 'Venue'} Event</span>
 										<span className="event-type-name details-hr">Starts on <span className="ev-event-date">{formatDateToIST(dateTime)}</span></span>
-										<span className="event-type-name details-hr">{event.eventDuration}h</span>
+										<span className="event-type-name details-hr">{inHour}</span>
 									</div>
 								</div>
 							</div>

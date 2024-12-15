@@ -58,8 +58,8 @@ export async function GET(
         venue: venue,
         remaining: event.remaining,
         isFreeEvent: event.isFreeEvent,
-        startDate: event.startDate,
-        endDate: event.endDate,
+        startDate: event.bookingStartDateTime,
+        endDate: event.bookingEndDateTime,
       }
     }, { status: 200 });
 

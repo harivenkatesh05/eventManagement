@@ -42,7 +42,8 @@ export default function Home() {
 
 		return events.map((event) => {
 			const price = event.isFreeEvent ? "Free" : `${event.locale} ${event.price.toLocaleString('en-IN')}`;
-			const inHour = `${Math.floor(event.eventDuration / 60)}h ${event.eventDuration % 60}m`;
+			const mins = event.eventDuration % 60;
+			const inHour = mins > 0 ? `${Math.floor(event.eventDuration / 60)}h ${mins}m` : `${Math.floor(event.eventDuration / 60)}h`
 			return (
 				<div key={event.id} className={"col-xl-3 col-lg-4 col-md-6 col-sm-12 mix " + event.tags.join(" ")} data-ref="mixitup-target">
 					<Card 

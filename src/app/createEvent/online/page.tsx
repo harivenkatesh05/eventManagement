@@ -8,9 +8,7 @@ import "../../../../public/css/jquery-steps.css"
 import "../../../../public/css/night-mode.css"
 
 import { TAG_CONSTANTS } from '@/dataset/constants'
-import TimePicker from '@/components/form/TimePicker'
 import DateTimePickerWithDuration from '@/components/form/DateTimePickerWithDuration'
-import DatePicker from '@/components/form/DatePicker'
 import Link from 'next/link'
 import DateTimePicker from '@/components/form/DateTimePicker'
 import { createOnlineEvent } from '@/app/apis';
@@ -74,7 +72,7 @@ export default function OnlineEvent() {
 			});
 
 			if (emptyFields.length > 0) {
-				alert(`Please fill the required fields`);
+				alert(`Please fill the required fields ${emptyFields.join(', ')}`);
 				return;
 			}
 
@@ -302,7 +300,7 @@ export default function OnlineEvent() {
 																<p className="mt-2 fs-14 d-block mb-3 pe_right">Add the ticket price and the number of your attendees. For free events, keep the price at empty.</p>
 																<div className="content-holder">
 																	<div className="row g-3">
-																		<div className="col-md-6 disabled-action">
+																		{!event.isFreeEvent && <div className="col-md-6 disabled-action">
 																			<label className="form-label mt-3 fs-6">Price*</label>
 																			<div className="loc-group position-relative input-group">
 																				<input 
@@ -326,7 +324,7 @@ export default function OnlineEvent() {
 																					</select>
 																				</div>
 																			</div>
-																		</div>
+																		</div>}
 																		<div className="col-md-6">
 																			<label className="form-label mt-3 fs-6">Total number of tickets available*</label>
 																			<div className="input-number">
@@ -352,7 +350,7 @@ export default function OnlineEvent() {
 																	<div className="form-group">
 																		<div className="d-flex align-items-start">
 																			<label className="btn-switch m-0 me-3">
-																				<input type="checkbox" className="" id="free-event-ticketing" value="" onChange={handleChange} name='isFreeEvent'/>
+																				<input type="checkbox" className="" id="free-event-ticketing" value="" onChange={handleChange} name='isFreeEvent' defaultChecked={false}/>
 																				<span className="checkbox-slider"></span>
 																			</label>
 																			<div className="d-flex flex-column">
@@ -420,7 +418,7 @@ export default function OnlineEvent() {
 																	<div className="setting-item border_bottom pb_30 pt-4">
 																		<div className="d-flex align-items-start">
 																			<label className="btn-switch m-0 me-3">
-																				<input type="checkbox" className="" id="booking-start-time-btn"  value="" onChange={handleChange} name='isBookingStartImmediately' defaultChecked={true}/>
+																				<input type="checkbox" className="" id="booking-start-time-btn"  value="" onChange={handleChange} name='isBookingStartImmediately' checked={event.isBookingStartImmediately}/>
 																				<span className="checkbox-slider"></span>
 																			</label>
 																			<div className="d-flex flex-column">
@@ -428,18 +426,18 @@ export default function OnlineEvent() {
 																				<p className="mt-2 fs-14 d-block mb-0">Disable this option if you want to start your booking from a specific date and time.</p>
 																			</div>
 																		</div>
-																		<div className="booking-start-time-holder" style={{display:"none"}}>
+																		<div className="booking-start-time-holder" style={{display: event.isBookingStartImmediately ? 'none' : 'block'}}>
 																			<div className="form-group pt_30">
 																				<label className="form-label fs-16">Booking starts on</label>
 																				<p className="mt-2 fs-14 d-block mb-0">Specify the date and time when you want the booking to start.</p>
-																				<DateTimePicker datePickerTitle="Event Date.*" dateTime={event.bookingStartDateTime} onDateTimeChange={(date) => {debugger; setEvent({...event, bookingStartDateTime: date})}}/>
+																				<DateTimePicker datePickerTitle="Event Date.*" dateTime={event.bookingStartDateTime} onDateTimeChange={(date) => {setEvent({...event, bookingStartDateTime: date})}}/>
 																			</div>
 																		</div>
 																	</div>
 																	<div className="setting-item border_bottom pb_30 pt_30">
 																		<div className="d-flex align-items-start">
 																			<label className="btn-switch m-0 me-3">
-																				<input type="checkbox" className="" id="booking-end-time-btn" value="" onChange={handleChange} name='isBookingContinueTillEventEnd' defaultChecked={true}/>
+																				<input type="checkbox" className="" id="booking-end-time-btn" value="" onChange={handleChange} name='isBookingContinueTillEventEnd' checked={event.isBookingContinueTillEventEnd}/>
 																				<span className="checkbox-slider"></span>
 																			</label>
 																			<div className="d-flex flex-column">
@@ -447,7 +445,7 @@ export default function OnlineEvent() {
 																				<p className="mt-2 fs-14 d-block mb-0">Disable this option if you want to end your booking from a specific date and time.</p>
 																			</div>
 																		</div>
-																		<div className="booking-end-time-holder" style={{display:"none"}}>
+																		<div className="booking-end-time-holder" style={{display: event.isBookingContinueTillEventEnd ? 'none' : 'block'}}>
 																			<div className="form-group pt_30">
 																				<label className="form-label fs-16">Booking ends on</label>
 																				<p className="mt-2 fs-14 d-block mb-0">Specify the date and time when you want the booking to start.</p>

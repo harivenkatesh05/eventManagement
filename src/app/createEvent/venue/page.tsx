@@ -13,8 +13,7 @@ import { defaultVenueEvent } from '@/app/defaultValues'
 import Link from 'next/link'
 import { createVenueEvent } from '@/app/apis'
 import { useRouter } from 'next/navigation'
-import DatePicker from '@/components/form/DatePicker'
-import TimePicker from '@/components/form/TimePicker'
+import { loadGoogleMapsScript } from '@/util/googleMaps'
 
 export default function VenueEvent() {
 	const router = useRouter();
@@ -36,7 +35,7 @@ export default function VenueEvent() {
 		})
 
 		if (emptyFields.length > 0) {
-			alert(`Please fill the required fields`);
+			alert(`Please fill the required fields ${emptyFields.join(', ')}`);
 			return;
 		}
 
@@ -126,12 +125,28 @@ export default function VenueEvent() {
 
 		// Start with default position (India)
 		const defaultPosition = { lat: 20.5937, lng: 78.9629 };
+		let currentMarker: any = null;
 		
 		// Create map with default position
 		const map = new (window as any).google.maps.Map(mapElement, {
 			center: defaultPosition,
 			zoom: 5
 		});
+
+		// Function to add/update marker
+		const setMarker = (position: any) => {
+			// Remove existing marker if any
+			if (currentMarker) {
+				currentMarker.setMap(null);
+			}
+
+			// Add new marker
+			currentMarker = new (window as any).google.maps.Marker({
+				position: position,
+				map: map,
+				animation: (window as any).google.maps.Animation.DROP
+			});
+		};
 
 		// Get user's current position
 		navigator.geolocation.getCurrentPosition(
@@ -141,17 +156,10 @@ export default function VenueEvent() {
 					lng: position.coords.longitude
 				};
 
-				// Center map on user's position
+				// Center map and add marker
 				map.setCenter(currentPosition);
-				map.setZoom(15); // Zoom in closer
-
-				// Add marker for current position
-				new (window as any).google.maps.Marker({
-					position: currentPosition,
-					map: map,
-					title: 'Your Location',
-					animation: (window as any).google.maps.Animation.DROP
-				});
+				map.setZoom(15);
+				setMarker(currentPosition);
 
 				// Get address for current position
 				const geocoder = new (window as any).google.maps.Geocoder();
@@ -159,66 +167,52 @@ export default function VenueEvent() {
 					{ location: currentPosition },
 					(results: any, status: any) => {
 						if (status === 'OK' && results[0]) {
-							const place = results[0];
-							const addressComponents = place.address_components;
-							
-							setEvent({
-								...event,
-								venue: place.formatted_address,
-								address1: getAddressComponent(addressComponents, 'street_number') + ' ' + 
-										getAddressComponent(addressComponents, 'route'),
-								address2: getAddressComponent(addressComponents, 'sublocality'),
-								country: getAddressComponent(addressComponents, 'country'),
-								state: getAddressComponent(addressComponents, 'administrative_area_level_1'),
-								city: getAddressComponent(addressComponents, 'locality'),
-								zipCode: getAddressComponent(addressComponents, 'postal_code'),
-								latitude: currentPosition.lat,
-								longitude: currentPosition.lng
-							});
+							updateEventAddress(results[0], currentPosition);
 						}
 					}
 				);
 			},
 			(error) => {
 				console.error('Error getting location:', error);
-				// Keep default position if geolocation fails
-			},
-			{
-				enableHighAccuracy: true,
-				timeout: 5000,
-				maximumAge: 0
 			}
 		);
 
 		// Add click listener for selecting new location
 		map.addListener('click', (e: any) => {
+			const position = {
+				lat: e.latLng.lat(),
+				lng: e.latLng.lng()
+			};
+
+			setMarker(position);
+
 			const geocoder = new (window as any).google.maps.Geocoder();
 			geocoder.geocode(
-				{ location: e.latLng },
+				{ location: position },
 				(results: any, status: any) => {
-					if (status === 'OK') {
-						const place = results[0];
-						
-						// Extract address components
-						const addressComponents = place.address_components;
-						const formattedAddress = place.formatted_address;
-						
-						setEvent({
-							...event,
-							venue: formattedAddress,
-							address1: getAddressComponent(addressComponents, 'street_number') + ' ' + 
-									 getAddressComponent(addressComponents, 'route'),
-							address2: getAddressComponent(addressComponents, 'sublocality'),
-							country: getAddressComponent(addressComponents, 'country'),
-							state: getAddressComponent(addressComponents, 'administrative_area_level_1'),
-							city: getAddressComponent(addressComponents, 'locality'),
-							zipCode: getAddressComponent(addressComponents, 'postal_code'),
-							latitude: e.latLng.lat(),
-							longitude: e.latLng.lng()
-						});
+					if (status === 'OK' && results[0]) {
+						updateEventAddress(results[0], position);
 					}
 				}
 			);
+		});
+	};
+
+	// Helper function to update event address
+	const updateEventAddress = (place: any, position: any) => {
+		const addressComponents = place.address_components;
+		setEvent({
+			...event,
+			venue: place.formatted_address,
+			address1: getAddressComponent(addressComponents, 'street_number') + ' ' + 
+					 getAddressComponent(addressComponents, 'route'),
+			address2: getAddressComponent(addressComponents, 'sublocality'),
+			country: getAddressComponent(addressComponents, 'country'),
+			state: getAddressComponent(addressComponents, 'administrative_area_level_1'),
+			city: getAddressComponent(addressComponents, 'locality'),
+			zipCode: getAddressComponent(addressComponents, 'postal_code'),
+			latitude: position.lat,
+			longitude: position.lng
 		});
 	};
 
@@ -231,17 +225,7 @@ export default function VenueEvent() {
 	};
 
 	useEffect(() => {
-		// Check if script is already loaded
-		if ((window as any).google?.maps) {
-			return;
-		}
-
-		// Load script if not present
-		const script = document.createElement('script');
-		script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
-		script.async = true;
-		script.onload = initMap;
-		document.head.appendChild(script);
+		loadGoogleMapsScript(initMap);
 	}, []);
 
 	useEffect(() => {
@@ -299,7 +283,7 @@ export default function VenueEvent() {
 									<nav aria-label="breadcrumb">
 										<ol className="breadcrumb">
 											<li className="breadcrumb-item"><Link href="/">Home</Link></li>
-											<li className="breadcrumb-item"><Link href="/create">Create</Link></li>
+											<li className="breadcrumb-item"><Link href="/createEvent">Create</Link></li>
 											<li className="breadcrumb-item active" aria-current="page">Create Venue Event</li>
 										</ol>
 									</nav>
@@ -603,7 +587,7 @@ export default function VenueEvent() {
 																	<p className="mt-2 fs-14 d-block mb-3 pe_right">Add the ticket price and the number of your attendees. For free events, keep the price at empty.</p>
 																	<div className="content-holder">
 																		<div className="row g-3">
-																			<div className="col-md-6 disabled-action">
+																			{!event.isFreeEvent && <div className="col-md-6 disabled-action">
 																				<label className="form-label mt-3 fs-6">Price*</label>
 																				<div className="loc-group position-relative input-group">
 																					<input 
@@ -627,7 +611,7 @@ export default function VenueEvent() {
 																						</select>
 																					</div>
 																				</div>
-																			</div>
+																			</div>}
 																			<div className="col-md-6">
 																				<label className="form-label mt-3 fs-6">Total number of tickets available*</label>
 																				<div className="input-number">
@@ -721,7 +705,7 @@ export default function VenueEvent() {
 																		<div className="setting-item border_bottom pb_30 pt-4">
 																			<div className="d-flex align-items-start">
 																				<label className="btn-switch m-0 me-3">
-																					<input type="checkbox" className="" id="booking-start-time-btn" value="" defaultChecked={true} onChange={handleChange} name='isBookingStartImmediately'></input>
+																					<input type="checkbox" className="" id="booking-start-time-btn" value="" onChange={handleChange} name='isBookingStartImmediately' checked={event.isBookingStartImmediately}></input>
 																					<span className="checkbox-slider"></span>
 																				</label>
 																				<div className="d-flex flex-column">
@@ -729,7 +713,7 @@ export default function VenueEvent() {
 																					<p className="mt-2 fs-14 d-block mb-0">Disable this option if you want to start your booking from a specific date and time.</p>
 																				</div>
 																			</div>
-																			<div className="booking-start-time-holder" style={{display:'none'}}>
+																			<div className="booking-start-time-holder" style={{display: event.isBookingStartImmediately ? 'none' : 'block'}}>
 																				<div className="form-group pt_30">
 																					<label className="form-label fs-16">Booking starts on</label>
 																					<p className="mt-2 fs-14 d-block mb-0">Specify the date and time when you want the booking to start.</p>
@@ -740,7 +724,7 @@ export default function VenueEvent() {
 																		<div className="setting-item border_bottom pb_30 pt_30">
 																			<div className="d-flex align-items-start">
 																				<label className="btn-switch m-0 me-3">
-																					<input type="checkbox" className="" id="booking-end-time-btn" value="" defaultChecked={true} onChange={handleChange} name='isBookingEndImmediately'></input>
+																					<input type="checkbox" className="" id="booking-end-time-btn" value="" onChange={handleChange} name='isBookingEndImmediately' checked={event.isBookingContinueTillEventEnd}></input>
 																					<span className="checkbox-slider"></span>
 																				</label>
 																				<div className="d-flex flex-column">
@@ -748,7 +732,7 @@ export default function VenueEvent() {
 																					<p className="mt-2 fs-14 d-block mb-0">Disable this option if you want to end your booking from a specific date and time.</p>
 																				</div>
 																			</div>
-																			<div className="booking-end-time-holder" style={{display:'none'}}>
+																			<div className="booking-end-time-holder" style={{display: event.isBookingContinueTillEventEnd ? 'none' : 'block'}}>
 																				<div className="form-group pt_30">
 																					<label className="form-label fs-16">Booking ends on</label>
 																					<p className="mt-2 fs-14 d-block mb-0">Specify the date and time when you want the booking to start.</p>
