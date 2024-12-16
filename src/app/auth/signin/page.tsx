@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { GoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-hot-toast';
+import { useUser } from '@/context/UserContext';
 
 export default function SignIn() {
 	
@@ -13,11 +14,13 @@ export default function SignIn() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [formData, setFormData] = useState<SignInForm>({ email: "", password: "" });
 	const [googleLoading, setGoogleLoading] = useState(false);
+	const { setUser } = useUser();
 
 	const handleSignin = async (e: Event) => {
 		e.preventDefault();
 		const data = await signin(formData);
 		if(data.message === "Login successful"){
+			setUser(data.user);
 			handleSignInSuccess()
 		}
 	}
@@ -41,6 +44,7 @@ export default function SignIn() {
 
 			const data = await response.json();
 			if (response.ok) {
+				setUser(data.user);
 				handleSignInSuccess();
 			} else {
 				throw new Error(data.error || 'Google login failed');

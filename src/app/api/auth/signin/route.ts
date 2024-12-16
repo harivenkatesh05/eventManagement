@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 			expiresIn: process.env.JWT_EXPIRATION,
 		});
 
-		const response = NextResponse.json({ message: "Login successful", token }, { status: 200 });
+		const response = NextResponse.json({ message: "Login successful", token, user }, { status: 200 });
 		response.cookies.set(TOKEN_COOKIE_NAME, token, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
