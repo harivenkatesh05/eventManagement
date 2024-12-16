@@ -458,6 +458,37 @@ export default function FAQ() {
 										</div>								 */}
 									</div>
 								</div>
+								<div className="faq-accordion faq-attendees-accordion pt-0 p-2" id="FAQforAttendees">	
+									<div className="faq-accordion-title">
+										<h4>Optional FAQ</h4>
+									</div>
+									<div className="accordion" id="accordionFAQforAttendees">
+										<div className="accordion-item">
+											<h2 className="accordion-header" id="panelsAttendeesOpen-heading1">
+												<button className="accordion-btn pe-0 ps-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsAttendeesOpen-collapse1" aria-expanded="true" aria-controls="panelsAttendeesOpen-collapse1">
+													What is Bukit?
+												</button>
+											</h2>
+											<div id="panelsAttendeesOpen-collapse1" className="accordion-collapse collapse" aria-labelledby="panelsAttendeesOpen-heading1" data-bs-parent="#accordionFAQforAttendees">
+												<div className="accordion-body pt-0 pe-0 ps-0">
+													<p>Bukit is a user-friendly event ticketing and management platform designed to simplify the process for both event organizers and attendees. We offer a complete suite of features, including online ticketing, secure payments, mobile ticketing, data analytics, marketing tools, and more.</p>
+												</div>
+											</div>
+										</div>
+										<div className="accordion-item">
+											<h2 className="accordionpanelsAttendeesOpen-header" id="panelsAttendeesOpen-heading2">
+												<button className="accordion-btn pe-0 ps-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsAttendeesOpen-collapse2" aria-expanded="false" aria-controls="panelsAttendeesOpen-collapse2">
+													What kind of customer support does Bukit offer?
+												</button>
+											</h2>
+											<div id="panelsAttendeesOpen-collapse2" className="accordion-collapse collapse" aria-labelledby="panelsAttendeesOpen-heading2" data-bs-parent="#accordionFAQforAttendees">
+												<div className="accordion-body pt-0 pe-0 ps-0">
+													<p>Bukit provides dedicated customer support for both event organizers and attendees. Our team is available to answer your questions and assist you with any issues you may encounte.</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
