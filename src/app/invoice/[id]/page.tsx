@@ -126,10 +126,11 @@ export default function Invoice() {
 									<div className="col-md-6">
 										<div className="vhls140">
 											<ul>
-												<li><div className="vdt-list">Invoice to {user.firstName} {user.lastName}</div></li>
+												<li><div className="vdt-list">Invoice to {purchase.firstName} {purchase.lastName}</div></li>
 												<li><div className="vdt-list">{user.email}</div></li>
-												{/* <li><div className="vdt-list">Melbourne, Victoria</div></li>
-												<li><div className="vdt-list">3000, Australia</div></li> */}
+												<li><div className="vdt-list">{purchase.address}</div></li>
+												<li><div className="vdt-list">{purchase.city}, {purchase.state}</div></li>
+												<li><div className="vdt-list">{purchase.country}, {purchase.zip}</div></li>
 											</ul>
 										</div>
 									</div>

@@ -47,3 +47,15 @@ export const defaultVenueEvent: VenueEventForm = {
     latitude: 0,
     longitude: 0, 
 }
+
+export const defaultPurchaseForm: PurchaseForm = {
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    address: "",
+    country: "",
+    state: "",
+    city: "",
+    zipCode: 0,
+    tickets: 0,
+}

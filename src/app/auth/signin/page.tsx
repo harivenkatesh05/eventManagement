@@ -5,18 +5,20 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { GoogleLogin } from '@react-oauth/google';
+import { toast } from 'react-hot-toast';
 
 export default function SignIn() {
 	
 	const router = useRouter();
 	const [showPassword, setShowPassword] = useState(false);
 	const [formData, setFormData] = useState<SignInForm>({ email: "", password: "" });
+	const [googleLoading, setGoogleLoading] = useState(false);
 
 	const handleSignin = async (e: Event) => {
 		e.preventDefault();
 		const data = await signin(formData);
 		if(data.message === "Login successful"){
-			router.push("/");
+			handleSignInSuccess()
 		}
 	}
 
@@ -30,6 +32,7 @@ export default function SignIn() {
 
 	const handleGoogleSuccess = async (credentialResponse: { credential: string }) => {
 		try {
+			setGoogleLoading(true);
 			const response = await fetch('/api/auth/google', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -38,13 +41,26 @@ export default function SignIn() {
 
 			const data = await response.json();
 			if (response.ok) {
-				router.push('/');
+				handleSignInSuccess();
 			} else {
 				throw new Error(data.error || 'Google login failed');
 			}
 		} catch (error) {
 			console.error('Google login error:', error);
-			alert('Failed to login with Google');
+			toast.error('Failed to login with Google');
+		} finally {
+			setGoogleLoading(false);
+		}
+	};
+
+	const handleSignInSuccess = () => {
+		// Get the stored redirect path
+		const redirectPath = sessionStorage.getItem('redirectAfterLogin');
+		if (redirectPath) {
+			sessionStorage.removeItem('redirectAfterLogin');
+			router.push(redirectPath);
+		} else {
+			router.push('/'); // Default redirect
 		}
 	};
 
@@ -99,16 +115,24 @@ export default function SignIn() {
 										<span>or</span>
 									</div>
 									<div className="social-btns-list">
-										<GoogleLogin
-											onSuccess={(credentialResponse) => {
-												if (credentialResponse.credential) {
-													handleGoogleSuccess(credentialResponse as { credential: string });
-												}
-											}}
-											onError={() => {
-												console.log('Login Failed');
-											}}
-										/>
+										{googleLoading ? (
+											<button className="social-login-btn" disabled>
+												<i className="fa-solid fa-spinner fa-spin me-2"></i>
+												Signing in...
+											</button>
+										) : (
+											<GoogleLogin
+												onSuccess={(credentialResponse) => {
+													if (credentialResponse.credential) {
+														handleGoogleSuccess(credentialResponse as { credential: string });
+													}
+												}}
+												onError={() => {
+													console.log('Login Failed');
+													toast.error('Google login failed');
+												}}
+											/>
+										)}
 										{/* <button className="social-login-btn" onClick={() => handleThirdpartySignIn("facebook")}>
 											<svg className="me-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 27 27"><g transform="translate(0)"><circle cx="13.5" cy="13.5" r="13.5" transform="translate(0 0)" fill="#3b5998"></circle><path d="M851.461,383.684h-3.1c-1.841,0-3.889.735-3.889,3.266.009.882,0,1.727,0,2.678h-2.13v3.215h2.2V402.1h4.035v-9.316h2.663l.241-3.163H848.5s.007-1.407,0-1.816c0-1,1.1-.943,1.164-.943.522,0,1.538,0,1.8,0v-3.176Z" transform="translate(-833.401 -379.385)" fill="#fff"></path></g></svg>
 											Sign in with Facebook

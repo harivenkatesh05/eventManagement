@@ -33,7 +33,35 @@ const purchaseSchema = new mongoose.Schema({
 	barcode: {
 		type: String,
 		unique: true,
+	},
+	firstName: {
+		type: String,
+		required: true
+	},
+	lastName: {
+		type: String,
+		required: true
+	},
+	phoneNumber: {
+		type: String,
+		required: true
+	},
+	address: {
+		type: String,
+	},
+	country: {
+		type: String,
+	},
+	city: {
+		type: String,
+	},
+	state: {
+		type: String,
+	},
+	zip: {
+		type: Number
 	}
+
 });
 
 // Generate and upload barcode after saving

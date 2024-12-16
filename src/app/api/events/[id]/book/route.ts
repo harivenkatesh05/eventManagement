@@ -11,7 +11,7 @@ export async function POST(
 ) {
 	try {
 		const { id } = await params;
-		const { tickets } = await request.json();
+		const purchaseForm = await request.json();
 		await connectDatabase();
 
 		// Validate ID format
@@ -46,7 +46,7 @@ export async function POST(
 			);
 		}
 
-		if(event.remaining < tickets) {
+		if(event.remaining < purchaseForm.tickets) {
 			return NextResponse.json(
 				{ message: "Not enough tickets available" },
 				{ status: 400 }
@@ -56,17 +56,25 @@ export async function POST(
 		const purchase = new Purchase({
 			eventId: event._id,
 			userId,
-			tickets,
-			totalAmount: event.price * tickets,
+			tickets: purchaseForm.tickets,
+			totalAmount: event.price * purchaseForm.tickets,
 			status: 'confirmed',
 			purchaseDate: new Date(),
+			firstName: purchaseForm.firstName,
+			lastName: purchaseForm.lastName,
+			phoneNumber: purchaseForm.phoneNumber,
+			address: purchaseForm.address,
+			city: purchaseForm.city,
+			state: purchaseForm.state,
+			zip: purchaseForm.zip,
+			country: purchaseForm.country,
 			// barcode will be auto-generated
 		});
 
 		
 		await purchase.save();
 
-		event.remaining -= tickets;
+		event.remaining -= purchaseForm.tickets;
 		await event.save();
 
 		return NextResponse.json({ 

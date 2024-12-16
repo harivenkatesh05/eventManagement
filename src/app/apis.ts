@@ -99,11 +99,11 @@ export const getUserDetails = async () => {
 	return response.json();
 };
 
-export const bookEvent = async (eventId: string, tickets: number) => {
+export const bookEvent = async (eventId: string, purchaseForm: PurchaseForm) => {
 	const response = await fetch(`/api/events/${eventId}/book`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json'},
-		body: JSON.stringify({ tickets }),
+		body: JSON.stringify(purchaseForm),
 	});
 	if (!response.ok) throw new Error('Failed to book event');
 	return response.json();
