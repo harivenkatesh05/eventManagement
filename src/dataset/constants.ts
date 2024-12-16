@@ -1,5 +1,8 @@
 export const TAG_CONSTANTS = {
     "arts": "Arts",
+    "newyearparties": "New year parties",
+    "music": "Music",
+    "theatre": "Theatre",
     "concert": "Concert",
     "business": "Business",
     "workshops": "Workshops",
