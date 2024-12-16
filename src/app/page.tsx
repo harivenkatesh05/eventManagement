@@ -109,7 +109,7 @@ export default function Home() {
 										{renderContent()}
 									</div>
 									<div className="browse-btn">
-										<a href="explore_events.html" className="main-btn btn-hover ">Browse All</a>
+										<Link href="/explore" className="main-btn btn-hover ">Browse All</Link>
 									</div>
 								</div>
 							</div>
