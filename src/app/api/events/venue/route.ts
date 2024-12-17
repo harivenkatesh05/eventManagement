@@ -7,19 +7,14 @@ import VenueEvent from '@/models/VenueEvent';
 import mongoose from 'mongoose';
 
 export async function POST(req: NextRequest) {
-  console.log('1111');
-
   await connectDatabase();
 
   const event = await req.json();
 
   const session = await mongoose.startSession();
-  console.log('session111', session);
 
   try {
-    console.log('222');
-
-    const userId = getUserIdFromToken(req) || 'santhso';
+    const userId = getUserIdFromToken(req);
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
