@@ -10,6 +10,7 @@ import Countdown from '@/components/event/countdown'
 import { fetchEvent, fetchEvents } from '@/app/apis';
 import Card from '@/components/card/card';
 import Checkout from '@/components/checkout';
+import { useAuthRedirect } from '@/app/ClientRouteHandler';
 
 const getBookingStatus = (startDate: string, endDate: string, eventDate: string, remaining: number) => {
 	const now = new Date();
@@ -33,6 +34,7 @@ export default function EventDetail() {
 	const [event, setEvent] = useState<EventFullDetail | null>(null)
 	const [events, setEvents] = useState<EventType[]>([])
 	const [loading, setLoading] = useState(true)
+	const handleAuthRequired = useAuthRedirect();
 	
 	const handleShare = async (platform: string) => {
 		// if (navigator.share) {
@@ -125,10 +127,6 @@ END:VCALENDAR`;
 		setCount(count + 1 > event!.remaining ? event!.remaining : count + 1)
 	}
 
-	const handleConfirmBook = () => {
-		setCheckout(true)
-	}
-
 	useEffect(() => {
 		const id = pathname.split('/')[2];
 		
@@ -177,6 +175,14 @@ END:VCALENDAR`;
 	const dateTime = getDateObj(event.eventDate)
 	const mins = event.eventDuration % 60;
 	const inHour = mins > 0 ? `${Math.floor(event.eventDuration / 60)}h ${mins}m` : `${Math.floor(event.eventDuration / 60)}h`
+
+	const handleBookNow = () => {
+		if (!handleAuthRequired()) {
+			return;
+		}
+		// Existing booking logic...
+		setCheckout(true)
+	};
 
 	return (
 		<div className="wrapper">
@@ -305,7 +311,11 @@ END:VCALENDAR`;
 														<div className="quantity">
 															<div className="counter">
 																<span className="down" onClick={handleDecreaseCount}>-</span>
-																<input type="text" value={count} />
+																<input 
+																	type="text" 
+																	value={count} 
+																	readOnly
+																/>
 																<span className="up" onClick={handleIncreaseCount}>+</span>
 															</div>
 														</div>
@@ -317,7 +327,11 @@ END:VCALENDAR`;
 														<div className="quantity">
 															<div className="counter">
 																<span className="down" onClick={handleDecreaseCount}>-</span>
-																<input type="text" value={count} />
+																<input 
+																	type="text" 
+																	value={count} 
+																	readOnly
+																/>
 																<span className="up" onClick={handleIncreaseCount}>+</span>
 															</div>
 														</div>
@@ -351,7 +365,7 @@ END:VCALENDAR`;
 													{event.specialInstructions && <p>{event.specialInstructions}</p>}
 													<button 
 														className="main-btn btn-hover w-100" 
-														onClick={handleConfirmBook} 
+														onClick={handleBookNow} 
 														disabled={count === 0}
 														style={{ 
 															opacity: count === 0 ? '0.5' : '1',

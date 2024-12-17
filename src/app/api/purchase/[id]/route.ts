@@ -62,7 +62,17 @@ export async function GET(
       tickets: purchase.tickets,
       totalAmount: purchase.totalAmount,
       purchaseDate: purchase.purchaseDate,
-      barcode: purchase.barcode
+      barcode: purchase.barcode,
+      
+      firstName: purchase.firstName,
+      lastName: purchase.lastName,
+      email: purchase.email,
+      phone: purchase.phone,
+      address: purchase.address,
+      city: purchase.city,
+      state: purchase.state,
+      zip: purchase.zip,
+      country: purchase.country
     });
 
   } catch (error) {

@@ -98,6 +98,18 @@ type EventFullDetail = EventType & {
   };
 };
 
+type PurchaseForm = {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  address: string;
+  country: string;
+  state: string;
+  city: string;
+  zipCode: number;
+  tickets: number;
+};
+
 type PurchaseType = {
   id: string;
   eventId: string;
@@ -113,4 +125,13 @@ type PurchaseType = {
   totalAmount: number;
   tickets: number;
   barcode: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: number;
+  country: string;
 };

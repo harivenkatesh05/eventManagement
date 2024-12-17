@@ -101,21 +101,15 @@ export default function Home() {
 									</div>
 									<div className="controls">
 										<button type="button" className="control" data-filter="all">All</button>
-										<button type="button" className="control" data-filter=".arts">Arts</button>
-										<button type="button" className="control" data-filter=".business">Business</button>
-										<button type="button" className="control" data-filter=".concert">Concert</button>
-										<button type="button" className="control" data-filter=".workshops">Workshops</button>
-										<button type="button" className="control" data-filter=".coaching_consulting">Coaching and Consulting</button>
-										<button type="button" className="control" data-filter=".health_Wellness">Health and Wellbeing</button>
-										<button type="button" className="control" data-filter=".volunteer">Volunteer</button>
-										<button type="button" className="control" data-filter=".sports">Sports</button>
-										<button type="button" className="control" data-filter=".free">Free</button>
+										<button type="button" className="control" data-filter=".newyearparties">New year parties</button>
+										<button type="button" className="control" data-filter=".music">Music</button>
+										<button type="button" className="control" data-filter=".theatre ">Theatre </button>
 									</div>
 									<div className="row" data-ref="event-filter-content">
 										{renderContent()}
 									</div>
 									<div className="browse-btn">
-										<a href="explore_events.html" className="main-btn btn-hover ">Browse All</a>
+										<Link href="/explore" className="main-btn btn-hover ">Browse All</Link>
 									</div>
 								</div>
 							</div>

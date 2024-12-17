@@ -4,20 +4,70 @@ import { bookEvent } from '@/app/apis';
 import { useUser } from '@/context/UserContext';
 import { formatDateToIST, getDateObj } from '@/util/date';
 import { toast } from 'react-hot-toast';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import BookingConfirmed from './bookingConfirmed';
+import { defaultPurchaseForm } from '@/app/defaultValues';
+
+// Add error state interface
+interface FormErrors {
+	firstName: boolean;
+	lastName: boolean;
+	phoneNumber: boolean;
+}
+
 export default function Checkout({ event, tickets }: { event: EventFullDetail, tickets: number }) {
 	const { user } = useUser();
+
 	const [ticketID, setTicketID] = useState('');
 	const [loading, setLoading] = useState(false);
+	
+	const [purchaseForm, setPurchaseForm] = useState<PurchaseForm>({
+		...defaultPurchaseForm,
+		firstName: user?.firstName ?? '',
+		lastName: user?.lastName ?? '',
+		tickets: tickets,
+	});
+	
+	// Add error state
+	const [errors, setErrors] = useState<FormErrors>({
+		firstName: false,
+		lastName: false,
+		phoneNumber: false
+	});
+	
+	useEffect(() => {
+		setTimeout(() => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(globalThis as any).$('.selectpicker').selectpicker();
+		}, 10)
+	}, []);
 	
 	if(getDateObj(event.eventDate) < new Date()) {
 		return <div>Event has already happened</div>
 	}
 	
+	// Add validation function
+	const validateForm = () => {
+		const newErrors = {
+			firstName: !purchaseForm.firstName.trim(),
+			lastName: !purchaseForm.lastName.trim(),
+			phoneNumber: !purchaseForm.phoneNumber.trim()
+		};
+		
+		setErrors(newErrors);
+		
+		return !Object.values(newErrors).some(error => error);
+	};
+	
 	const handleConfirmBook = () => {
+		if (!validateForm()) {
+			toast.error('Please fill all required fields');
+			return;
+		}
+		
 		setLoading(true);
-		bookEvent(event.id, tickets)
+		
+		bookEvent(event.id, purchaseForm)
 			.then((res) => {
 				// if(event.type === 'online') {
 					setTicketID(res.purchaseId);
@@ -35,7 +85,7 @@ export default function Checkout({ event, tickets }: { event: EventFullDetail, t
 	return (
 		<div className="event-dt-block p-80">
 			<div className="container">
-				{ticketID ? <BookingConfirmed event={event} tickets={tickets} ticketID={ticketID} /> : (
+				{ticketID ? <BookingConfirmed event={event} tickets={purchaseForm.tickets} ticketID={ticketID} /> : (
 					<div className="row">
 						<div className="col-lg-12 col-md-12">
 							<div className="main-title checkout-title">
@@ -53,13 +103,37 @@ export default function Checkout({ event, tickets }: { event: EventFullDetail, t
 										<div className="col-lg-6 col-md-12">
 											<div className="form-group mt-4">
 												<label className="form-label">First Name*</label>
-												<input className="form-control h_50" type="text" placeholder="" value={user?.firstName} disabled/>																								
+												<input 
+													className={`form-control h_50 ${errors.firstName ? 'error-input' : ''}`}
+													type="text" 
+													placeholder="Enter first name" 
+													value={purchaseForm.firstName} 
+													onChange={(e) => {
+														setErrors(prev => ({ ...prev, firstName: false }));
+														setPurchaseForm({...purchaseForm, firstName: e.target.value});
+													}}
+												/>
+												{errors.firstName && (
+													<div className="error-message">First name is required</div>
+												)}
 											</div>
 										</div>
 										<div className="col-lg-6 col-md-12">
 											<div className="form-group mt-4">
 												<label className="form-label">Last Name*</label>
-												<input className="form-control h_50" type="text" placeholder="" value={user?.lastName} disabled/>																								
+												<input 
+													className={`form-control h_50 ${errors.lastName ? 'error-input' : ''}`}
+													type="text" 
+													placeholder="Enter last name" 
+													value={purchaseForm.lastName} 
+													onChange={(e) => {
+														setErrors(prev => ({ ...prev, lastName: false }));
+														setPurchaseForm({...purchaseForm, lastName: e.target.value});
+													}}
+												/>
+												{errors.lastName && (
+													<div className="error-message">Last name is required</div>
+												)}
 											</div>
 										</div>
 										<div className="col-lg-6 col-md-12">
@@ -68,16 +142,34 @@ export default function Checkout({ event, tickets }: { event: EventFullDetail, t
 												<input className="form-control h_50" type="text" placeholder="" value={user?.email} disabled />																								
 											</div>
 										</div>
-										{/* <div className="col-lg-6 col-md-12">
+										<div className="col-lg-6 col-md-12">
 											<div className="form-group mt-4">
-												<label className="form-label">Address*</label>
-												<input className="form-control h_50" type="text" placeholder=""/>																								
+												<label className="form-label">Phone Number*</label>
+												<input 
+													className={`form-control h_50 ${errors.phoneNumber ? 'error-input' : ''}`}
+													type="text" 
+													placeholder="Enter phone number" 
+													value={purchaseForm.phoneNumber} 
+													onChange={(e) => {
+														setErrors(prev => ({ ...prev, phoneNumber: false }));
+														setPurchaseForm({...purchaseForm, phoneNumber: e.target.value});
+													}}
+												/>
+												{errors.phoneNumber && (
+													<div className="error-message">Phone number is required</div>
+												)}
+											</div>
+										</div>
+										<div className="col-lg-6 col-md-12">
+											<div className="form-group mt-4">
+												<label className="form-label">Address</label>
+												<input className="form-control h_50" type="text" placeholder="" onChange={(e) => setPurchaseForm({...purchaseForm, address: e.target.value})}/>																								
 											</div>
 										</div>
 										<div className="col-lg-6 col-md-12">
 											<div className="form-group main-form mt-4">
-												<label className="form-label">Country*</label>
-												<select className="selectpicker" data-size="5" title="Nothing selected" data-live-search="true">
+												<label className="form-label">Country</label>
+												<select className="selectpicker" data-size="5" title="Nothing selected" data-live-search="true" onChange={(e) => setPurchaseForm({...purchaseForm, country: e.target.value})}>
 													<option value="Algeria">Algeria</option>
 													<option value="Argentina">Argentina</option>
 													<option value="Australia">Australia</option>
@@ -139,22 +231,22 @@ export default function Checkout({ event, tickets }: { event: EventFullDetail, t
 										</div>
 										<div className="col-lg-6 col-md-12">
 											<div className="form-group mt-4">
-												<label className="form-label">State*</label>
-												<input className="form-control h_50" type="text" placeholder="" value="" />																								
+												<label className="form-label">State</label>
+												<input className="form-control h_50" type="text" placeholder="" value={purchaseForm.state} onChange={(e) => setPurchaseForm({...purchaseForm, state: e.target.value})}/>																								
 											</div>
 										</div>
 										<div className="col-lg-6 col-md-12">
 											<div className="form-group mt-4">
-												<label className="form-label">City/Suburb*</label>
-												<input className="form-control h_50" type="text" placeholder="" value="" />																								
+												<label className="form-label">City/Suburb</label>
+												<input className="form-control h_50" type="text" placeholder="" value={purchaseForm.city} onChange={(e) => setPurchaseForm({...purchaseForm, city: e.target.value})}/>																								
 											</div>
 										</div>
 										<div className="col-lg-6 col-md-12">
 											<div className="form-group mt-4">
-												<label className="form-label">Zip/Post Code*</label>
-												<input className="form-control h_50" type="text" placeholder="" value="" />																								
+												<label className="form-label">Zip/Post Code</label>
+												<input className="form-control h_50" type="text" placeholder="" value={purchaseForm.zipCode ? purchaseForm.zipCode : ''} onChange={(e) => setPurchaseForm({...purchaseForm, zipCode: e.target.value ? Number(e.target.value) : 0})}/>																								
 											</div>
-										</div> */}
+										</div>
 									</div>
 								</div>
 							</div>
@@ -179,13 +271,13 @@ export default function Checkout({ event, tickets }: { event: EventFullDetail, t
 								<div className="order-total-block">
 									<div className="order-total-dt">
 										<div className="order-text">Total Ticket</div>
-										<div className="order-number">{tickets}</div>
+										<div className="order-number">{purchaseForm.tickets}</div>
 									</div>
 									<div className="divider-line"></div>
 									{!event.isFreeEvent && (
 										<div className="order-total-dt">
 											<div className="order-text">Total</div>
-											<div className="order-number">{`${event.locale} ${event.price * tickets}`}</div>
+											<div className="order-number">{`${event.locale} ${event.price * purchaseForm.tickets}`}</div>
 										</div>
 									)}
 									{/* <div className="order-total-dt">
