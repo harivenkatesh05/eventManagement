@@ -99,11 +99,6 @@ type PurchaseForm = {
 	firstName: string;
 	lastName: string;
 	phoneNumber: string;
-	address: string;
-	country: string;
-	state: string;
-	city: string;
-	zipCode: number;
 	tickets: number;
 }
 

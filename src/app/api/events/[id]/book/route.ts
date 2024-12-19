@@ -63,11 +63,6 @@ export async function POST(
 			firstName: purchaseForm.firstName,
 			lastName: purchaseForm.lastName,
 			phoneNumber: purchaseForm.phoneNumber,
-			address: purchaseForm.address,
-			city: purchaseForm.city,
-			state: purchaseForm.state,
-			zip: purchaseForm.zip,
-			country: purchaseForm.country,
 			// barcode will be auto-generated
 		});
 
