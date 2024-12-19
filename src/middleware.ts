@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { TOKEN_COOKIE_NAME } from './app/api/constants'
+import type { Request, Response } from 'express'
 import compression from 'compression'
 
 // Add compression middleware
@@ -34,9 +35,9 @@ export function middleware(request: NextRequest) {
 	}
 
 	return new Promise((resolve) => {
-		compressMiddleware(request as any, NextResponse as any, () => {
-			resolve(NextResponse.next())
-		})
+		compressMiddleware(request as unknown as Request, 
+						  NextResponse as unknown as Response, 
+						  () => resolve(NextResponse.next()))
 	})
 }
 

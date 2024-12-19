@@ -52,10 +52,5 @@ export const defaultPurchaseForm: PurchaseForm = {
     firstName: "",
     lastName: "",
     phoneNumber: "",
-    address: "",
-    country: "",
-    state: "",
-    city: "",
-    zipCode: 0,
     tickets: 0,
 }
