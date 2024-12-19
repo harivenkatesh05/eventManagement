@@ -33,12 +33,18 @@ export default function Header() {
 						</button>
 						<Link className="navbar-brand order-1 order-lg-0 ml-lg-0 ml-2 me-auto" href="/">
 							<div className="res-main-logo">
-								<img src="/images/logo-icon.svg" alt="" />
+								<img src='/images/icons/logo.png' width={66} height={66} alt="logo" />
+								<img src="/images/icons/light-logo-name.png" width={100} height={66} alt="logo" />
 							</div>
 							<div className="main-logo" id="logo">
-								<img src="/images/logo.svg" alt="" />
-								<img className="logo-inverse" src="/images/dark-logo.svg" alt="" />
+								<img src='/images/icons/logo.png' alt="logo" style={{width: '30%', height: 'auto', margin: '10px'}}/>
+								<img src="/images/icons/light-logo-name.png" alt="logo" style={{width: '70%'}}/>
 							</div>
+							<div className="main-logo" id="logo">
+								<img className="logo-inverse" src='/images/icons/logo.png' style={{width: '30%', height: 'auto', margin: '10px'}} alt="logo" />
+								<img className="logo-inverse" src="/images/icons/dark-logo-name.png" alt="logo" />
+							</div>
+
 						</Link>
 						<div className="offcanvas offcanvas-start" tabIndex={-1} id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
 							<div className="offcanvas-header">

@@ -14,7 +14,7 @@ Chart.defaults.global.defaultFontSize = '12';
 				datasets: [{
 					label: "Tickets",
 					backgroundColor: 'rgba(255,69,0,0.08)',
-					borderColor: '#6ac045',
+					borderColor: '#8B2EB9',
 					borderWidth: "3",
 					data: [1,3,2,5,2,4,5,3,4,5,3],
 					pointRadius: 5,

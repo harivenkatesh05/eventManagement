@@ -331,7 +331,7 @@ export default function OnlineEvent() {
 																						<label className="template sw-template" htmlFor="standard_webinar">
 																							<img src="/images/icons/standard-webinar.png" alt="" />
 																						</label>											
-																						<h6 className="hosting-title fs-14 mt-2 mb-0">Standard Webinar</h6>
+																						<h6 className="hosting-title fs-14 mt-2 mb-0 ">Standard Webinar</h6>
 																					</div>
 																				</div>
 																				<div className="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-6">

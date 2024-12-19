@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 	description: "Event Management System",
 	authors: [{ name: "Venkatesh" }],
 	icons: {
-		icon: 'images/fav.png'
+		icon: 'images/icons/logo.png'
 	}
 };
 

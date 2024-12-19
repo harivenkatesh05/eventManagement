@@ -30,7 +30,7 @@
 }
 
 .toggle_menu i:hover {
-    color: #6ac045;
+    color: #8B2EB9;
 }
 	
 .vertical_nav {
@@ -70,13 +70,13 @@
 }
 
 .menu--link:hover {
-	background: #e8f7f7;
-	color: #6ac045 !important;
+	background: #F3E8FF;
+	color: #8B2EB9 !important;
 }
 
 .menu--link.active {
-	background: #e8f7f7;
-	color: #6ac045;
+	background: #F3E8FF;
+	color: #8B2EB9;
 }
 
 .menu--item__has_sub_menu .menu--link:after {
@@ -90,7 +90,7 @@
 }
 
 .menu--subitens__opened {
-	background: #e8f7f7;
+	background: #F3E8FF;
 }
 
 .menu--subitens__opened .menu--link {
@@ -113,7 +113,7 @@
 }
 
 .menu--link:hover,.menu--link:hover .menu--label {
-	background: #e8f7f7;
+	background: #F3E8FF;
 }
 
 .menu--icon {
@@ -150,8 +150,8 @@
 }
 
 .sub_menu--link:hover {
-	color: #6ac045 !important;
-	background: #e8f7f7;
+	color: #8B2EB9 !important;
+	background: #F3E8FF;
 }
 
 .sub_menu--link.active {
@@ -223,7 +223,7 @@
     height: 60px;
     padding: 0;
     border: 0;
-    background: #6ac045;
+    background: #8B2EB9;
     color: #fff;
     font-size: 30px;
     margin: 0;

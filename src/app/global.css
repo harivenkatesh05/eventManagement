@@ -1,3 +1,11 @@
+:root {
+  /* Replace green colors with purple shades */
+  --primary-color: #8B2EB9;  /* Main purple */
+  --primary-hover: #553C9A;  /* Darker purple for hover */
+  --primary-light: #9F7AEA;  /* Light purple */
+  --primary-very-light: #E9D8FD;  /* Very light purple */
+}
+
 .skeleton-box {
     display: inline-block;
     position: relative;
@@ -175,4 +183,39 @@ button.link-item:disabled {
 
 .disabled-action .pp-select-label {
   color: #6c757d;
+}
+
+/* Update button hover states */
+.btn-hover:hover {
+  background-color: var(--primary-hover) !important;
+}
+
+/* Update active states */
+.active {
+  color: var(--primary-color) !important;
+}
+
+/* Update focus states */
+.form-control:focus {
+  border-color: var(--primary-color) !important;
+}
+
+/* Update link colors */
+a:hover {
+  color: var(--primary-color);
+}
+
+/* Update success states */
+.text-success {
+  color: var(--primary-color) !important;
+}
+
+/* Update border colors */
+.border-success {
+  border-color: var(--primary-color) !important;
+}
+
+/* Update background colors */
+.bg-success {
+  background-color: var(--primary-color) !important;
 }
