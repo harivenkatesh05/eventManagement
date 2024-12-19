@@ -238,7 +238,11 @@ export default function Header() {
 											</div>
 										</li>
 										<li className="profile-link">
-											{/* <a href="my_organisation_dashboard.html" className="link-item">My Organisation</a> */}
+											{user ? <button onClick={handleSignout} className="link-item">Sign Out</button> : <Link href="/auth/signin" className="link-item">Sign In</Link>}
+										</li>
+										
+										{/* <li className="profile-link">
+											<a href="my_organisation_dashboard.html" className="link-item">My Organisation</a>
 											{user ? (
 												<>
 													<Link href="/myprofile" className="link-item">My Profile</Link>
@@ -246,8 +250,8 @@ export default function Header() {
 												</>
 											) : (
 												<Link href="/auth/signin" className="link-item">Sign In</Link>
-											)}
-										</li>
+											)} 
+										</li> */}
 									</ul>
 								</li>
 								<li>
