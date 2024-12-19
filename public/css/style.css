@@ -759,11 +759,12 @@ body {
     line-height: 48px;
     font-weight: 600;
 	margin-bottom: 15px;
+    color: #fff;
 }
 
 .hero-banner-content p {
     font-size: 18px;
-    color: #000000;
+    color: #fff;
 	margin-bottom: 33px;
 	padding: 0 30px;
 	line-height: 32px;
