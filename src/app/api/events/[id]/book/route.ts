@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { getUserIdFromToken } from '@/app/api/utility';
 import Purchase from '@/models/Purchase';
+import { sendMail } from './sendMail';
 
 export async function POST(
   request: NextRequest,
