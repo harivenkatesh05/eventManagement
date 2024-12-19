@@ -128,9 +128,9 @@ export default function Invoice() {
 											<ul>
 												<li><div className="vdt-list">Invoice to {purchase.firstName} {purchase.lastName}</div></li>
 												<li><div className="vdt-list">{user.email}</div></li>
-												<li><div className="vdt-list">{purchase.address}</div></li>
+												{/* <li><div className="vdt-list">{purchase.address}</div></li>
 												<li><div className="vdt-list">{purchase.city}, {purchase.state}</div></li>
-												<li><div className="vdt-list">{purchase.country}, {purchase.zip}</div></li>
+												<li><div className="vdt-list">{purchase.country}, {purchase.zip}</div></li> */}
 											</ul>
 										</div>
 									</div>

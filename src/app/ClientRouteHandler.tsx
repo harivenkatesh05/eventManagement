@@ -9,10 +9,7 @@ import { useUser } from '@/context/UserContext';
 export const useAuthRedirect = () => {
   const router = useRouter();
   const pathname = usePathname();
-  console.log('pathname', pathname);
-
   const { user } = useUser();
-  console.log('UseUser', useUser());
 
   const handleAuthRequired = () => {
     if (!user) {
@@ -37,33 +34,24 @@ export default function ClientRouteHandler({
   const isInvoiceRoute = pathname.startsWith('/invoice');
 
   return (
-    <div className={isAuthRoute ? 'auth-layout' : 'main-layout'}>
-      {/* {isAuthRoute ? (
-        <>{children}</>
-      ) : (
-        <UserProvider>
-          {isInvoiceRoute ? (
-            <>{children}</>
-          ) : (
-            <>
-              <Header />
-              {children}
-              <Footer />
-            </>
-          )}
-        </UserProvider>
-      )} */}
-      <UserProvider>
-        {isAuthRoute || isInvoiceRoute ? (
+    <UserProvider>
+      <div className={isAuthRoute ? 'auth-layout' : 'main-layout'}>
+        {isAuthRoute ? (
           <>{children}</>
         ) : (
           <>
-            <Header />
-            {children}
-            <Footer />
+            {isInvoiceRoute ? (
+              <>{children}</>
+            ) : (
+              <>
+                <Header />
+                {children}
+                <Footer />
+              </>
+            )}
           </>
         )}
-      </UserProvider>
-    </div>
+      </div>
+    </UserProvider>
   );
 }

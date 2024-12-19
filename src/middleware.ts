@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { TOKEN_COOKIE_NAME } from './app/api/constants'
+import compression from 'compression'
+
+// Add compression middleware
+const compressMiddleware = compression()
 
 export function middleware(request: NextRequest) {
 	const isAuthenticated = request.cookies.get(TOKEN_COOKIE_NAME) // Or however you store auth
@@ -29,7 +33,11 @@ export function middleware(request: NextRequest) {
 		return NextResponse.redirect(new URL('/', request.url))
 	}
 
-	return NextResponse.next()
+	return new Promise((resolve) => {
+		compressMiddleware(request as any, NextResponse as any, () => {
+			resolve(NextResponse.next())
+		})
+	})
 }
 
 export const config = {

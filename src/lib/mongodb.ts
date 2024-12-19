@@ -3,32 +3,46 @@ import mongoose from 'mongoose';
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+  throw new Error('Please define the MONGODB_URI environment variable');
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let cached = (globalThis as any).mongoose;
+
+interface MongooseCache {
+	conn: typeof mongoose | null;
+	promise: Promise<typeof mongoose> | null;
+}
+
+let cached: MongooseCache = global.mongoose;
 
 if (!cached) {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-  cached = (globalThis as any).mongoose = { conn: null, promise: null };
+	cached = global.mongoose = { conn: null, promise: null };
 }
 
 export const connectDatabase = async () => {
 	if (cached.conn) {
 		return cached.conn;
 	}
-	
+
 	if (!cached.promise) {
 		const opts = {
 			bufferCommands: false,
+			maxPoolSize: 10,
+			minPoolSize: 5,
+			socketTimeoutMS: 45000,
+			serverSelectionTimeoutMS: 5000,
 		};
-	
+
 		cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
-		  	return mongoose.connection;
+			return mongoose;
 		});
 	}
-	
-	cached.conn = await cached.promise;
+
+	try {
+		cached.conn = await cached.promise;
+	} catch (e) {
+		cached.promise = null;
+		throw e;
+	}
+
 	return cached.conn;
 };
 

@@ -401,12 +401,13 @@ export default function OnlineEvent() {
 																					}}
 																				/>
 																				<div className="pp-select">
-																					<select className="selectpicker dropdown-no-bg" onChange={handleChange} name='locale' value={event.locale}>
+																					<span className="pp-select-label">INR</span>
+																					{/* <select className="selectpicker dropdown-no-bg" onChange={handleChange} name='locale' value={event.locale}>
 																						<option value="AUD">AUD</option>
 																						<option value="USD">USD</option>
 																						<option value="INR">INR</option>
 																						<option value="EUR">EUR</option>
-																					</select>
+																					</select> */}
 																				</div>
 																			</div>
 																		</div>}

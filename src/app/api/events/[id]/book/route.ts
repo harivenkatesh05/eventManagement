@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { getUserIdFromToken } from '@/app/api/utility';
 import Purchase from '@/models/Purchase';
-import { sendMail } from './sendMail';
 
 export async function POST(
   request: NextRequest,
@@ -13,8 +12,6 @@ export async function POST(
   try {
     const { id } = await params;
     const purchaseForm = await request.json();
-    console.log('purchaseForm', purchaseForm);
-
     await connectDatabase();
 
     // Validate ID format

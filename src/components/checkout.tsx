@@ -160,7 +160,7 @@ export default function Checkout({ event, tickets }: { event: EventFullDetail, t
 												)}
 											</div>
 										</div>
-										<div className="col-lg-6 col-md-12">
+										{/* <div className="col-lg-6 col-md-12">
 											<div className="form-group mt-4">
 												<label className="form-label">Address</label>
 												<input className="form-control h_50" type="text" placeholder="" onChange={(e) => setPurchaseForm({...purchaseForm, address: e.target.value})}/>																								
@@ -246,7 +246,7 @@ export default function Checkout({ event, tickets }: { event: EventFullDetail, t
 												<label className="form-label">Zip/Post Code</label>
 												<input className="form-control h_50" type="text" placeholder="" value={purchaseForm.zipCode ? purchaseForm.zipCode : ''} onChange={(e) => setPurchaseForm({...purchaseForm, zipCode: e.target.value ? Number(e.target.value) : 0})}/>																								
 											</div>
-										</div>
+										</div> */}
 									</div>
 								</div>
 							</div>
