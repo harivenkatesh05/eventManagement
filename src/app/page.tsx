@@ -68,7 +68,7 @@ export default function Home() {
 						<div className="col-xl-7 col-lg-9 col-md-10">
 							<div className="hero-banner-content">
 								<h2>The Easiest and Most Powerful Online Event Booking and Ticketing System</h2>
-								<p>Barren is an all-in-one event ticketing platform for event organisers, promoters, and managers. Easily create, promote and manage your events of any type and size.</p>
+								<p>Bukit is an all-in-one event ticketing platform for event organisers, promoters, and managers. Easily create, promote and manage your events of any type and size.</p>
 								<Link href="/createEvent" className="main-btn btn-hover">Create Event <i className="fa-solid fa-arrow-right ms-3"></i></Link>
 							</div>
 						</div>
@@ -117,12 +117,12 @@ export default function Home() {
 					</div>
 				</div>
 			</div>
-			<div className="host-engaging-event-block p-80">
+			{/* <div className="host-engaging-event-block p-80">
 				<div className="container">
 					<div className="row">
 						<div className="col-lg-10">
 							<div className="main-title">
-								<h3>Host Engaging Online and Venue Events with Barren</h3>
+								<h3>Host Engaging Online and Venue Events with Bukit</h3>
 								<p>Organise venue events and host online events with unlimited possibilities using our built-in virtual event platform. Build a unique event experience for you and your attendees.</p>
 							</div>
 						</div>
@@ -147,7 +147,7 @@ export default function Home() {
 													<img src="/images/icons/webinar.png" alt="" />
 												</div>
 												<h4>Webinar</h4>
-												<p>Webinars tend to be one-way events. Barren helps to make them more engaging.</p>
+												<p>Webinars tend to be one-way events. Bukit helps to make them more engaging.</p>
 											</div>
 										</div>
 									</div>
@@ -189,14 +189,14 @@ export default function Home() {
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> */}
 			{/* <div className="feature-block p-80">
 				<div className="container">
 					<div className="row">
 						<div className="col-lg-10">
 							<div className="main-title">
 								<h3>No Feature Overload, Get Exactly What You Need</h3>
-								<p>As well as being the most affordable online-based event registration tool and one of the best online event ticketing systems in Australia, Barren is super easy-to-use and built with a simplistic layout which is totally convenient for the organisers to operate.</p>
+								<p>As well as being the most affordable online-based event registration tool and one of the best online event ticketing systems in Australia, Bukit is super easy-to-use and built with a simplistic layout which is totally convenient for the organisers to operate.</p>
 							</div>
 						</div>
 						<div className="col-lg-12">
@@ -405,7 +405,7 @@ export default function Home() {
 									<div className="tab-pane fade" id="step-03" role="tabpanel">
 										<div className="row">
 											<div className="col-lg-12 col-md-12">
-												<div className="step-text">Use Barren to host any types of online events for free.</div>
+												<div className="step-text">Use Bukit to host any types of online events for free.</div>
 											</div>
 											<div className="col-lg-4 col-md-6">
 												<div className="step-item">

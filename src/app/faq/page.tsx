@@ -26,7 +26,7 @@ export default function FAQ() {
 						<div className="col-lg-12 col-md-12">
 							<div className="main-title checkout-title text-center">
 								<h3>Frequently asked questions</h3>
-								<p className="mb-0">Find answers to the common questions asked about Barren.</p>
+								<p className="mb-0">Find answers to the common questions asked about Bukit.</p>
 							</div>
 						</div>
 						<div className="col-lg-4 col-md-12">
@@ -224,7 +224,7 @@ export default function FAQ() {
 										<div className="accordion-item">
 											<h2 className="accordion-header" id="panelsOrgnaisersOpen-heading15">
 												<button className="accordion-btn pe-0 ps-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsOrgnaisersOpen-collapse15" aria-expanded="false" aria-controls="panelsOrgnaisersOpen-collapse15">
-													Does Barren charge for free events?
+													Does Bukit charge for free events?
 												</button>
 											</h2>
 											<div id="panelsOrgnaisersOpen-collapse15" className="accordion-collapse collapse" aria-labelledby="panelsOrgnaisersOpen-heading15" data-bs-parent="#accordionFAQforOrganisers">
@@ -272,7 +272,7 @@ export default function FAQ() {
 										<div className="accordion-item">
 											<h2 className="accordion-header" id="panelsOrgnaisersOpen-heading19">
 												<button className="accordion-btn pe-0 ps-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsOrgnaisersOpen-collapse19" aria-expanded="false" aria-controls="panelsOrgnaisersOpen-collapse19">
-													Can I arrange printed items such as tickets and programs through Barren? 
+													Can I arrange printed items such as tickets and programs through Bukit? 
 												</button>
 											</h2>
 											<div id="panelsOrgnaisersOpen-collapse19" className="accordion-collapse collapse" aria-labelledby="panelsOrgnaisersOpen-heading19" data-bs-parent="#accordionFAQforOrganisers">
@@ -284,7 +284,7 @@ export default function FAQ() {
 										<div className="accordion-item">
 											<h2 className="accordion-header" id="panelsOrgnaisersOpen-heading20">
 												<button className="accordion-btn pe-0 ps-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsOrgnaisersOpen-collapse20" aria-expanded="false" aria-controls="panelsOrgnaisersOpen-collapse20">
-													Do my customers need to make an account with Barren?
+													Do my customers need to make an account with Bukit?
 												</button>
 											</h2>
 											<div id="panelsOrgnaisersOpen-collapse20" className="accordion-collapse collapse" aria-labelledby="panelsOrgnaisersOpen-heading20" data-bs-parent="#accordionFAQforOrganisers">

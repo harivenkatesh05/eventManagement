@@ -74,7 +74,7 @@ export default function SignUp() {
 							<div className="col-xl-5 col-lg-6 col-md-7">
 								<div className="registration">
 									<form>
-										<h2 className="registration-title">Sign up to Barren</h2>
+										<h2 className="registration-title">Sign up to Bukit</h2>
 										<div className="row mt-3">
 											<div className="col-lg-6 col-md-12">
 												<div className="form-group mt-4">
@@ -111,7 +111,7 @@ export default function SignUp() {
 										</div>
 									</form>
 									<div className="agree-text">
-										By clicking &quot;Sign up&quot;, you agree to Barren <a href="#">Terms & Conditions</a> and have read the <a href="#">Privacy Policy</a>.
+										By clicking &quot;Sign up&quot;, you agree to Bukit <a href="#">Terms & Conditions</a> and have read the <a href="#">Privacy Policy</a>.
 									</div>								
 									<div className="divider">
 										<span>or</span>
@@ -143,7 +143,7 @@ export default function SignUp() {
 						</div>
 					</div>
 					<div className="copyright-footer">
-						© 2022, Barren. All rights reserved. Powered by Gambolthemes
+						© 2022, Bukit. All rights reserved. Powered by Gambolthemes
 					</div>
 				</div>			
 			</div>

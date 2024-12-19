@@ -26,7 +26,7 @@ export default function FAQ() {
 						<div className="col-lg-12 col-md-12">
 							<div className="main-title checkout-title text-center">
 								<h3>Frequently asked questions</h3>
-								<p className="mb-0">Find answers to the common questions asked about Barren.</p>
+								<p className="mb-0">Find answers to the common questions asked about Bukit.</p>
 							</div>
 						</div>
 						<div className="col-lg-4 col-md-12">
@@ -56,7 +56,7 @@ export default function FAQ() {
 										<div className="accordion-item">
 											<h2 className="accordion-header" id="panelsOrgnaisersOpen-heading1">
 												<button className="accordion-btn pe-0 ps-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsOrgnaisersOpen-collapse1" aria-expanded="true" aria-controls="panelsOrgnaisersOpen-collapse1">
-													What types of events can I set up through Barren?
+													What types of events can I set up through Bukit?
 												</button>
 											</h2>
 											<div id="panelsOrgnaisersOpen-collapse1" className="accordion-collapse collapse show" aria-labelledby="panelsOrgnaisersOpen-heading1" data-bs-parent="#accordionFAQforOrganisers">
@@ -68,7 +68,7 @@ export default function FAQ() {
 										<div className="accordion-item">
 											<h2 className="accordion-header" id="panelsOrgnaisersOpen-heading2">
 												<button className="accordion-btn pe-0 ps-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsOrgnaisersOpen-collapse2" aria-expanded="false" aria-controls="panelsOrgnaisersOpen-collapse2">
-													Does Barren offer event management or customer service for my event?
+													Does Bukit offer event management or customer service for my event?
 												</button>
 											</h2>
 											<div id="panelsOrgnaisersOpen-collapse2" className="accordion-collapse collapse" aria-labelledby="panelsOrgnaisersOpen-heading2" data-bs-parent="#accordionFAQforOrganisers">
@@ -104,7 +104,7 @@ export default function FAQ() {
 										<div className="accordion-item">
 											<h2 className="accordion-header" id="panelsOrgnaisersOpen-heading5">
 												<button className="accordion-btn pe-0 ps-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsOrgnaisersOpen-collapse5" aria-expanded="false" aria-controls="panelsOrgnaisersOpen-collapse5">
-													Which platform will Barren use to host my online event and will I have to pay any external charges for my online event?
+													Which platform will Bukit use to host my online event and will I have to pay any external charges for my online event?
 												</button>
 											</h2>
 											<div id="panelsOrgnaisersOpen-collapse5" className="accordion-collapse collapse" aria-labelledby="panelsOrgnaisersOpen-heading5" data-bs-parent="#accordionFAQforOrganisers">
@@ -224,7 +224,7 @@ export default function FAQ() {
 										<div className="accordion-item">
 											<h2 className="accordion-header" id="panelsOrgnaisersOpen-heading15">
 												<button className="accordion-btn pe-0 ps-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsOrgnaisersOpen-collapse15" aria-expanded="false" aria-controls="panelsOrgnaisersOpen-collapse15">
-													Does Barren charge for free events?
+													Does Bukit charge for free events?
 												</button>
 											</h2>
 											<div id="panelsOrgnaisersOpen-collapse15" className="accordion-collapse collapse" aria-labelledby="panelsOrgnaisersOpen-heading15" data-bs-parent="#accordionFAQforOrganisers">
@@ -272,7 +272,7 @@ export default function FAQ() {
 										<div className="accordion-item">
 											<h2 className="accordion-header" id="panelsOrgnaisersOpen-heading19">
 												<button className="accordion-btn pe-0 ps-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsOrgnaisersOpen-collapse19" aria-expanded="false" aria-controls="panelsOrgnaisersOpen-collapse19">
-													Can I arrange printed items such as tickets and programs through Barren? 
+													Can I arrange printed items such as tickets and programs through Bukit? 
 												</button>
 											</h2>
 											<div id="panelsOrgnaisersOpen-collapse19" className="accordion-collapse collapse" aria-labelledby="panelsOrgnaisersOpen-heading19" data-bs-parent="#accordionFAQforOrganisers">
@@ -284,7 +284,7 @@ export default function FAQ() {
 										<div className="accordion-item">
 											<h2 className="accordion-header" id="panelsOrgnaisersOpen-heading20">
 												<button className="accordion-btn pe-0 ps-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsOrgnaisersOpen-collapse20" aria-expanded="false" aria-controls="panelsOrgnaisersOpen-collapse20">
-													Do my customers need to make an account with Barren?
+													Do my customers need to make an account with Bukit?
 												</button>
 											</h2>
 											<div id="panelsOrgnaisersOpen-collapse20" className="accordion-collapse collapse" aria-labelledby="panelsOrgnaisersOpen-heading20" data-bs-parent="#accordionFAQforOrganisers">
@@ -327,7 +327,7 @@ export default function FAQ() {
 										<div className="accordion-item">
 											<h2 className="accordionpanelsAttendeesOpen-header" id="panelsAttendeesOpen-heading2">
 												<button className="accordion-btn pe-0 ps-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsAttendeesOpen-collapse2" aria-expanded="false" aria-controls="panelsAttendeesOpen-collapse2">
-													Do I need an account to buy tickets from Barren? 
+													Do I need an account to buy tickets from Bukit? 
 												</button>
 											</h2>
 											<div id="panelsAttendeesOpen-collapse2" className="accordion-collapse collapse" aria-labelledby="panelsAttendeesOpen-heading2" data-bs-parent="#accordionFAQforAttendees">

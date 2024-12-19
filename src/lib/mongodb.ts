@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose';
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -11,10 +12,10 @@ interface MongooseCache {
 	promise: Promise<typeof mongoose> | null;
 }
 
-let cached: MongooseCache = global.mongoose;
+let cached: MongooseCache = (globalThis as any).mongoose;
 
 if (!cached) {
-	cached = global.mongoose = { conn: null, promise: null };
+	cached = (globalThis as any).mongoose = { conn: null, promise: null };
 }
 
 export const connectDatabase = async () => {
