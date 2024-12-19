@@ -84,7 +84,7 @@ export default function Footer() {
 					<div className="row">
 						<div className="col-12">
 							<div className="footer-copyright-text">
-								<p className="mb-0">© 2022, <strong>Barren</strong>. All rights reserved. Powered by Gambolthemes</p>
+								<p className="mb-0">© 2022, <strong>Bukit</strong>. All rights reserved. Powered by Gambolthemes</p>
 							</div>
 						</div>
 					</div>

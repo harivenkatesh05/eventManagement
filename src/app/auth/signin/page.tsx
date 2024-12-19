@@ -91,14 +91,14 @@ export default function SignIn() {
 										</div>
 									</Link>
 									<div className="app-top-right-link">
-										New to Barren?<Link className="sidebar-register-link" href="/auth/signup">Sign up</Link>
+										New to Bukit?<Link className="sidebar-register-link" href="/auth/signup">Sign up</Link>
 									</div>
 								</div>
 							</div>
 							<div className="col-xl-5 col-lg-6 col-md-7">
 								<div className="registration">
 									<form>
-										<h2 className="registration-title">Sign in to Barren</h2>
+										<h2 className="registration-title">Sign in to Bukit</h2>
 										<div className="form-group mt-5">
 											<label className="form-label">Your Email*</label>
 											<input className="form-control h_50" type="email" placeholder="Enter your email" name="email" value={formData.email} onChange={handleChange} />																								
@@ -143,14 +143,14 @@ export default function SignIn() {
 										</button> */}
 									</div>
 									<div className="new-sign-link">
-										New to Barren?<Link className="signup-link" href="/auth/signup">Sign up</Link>
+										New to Bukit?<Link className="signup-link" href="/auth/signup">Sign up</Link>
 									</div>
 								</div>							
 							</div>
 						</div>
 					</div>
 					<div className="copyright-footer">
-						© 2022, Barren. All rights reserved. Powered by Gambolthemes
+						© 2022, Bukit. All rights reserved. Powered by Gambolthemes
 					</div>
 				</div>			
 			</div>

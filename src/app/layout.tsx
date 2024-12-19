@@ -18,7 +18,7 @@ import { roboto } from './fonts'
 import ClientRouteHandler from "./ClientRouteHandler";
 
 export const metadata: Metadata = {
-	title: "Barren - Simple Online Event Ticketing System",
+	title: "Bukit - Simple Online Event Ticketing System",
 	description: "Event Management System",
 	authors: [{ name: "Venkatesh" }],
 	icons: {

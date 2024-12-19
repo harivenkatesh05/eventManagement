@@ -261,7 +261,7 @@ export default function Invoice() {
 															crossOrigin="anonymous"
 														/>
 													</div>
-													<p>Powered by Barren</p>
+													<p>Powered by Bukit</p>
 												</div>
 											</div>
 										</div>
