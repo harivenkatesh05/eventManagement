@@ -87,7 +87,7 @@ export default function Header() {
 												<Link className="dropdown-item" href="/faq">FAQ</Link>
 											</li>
 											<li>
-												<Link className="dropdown-item" href="/contact">Contact Us</Link>
+												<Link className="dropdown-item" href="/aboutus">About Us</Link>
 											</li>
 										</ul>
 									</li>

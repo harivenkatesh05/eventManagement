@@ -11,17 +11,17 @@ export default function Footer() {
 								<h4>Company</h4>
 								<ul className="footer-link-list">
 									<li>
-										<a href="about_us.html" className="footer-link">About Us</a>
+										<a href="/aboutus" className="footer-link">About Us</a>
 									</li>
-									<li>
+									{/* <li>
 										<a href="help_center.html" className="footer-link">Help Center</a>
-									</li>
+									</li> */}
 									<li>
 										<a href="faq.html" className="footer-link">FAQ</a>
 									</li>
-									<li>
+									{/* <li>
 										<a href="contact_us.html" className="footer-link">Contact Us</a>
-									</li>
+									</li> */}
 								</ul>
 							</div>
 						</div>
@@ -30,9 +30,9 @@ export default function Footer() {
 								<h4>Useful Links</h4>
 								<ul className="footer-link-list">
 									<li>
-										<a href="create.html" className="footer-link">Create Event</a>
+										<a href="/createEvent" className="footer-link">Create Event</a>
 									</li>
-									<li>
+									{/* <li>
 										<a href="sell_tickets_online.html" className="footer-link">Sell Tickets Online</a>
 									</li>
 									<li>
@@ -40,7 +40,7 @@ export default function Footer() {
 									</li>
 									<li>
 										<a href="term_and_conditions.html" className="footer-link">Terms & Conditions</a>
-									</li>
+									</li> */}
 								</ul>
 							</div>
 						</div>	
