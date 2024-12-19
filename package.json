@@ -23,16 +23,19 @@
     "mongoose": "^8.8.4",
     "next": "15.0.4",
     "next-auth": "^4.24.11",
+    "nodemailer": "^6.9.16",
     "qrcode": "^1.5.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-hot-toast": "^2.4.1"
+    "react-hot-toast": "^2.4.1",
+    "save": "^2.9.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/jquery": "^3.5.32",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.17",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
