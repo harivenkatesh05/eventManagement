@@ -33,8 +33,7 @@ export default function Header() {
 						</button>
 						<Link className="navbar-brand order-1 order-lg-0 ml-lg-0 ml-2 me-auto" href="/">
 							<div className="res-main-logo">
-								<img src='/images/icons/logo.png' width={66} height={66} alt="logo" />
-								<img src="/images/icons/light-logo-name.png" width={100} height={66} alt="logo" />
+								<img src="/images/icons/light-logo-name.png" alt="logo"style={{height: '25px', marginLeft: '10px'}}/>
 							</div>
 							<div className="main-logo" id="logo">
 								<img src='/images/icons/logo.png' alt="logo" style={{width: '30%', height: 'auto', margin: '10px'}}/>
