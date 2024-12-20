@@ -48,7 +48,7 @@ export default function Header() {
 						<div className="offcanvas offcanvas-start" tabIndex={-1} id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
 							<div className="offcanvas-header">
 								<div className="offcanvas-logo" id="offcanvasNavbarLabel">
-									<img src="/images/logo-icon.svg" alt="" />
+									<img src="/images/icons/logo.png" alt="" />
 								</div>
 								<button type="button" className="close-btn" data-bs-dismiss="offcanvas" aria-label="Close">
 									<i className="fa-solid fa-xmark"></i>
