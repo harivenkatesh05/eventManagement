@@ -13,6 +13,8 @@ export async function POST(
   try {
     const { id } = await params;
     const purchaseForm = await request.json();
+    console.log('purchaseform', purchaseForm);
+
     await connectDatabase();
 
     // Validate ID format
@@ -71,6 +73,8 @@ export async function POST(
       firstName: purchaseForm.firstName,
       lastName: purchaseForm.lastName,
       purchaseId: purchase._id,
+      toEmail: purchaseForm.email,
+      tickets: purchaseForm.tickets,
     });
 
     return NextResponse.json({

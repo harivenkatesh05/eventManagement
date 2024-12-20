@@ -3,10 +3,14 @@ export const sendMail = async ({
   firstName,
   lastName,
   purchaseId,
+  toEmail,
+  tickets,
 }: {
   firstName: string;
   lastName: string;
   purchaseId: string;
+  toEmail: string;
+  tickets: number;
 }) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -18,7 +22,7 @@ export const sendMail = async ({
 
   const mailOptions = {
     from: process.env.NEXT_NODEMAILER_EMAIL,
-    to: 'santhosht2412@gmail.com',
+    to: toEmail || process.env.NEXT_NODEMAILER_EMAIL,
     subject: 'Sending Email using Node.js',
     html: `
     <!DOCTYPE html>
@@ -80,24 +84,22 @@ export const sendMail = async ({
   
           <!-- Content Section -->
           <div class="content">
-              <p>Hi ${firstName} ${lastName}1,</p>
+              <p>Hi ${firstName} ${lastName},</p>
               <p>Thank you for booking with us. We are happy to confirm your booking details as follows:</p>
   
               <div class="booking-details">
                   <p><strong>Booking ID:</strong> ${purchaseId}</p>
-                  <p><strong>Date:</strong> {{booking_date}}</p>
-                  <p><strong>Time:</strong> {{booking_time}}</p>
-                  <p><strong>Service:</strong> {{service_name}}</p>
-                  <p><strong>Location:</strong> {{location}}</p>
+                   <p><strong>Booked Tickets:</strong> ${tickets}</p>
+                  <p><strong>Date:</strong> ${new Date()}</p>
               </div>
   
               <p>If you have any questions, feel free to reply to this email or contact us at <a href="mailto:support@yourcompany.com">support@yourcompany.com</a>.</p>
-              <p>Thank you for choosing {{company_name}}.</p>
+              <p>Thank you for choosing Bukit.</p>
           </div>
   
          <!--  Footer Section -->
           <div class="footer">
-              <p>© {{current_year}} {{company_name}}. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} Bukit. All rights reserved.</p>
           </div>
       </div>
   </body>
