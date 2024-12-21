@@ -16,8 +16,8 @@ export default function SignIn() {
 	const [formData, setFormData] = useState<SignInForm>({ email: "", password: "" });
 	const [googleLoading, setGoogleLoading] = useState(false);
 	const { setUser } = useUser();
-	const [showPhoneVerification, setShowPhoneVerification] = useState(false);
-	const [googleEmail, setGoogleEmail] = useState('');
+	// const [showPhoneVerification, setShowPhoneVerification] = useState(false);
+	// const [googleEmail, setGoogleEmail] = useState('');
 
 	const handleSignin = async (e: Event) => {
 		e.preventDefault();
@@ -47,11 +47,11 @@ export default function SignIn() {
 
 			const data = await response.json();
 			if (response.ok) {
-				if (!data.user.phoneNumber) {
-					setGoogleEmail(data.user.email);
-					setShowPhoneVerification(true);
-					return;
-				}
+				// if (!data.user.phoneNumber) {
+				// 	setGoogleEmail(data.user.email);
+				// 	setShowPhoneVerification(true);
+				// 	return;
+				// }
 				setUser(data.user);
 				handleSignInSuccess();
 			} else {
