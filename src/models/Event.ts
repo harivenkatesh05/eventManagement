@@ -1,47 +1,7 @@
-import mongoose, { Schema, Document } from "mongoose";
+import { EventDocument } from "@/types/model";
+import mongoose, { Schema } from "mongoose";
 
-interface IEvent extends Document{
-	name: string
-	tags: string[]
-	eventDate: string
-	eventDuration: number,
-	description: string,
-	image: string
-	type: string
-	
-	price: number,
-	locale: string,
-	totalTickets: number,
-	isFreeEvent: boolean,
-	isDiscount: boolean,
-	discount: number,
-	discountType: string,
-	discountPrice: number,
-	discountEndDateTime: string,
-	
-	isBookingStartImmediately: boolean,
-	bookingStartDateTime: string,
-	isBookingContinueTillEventEnd: boolean,
-	bookingEndDateTime: string,
-
-	isRefundPolicies: boolean,
-	refundBefore: number,
-	refundPrecentage: number,
-
-	isSpecialInstructions: boolean,
-	specialInstructions: string,
-
-	linkedEvent: string,
-
-	createdBy: string,
-	createdAt: Date,
-	updatedAt: Date,
-	status: string,
-
-	remaining: number
-}
-
-const EventSchema: Schema<IEvent> = new Schema({
+const EventSchema: Schema<EventDocument> = new Schema({
 	name: { type: String, required: true },
 	tags: { type: [String], required: true },
 	eventDate: { type: String, required: true },
@@ -59,6 +19,9 @@ const EventSchema: Schema<IEvent> = new Schema({
 	discountType: { type: String },
 	discountPrice: { type: Number },
 	discountEndDateTime: { type: String },
+
+	tax: { type: Number, default: 0 },
+	productFee: { type: Number, default: 0 },
 
 	linkedEvent: { type: String },
 	
@@ -81,4 +44,4 @@ const EventSchema: Schema<IEvent> = new Schema({
 	remaining: { type: Number, default: 0 }
 });
 
-export default mongoose.models.Event || mongoose.model<IEvent>("Event", EventSchema);
+export default mongoose.models.Event || mongoose.model<EventDocument>("Event", EventSchema);
