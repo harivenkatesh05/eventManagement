@@ -7,7 +7,7 @@ import React, { useState } from 'react'
 import { GoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-hot-toast';
 import { useUser } from '@/context/UserContext';
-import GooglePhoneVerification from '@/components/auth/GooglePhoneVerification';
+// import GooglePhoneVerification from '@/components/auth/GooglePhoneVerification';
 
 export default function SignIn() {
 	
@@ -174,12 +174,12 @@ export default function SignIn() {
 					</div>
 				</div>			
 			</div>
-			<GooglePhoneVerification
+			{/* <GooglePhoneVerification
 				isOpen={showPhoneVerification}
 				onClose={() => setShowPhoneVerification(false)}
 				onSubmit={handlePhoneSubmit}
 				email={googleEmail}
-			/>
+			/> */}
 		</div>
 	)
 }
