@@ -94,6 +94,12 @@ export default function Header() {
 											<li>
 												<Link className="dropdown-item" href="/aboutus">About Us</Link>
 											</li>
+											<li>
+												<Link className="dropdown-item" href="/privacy">Privacy Policy</Link>
+											</li>
+											<li>
+												<Link className="dropdown-item" href="/terms">Terms & Conditions</Link>
+											</li>
 										</ul>
 									</li>
 									{/* <li className={"nav-item dropdown" + (isActive('index') ? 'active' : '')}>
