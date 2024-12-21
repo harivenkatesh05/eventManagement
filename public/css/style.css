@@ -2738,10 +2738,6 @@ body {
     height: 0;
 }
 
-.btn-switch input:checked+.checkbox-slider {
-    background: #22B0AF;
-}
-
 .btn-switch .checkbox-slider {
     position: absolute;
     cursor: pointer;
@@ -2945,7 +2941,7 @@ body {
 }
 
 .model-content {
-    padding: 0 30px 30px;
+    padding: 0 15px 30px;
 }
 
 .model-content .form-control {
@@ -6602,4 +6598,12 @@ input[type=number] {
 
 label.color-black.fw-bold.mb-1,h6.hosting-title.fs-14.mt-2.mb-0{
     color: #000 !important;
+}
+
+h5.fs-16.mb-1.mt-3, h3.fs-18.mb-0, .datepicker--nav-title, .datepicker--cell.datepicker--cell-day{
+    color: #000;
+}
+
+.btn-switch input:checked+.checkbox-slider{
+    background: #8B2EB9;
 }
