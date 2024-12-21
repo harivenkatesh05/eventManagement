@@ -548,8 +548,8 @@ body {
 
 .offcanvas-create-btn:hover {
     color: #fff !important;
-	background: #7ad254;
-	border: 2px solid #7ad254;
+	background: #553c9a;
+	border: 2px solid #553c9a;
 }
 
 .offcanvas-footer {
@@ -1626,7 +1626,7 @@ body {
 }
 
 .sidebar-register-link:hover {
-	color: #7ad254 !important;
+	color: #553c9a !important;
 }
 
 .signup-link {
@@ -1636,7 +1636,7 @@ body {
 }
 
 .signup-link:hover {
-	color: #7ad254 !important;
+	color: #553c9a !important;
 }
 
 .registration-title {
@@ -1678,7 +1678,7 @@ body {
 }
 
 .forgot-pass-link:hover {
-	color: #7ad254 !important;
+	color: #553c9a !important;
 }
 
 .divider {
@@ -1821,7 +1821,7 @@ body {
 }
 
 .agree-text a:hover {
-    color: #7ad254 !important;
+    color: #553c9a !important;
 	text-decoration: underline !important;
 }
 
@@ -2064,7 +2064,7 @@ body {
 }
 
 .event-dt-right-content a:hover {
-    color: #7ad254 !important;
+    color: #553c9a !important;
 }
 
 .booking-btn {
@@ -2467,7 +2467,7 @@ body {
 }
 
 .upload-cover .cover-img-btn [type="file"] + label:hover {
-	background: #7ad254;
+	background: #553c9a;
 	color: #fff;
 }
 
@@ -2524,7 +2524,7 @@ body {
 }
 
 .avatar-img-btn [type="file"] + label:hover {
-	background: #7ad254;
+	background: #553c9a;
 	color: #fff;
 }
 
@@ -2862,7 +2862,7 @@ body {
 }
 
 .card-dt-text a:hover {
-    color: #7ad254 !important;
+    color: #553c9a !important;
 }
 
 .edit-btn {
@@ -3092,7 +3092,7 @@ body {
 .saved-btn:hover {
 	color: #fff !important;
     border: 1px solid #8B2EB9 !important;
-    background: #7ad254 !important;
+    background: #553c9a !important;
 }
 
 .ff-tablist {
@@ -4496,7 +4496,7 @@ body {
 
 .datepicker--cell.-selected-, .datepicker--cell.-selected-.-current- {
     color: #fff;
-    background: #7ad254 !important;
+    background: #553c9a !important;
 }
 
 .datepicker--cell.-current- {
@@ -4610,7 +4610,7 @@ body {
 }
 
 .default-event-thumb-btn .thumb-change-btn [type="file"] + label:hover {
-	background: #7ad254;
+	background: #553c9a;
 	color: #fff;
 }
 
@@ -4687,7 +4687,7 @@ body {
 
 .steps_btn:hover {
 	color: #fff !important;
-	background: #7ad254 !important;
+	background: #553c9a !important;
 }
 
 .steps_btn:focus {
@@ -5289,7 +5289,7 @@ input[type=number] {
 }
 
 .cant-ans-box a:hover {
-    color: #7ad254 !important;
+    color: #553c9a !important;
 }
 
 .faq-accordion-title h4 {
@@ -5639,7 +5639,7 @@ input[type=number] {
 }
 
 .share-link:hover {
-    color: #7ad254 !important;
+    color: #553c9a !important;
 }
 
 /* --- Help Center Page --- */
@@ -5735,7 +5735,7 @@ input[type=number] {
 
 .upload-btn [type="file"] + label:hover {
 	color: #fff !important;
-	background: #7ad254;
+	background: #553c9a;
 }
 
 .upload-file-dt span{
@@ -5812,7 +5812,7 @@ input[type=number] {
 }
 
 .helpful-btn:hover {
-    color: #7ad254 !important;
+    color: #553c9a !important;
 }
 
 .helpful-btn span {
@@ -6212,7 +6212,7 @@ input[type=number] {
 }
 
 .terms-tabs .term-link:hover {
-    color: #7ad254 !important;
+    color: #553c9a !important;
 }
 
 .terms-tabs .term-link.active:hover {
