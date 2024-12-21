@@ -1,10 +1,10 @@
 import { connectDatabase } from '@/lib/mongodb';
-import Event from '@/models/Event';
 import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { getUserIdFromToken } from '@/app/api/utility';
 import Purchase from '@/models/Purchase';
 import { sendMail } from './sendMail';
+import { getFromRuntime } from '@/lib/runtimeDataStore';
 
 export async function POST(
   request: NextRequest,
@@ -23,7 +23,7 @@ export async function POST(
       );
     }
 
-    const event = await Event.findById(id);
+    const event = getFromRuntime('events', id);
 
     if (!event) {
       return NextResponse.json({ message: 'Event not found' }, { status: 404 });

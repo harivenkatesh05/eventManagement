@@ -4,6 +4,7 @@ import User from "@/models/User";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
 import { TOKEN_COOKIE_NAME } from "../../constants";
+import { getFromRuntimeByKey, storeInRuntime } from "@/lib/runtimeDataStore";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
 		await connectDatabase();
 
 		// Check if user exists
-		let user = await User.findOne({ email: payload.email });
+		let user = getFromRuntimeByKey('users', 'email', payload.email!);
 
 		if (!user) {
 			// Create new user if doesn't exist
@@ -36,11 +37,14 @@ export async function POST(req: NextRequest) {
 				googleId: payload.sub,
 				picture: payload.picture
 			});
+
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			storeInRuntime('users', (user!._id as any).toString(), user!);
 		}
 
 		// Generate JWT
 		const token = jwt.sign(
-			{ id: user._id, email: user.email },
+			{ id: user!._id, email: user!.email },
 			process.env.JWT_SECRET!,
 			{ expiresIn: process.env.JWT_EXPIRATION }
 		);

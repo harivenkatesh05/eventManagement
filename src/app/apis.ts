@@ -116,3 +116,15 @@ export const fetchPurchase = async (id: string) => {
   if (!response.ok) throw new Error('Failed to fetch purchase');
   return response.json();
 };
+
+export const clearRuntimeStore = async () => {
+  const response = await fetch('/api/runtime-store/clear', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!response.ok) throw new Error('Failed to clear runtime store');
+  return response.json();
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(globalThis as any).clearRuntimeStore = clearRuntimeStore;

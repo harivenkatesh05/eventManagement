@@ -4,6 +4,7 @@ import OnlineEvent from "@/models/OnlineEvent";
 import Event from "@/models/Event";
 import cloudinary from "@/lib/cloudinary";
 import { getUserIdFromToken } from "../../utility";
+import { storeInRuntime } from "@/lib/runtimeDataStore";
 
 export async function POST(req: NextRequest) {
 	try {
@@ -34,6 +35,8 @@ export async function POST(req: NextRequest) {
 		});
 
 		const savedEvent = await newOnlineEvent.save();
+		console.log("savedEvent", savedEvent);
+		
 		const newEvent = new Event({
 			name: event.name,
 			tags: event.tags,
@@ -75,8 +78,9 @@ export async function POST(req: NextRequest) {
 		});
 		
 		await newEvent.save();
-		console.log("savedEvent", savedEvent);
 		console.log("newEvent", newEvent);
+
+		storeInRuntime('events', newEvent._id.toString(), newEvent);
 
 		return NextResponse.json({ message: "Event created successfully", eventId: newEvent._id }, { status: 201 });
 	} catch (error) {
