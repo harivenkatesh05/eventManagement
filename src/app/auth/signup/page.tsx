@@ -11,7 +11,7 @@ interface FormErrors {
 	firstName: boolean;
 	lastName: boolean;
 	email: boolean;
-	phoneNumber: boolean;
+	// phoneNumber: boolean;
 	password: boolean;
 }
 
@@ -22,7 +22,7 @@ export default function SignUp() {
 		firstName: "", 
 		lastName: "", 
 		email: "", 
-		phoneNumber: "", 
+		// phoneNumber: "", 
 		password: "" 
 	});
 	const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +30,7 @@ export default function SignUp() {
 		firstName: false,
 		lastName: false,
 		email: false,
-		phoneNumber: false,
+		// phoneNumber: false,
 		password: false
 	});
 
@@ -39,7 +39,7 @@ export default function SignUp() {
 			firstName: !formData.firstName.trim(),
 			lastName: !formData.lastName.trim(),
 			email: !formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email),
-			phoneNumber: !formData.phoneNumber.trim() || !/^\d{10}$/.test(formData.phoneNumber),
+			// phoneNumber: !formData.phoneNumber.trim() || !/^\d{10}$/.test(formData.phoneNumber),
 			password: !formData.password.trim() || formData.password.length < 6
 		};
 
@@ -148,7 +148,7 @@ export default function SignUp() {
 													<input className="form-control h_50" type="email" placeholder="" name="email" value={formData.email} onChange={handleChange} />																								
 												</div>
 											</div>
-											<div className="col-lg-12 col-md-12">
+											{/* <div className="col-lg-12 col-md-12">
 												<div className="form-group mt-4">
 													<label className="form-label">Phone Number*</label>
 													<input 
@@ -163,7 +163,7 @@ export default function SignUp() {
 														<div className="error-message">Please enter a valid 10-digit phone number</div>
 													)}
 												</div>
-											</div>
+											</div> */}
 											<div className="col-lg-12 col-md-12">	
 												<div className="form-group mt-4">
 													<div className="field-password">
