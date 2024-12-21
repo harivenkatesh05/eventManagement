@@ -1,6 +1,6 @@
 'use client'
 
-import { signin, updatePhone } from '@/app/apis';
+import { signin } from '@/app/apis';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
@@ -76,13 +76,13 @@ export default function SignIn() {
 		}
 	};
 
-	const handlePhoneSubmit = async (phoneNumber: string) => {
-		const data = await updatePhone(googleEmail, phoneNumber);
-		if(data.message === "Phone number updated successfully"){
-			setUser(data.user);
-			handleSignInSuccess();
-		}
-	};
+	// const handlePhoneSubmit = async (phoneNumber: string) => {
+	// 	const data = await updatePhone(googleEmail, phoneNumber);
+	// 	if(data.message === "Phone number updated successfully"){
+	// 		setUser(data.user);
+	// 		handleSignInSuccess();
+	// 	}
+	// };
 
 	return (
 		<div className="form-wrapper">
