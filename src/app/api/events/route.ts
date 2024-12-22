@@ -9,10 +9,9 @@ export const revalidate = 60; // Revalidate every 60 seconds
 // A simple GET handler to simulate adding a product reminder
 export async function GET() {
 	try {
-		await connectDatabase();
-
 		let events = getAllFromRuntime('events').filter(event => event.status !== 'waitingForApproval');
 		if(events.length === 0) {
+			await connectDatabase();
 			events = await Event.find({ status: { $ne: 'waitingForApproval' } });
 			console.log("events from db - events");
 			events.forEach(event => {

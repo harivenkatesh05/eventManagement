@@ -12,7 +12,6 @@ export async function GET(
 ) {
 	try {
 		const { id } = await context.params;
-		await connectDatabase();
 
 		// Validate ID format
 		if (!ObjectId.isValid(id)) {
@@ -25,6 +24,8 @@ export async function GET(
 		let event = getFromRuntime('events', id);
 		
 		if (!event) {
+			await connectDatabase();
+			
 			event = await Event.findById(id) ?? undefined;
 			console.log("event from db - event id ", id);
 			if (!event) {
@@ -38,6 +39,8 @@ export async function GET(
 
 		let user = getFromRuntime('users', event.createdBy);
 		if (!user) {
+			await connectDatabase();
+
 			user = await User.findById(event.createdBy) ?? undefined;
 			console.log("user from db - id ", event.createdBy);
 			if (!user) {

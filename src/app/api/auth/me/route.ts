@@ -12,11 +12,9 @@ export async function GET(req: NextRequest) {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 		
-		await connectDatabase();
-		
 		let user = getFromRuntime('users', userId);
-		console.log("user from runtime");
 		if (!user) {
+			await connectDatabase();
 			user = await User.findById(userId).select('-password');
 			console.log("user from db - me");
 			if (!user) {

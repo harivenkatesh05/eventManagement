@@ -54,13 +54,13 @@ including without limitation damages for loss of profits or revenues, business i
                   <li>Not misuse or attempt to hack the platform</li>
                 </ul> */}
 
-                <h4>Shipping Policy</h4>
+                {/* <h4>Shipping Policy</h4>
                 <p>
                   <strong>Processing Time:</strong> All orders are delivered within 2-3 business days. Orders are not shipped or delivered on weekends or holidays. If we are experiencing a high volume of orders, shipments may be delayed by a few days. Please allow additional days in transit for delivery. If there will be a significant delay in the shipment of your order, we will contact you via email or phone. 
                 </p>
                 <p>
                   <strong>Domestic Shipping:</strong> Orders will be delivered within 3 to 4 weeks from the date of order confirmation. Please note that delivery times may be affected by factors beyond our control, such as weather conditions, customs delays, and other unforeseen circumstances.
-                </p>
+                </p> */}
 
                 <h4>Return & Refund Policy</h4>
                 <p>

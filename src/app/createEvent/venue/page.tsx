@@ -705,12 +705,13 @@ export default function VenueEvent() {
 																						}}
 																					/>
 																					<div className="pp-select">
-																						<select className="selectpicker dropdown-no-bg" onChange={handleChange} name='locale' defaultValue={"INR"}>
+																						<span className="pp-select-label">INR</span>
+																						{/* <select className="selectpicker dropdown-no-bg" onChange={handleChange} name='locale' defaultValue={"INR"}>
 																							<option value="AUD">AUD</option>
 																							<option value="USD">USD</option>
 																							<option value="INR">INR</option>
 																							<option value="EUR">EUR</option>
-																						</select>
+																						</select> */}
 																					</div>
 																				</div>
 																			</div>}
