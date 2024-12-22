@@ -4,11 +4,11 @@ import { getUserIdFromToken } from "../../utility";
 
 export async function POST(request: NextRequest) {
     try {
-        const userId = await getUserIdFromToken(request);
+        const userId = getUserIdFromToken(request);
         if(userId !== "67606b08bc7c529fa74a1528") {
             return NextResponse.json({ message: 'You are not authorized to clear the runtime store' });
         }
-        
+
         const { model } = await request.json();
 
         if (model) {
