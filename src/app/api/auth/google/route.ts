@@ -21,22 +21,25 @@ export async function POST(req: NextRequest) {
 		if (!payload) {
 			return NextResponse.json({ error: "Invalid token" }, { status: 400 });
 		}
-		console.log(payload);
 		await connectDatabase();
 
 		// Check if user exists
 		let user = getFromRuntimeByKey('users', 'email', payload.email!);
 
 		if (!user) {
-			// Create new user if doesn't exist
-			user = await User.create({
-				email: payload.email,
-				firstName: payload.given_name,
-				lastName: payload.family_name,
-				password: "", // No password for Google auth
-				googleId: payload.sub,
-				picture: payload.picture
-			});
+			user = await User.findOne({ email: payload.email }) ?? undefined;
+			if (!user) {
+				// Create new user if doesn't exist
+				user = await User.create({
+					email: payload.email,
+					firstName: payload.given_name,
+					lastName: payload.family_name,
+					password: "", // No password for Google auth
+					googleId: payload.sub,
+					picture: payload.picture,
+					phoneNumber: null
+				});
+			}
 
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			storeInRuntime('users', (user!._id as any).toString(), user!);
