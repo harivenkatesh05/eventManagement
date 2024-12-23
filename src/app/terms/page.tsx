@@ -62,12 +62,12 @@ including without limitation damages for loss of profits or revenues, business i
                   <strong>Domestic Shipping:</strong> Orders will be delivered within 3 to 4 weeks from the date of order confirmation. Please note that delivery times may be affected by factors beyond our control, such as weather conditions, customs delays, and other unforeseen circumstances.
                 </p> */}
 
-                <h4>Return & Refund Policy</h4>
-                <p>
+                <h4>Refund Policy</h4>
+                {/* <p>
                   <strong>Returns:</strong> We have a 5-day return policy from the date of receiving your item. Once the return product is received it will be inspected and the return will be approved within 2 days
-                </p>
+                </p> */}
                 <p>
-                  <strong>Refunds:</strong> Approved refunds will be processed within 10 business days to your original payment method. If approved, you’ll be automatically refunded on your original payment method within 10 business days. Please remember it can take some time for your bank or credit card company to process and post the refund too. If more than 15 business days have passed since we’ve approved your return, please contact us
+                  Approved refunds will be processed within 10 business days to your original payment method. If approved, you’ll be automatically refunded on your original payment method within 10 business days. Please remember it can take some time for your bank or credit card company to process and post the refund too. If more than 15 business days have passed since we’ve approved your return, please contact us
                 </p>
 
                 {/* <h4>Intellectual Property</h4>
