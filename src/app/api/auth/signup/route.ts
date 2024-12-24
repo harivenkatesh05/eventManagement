@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectDatabase } from "../../../../lib/mongodb";
 import User from "../../../../models/User";
 import bcrypt from "bcryptjs";
+import { getFromRuntimeByKey } from "@/lib/runtimeDataStore";
 
 export async function POST(req: Request) {
 	try {
@@ -13,7 +14,7 @@ export async function POST(req: Request) {
 			return NextResponse.json({ message: "All fields are required" }, { status: 400 });
 		}
 		
-		const existingUser = await User.findOne({ email });
+		const existingUser = getFromRuntimeByKey('users', 'email', email);
 
 		if (existingUser) {
 			return NextResponse.json({ message: "Email already in use" }, { status: 400 });

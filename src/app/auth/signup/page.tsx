@@ -5,23 +5,73 @@ import { GoogleLogin } from '@react-oauth/google';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
+import { toast } from 'react-hot-toast';
+
+interface FormErrors {
+	firstName: boolean;
+	lastName: boolean;
+	email: boolean;
+	// phoneNumber: boolean;
+	password: boolean;
+}
 
 export default function SignUp() {
 
 	const router = useRouter();
-	const [formData, setFormData] = useState<User>({ firstName: "", lastName: "", email: "", password: "" });
+	const [formData, setFormData] = useState<User>({ 
+		firstName: "", 
+		lastName: "", 
+		email: "", 
+		// phoneNumber: "", 
+		password: "" 
+	});
 	const [showPassword, setShowPassword] = useState(false);
+	const [errors, setErrors] = useState<FormErrors>({
+		firstName: false,
+		lastName: false,
+		email: false,
+		// phoneNumber: false,
+		password: false
+	});
+
+	const validateForm = () => {
+		const newErrors = {
+			firstName: !formData.firstName.trim(),
+			lastName: !formData.lastName.trim(),
+			email: !formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email),
+			// phoneNumber: !formData.phoneNumber.trim() || !/^\d{10}$/.test(formData.phoneNumber),
+			password: !formData.password.trim() || formData.password.length < 6
+		};
+
+		setErrors(newErrors);
+		return !Object.values(newErrors).some(error => error);
+	};
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const field = e.target.name as keyof FormErrors;
+		if (field in errors) {
+			setErrors(prev => ({ ...prev, [field]: false }));
+		}
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
 	const handleSignup = async (e: Event) => {
 		e.preventDefault();
-        const data = await signup(formData);
-        if(data.message === "User created successfully"){
-            router.push("/auth/signin");
-        }
+		if (!validateForm()) {
+			toast.error('Please fill all required fields correctly');
+			return;
+		}
+
+		try {
+			const data = await signup(formData);
+			if(data.message === "User created successfully"){
+				router.push("/auth/signin");
+				toast.success('Account created successfully! Please sign in.');
+			}
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		} catch (error) {
+			toast.error('Failed to create account');
+		}
 	}
 
 	const handleGoogleSuccess = async (credentialResponse: { credential: string }) => {
@@ -60,10 +110,14 @@ export default function SignUp() {
 						<div className="row justify-content-center">
 							<div className="col-lg-10 col-md-10">
 								<div className="app-top-items">
-									<Link href="/">
-										<div className="sign-logo" id="logo">
-											<img src="/images/logo.svg" alt="" />
-											<img className="logo-inverse" src="/images/dark-logo.svg" alt="" />
+									<Link href="/" style={{justifyContent: 'center', display: 'grid'}}>
+										<div className="main-logo" id="logo" style={{display: 'flex', alignItems: 'center'}}>
+											<img src='/images/icons/logo.png' alt="logo" style={{width: '30%', height: 'auto', margin: '10px'}}/>
+											<img src="/images/icons/light-logo-name.png" alt="logo" style={{width: '70%'}}/>
+										</div>
+										<div className="main-logo" id="logo" style={{display: 'flex', alignItems: 'center'}}>
+											<img className="logo-inverse" src='/images/icons/logo.png' style={{width: '30%', height: 'auto', margin: '10px'}} alt="logo" />
+											<img className="logo-inverse" src="/images/icons/dark-logo-name.png" alt="logo" />
 										</div>
 									</Link>
 									<div className="app-top-right-link">
@@ -94,6 +148,22 @@ export default function SignUp() {
 													<input className="form-control h_50" type="email" placeholder="" name="email" value={formData.email} onChange={handleChange} />																								
 												</div>
 											</div>
+											{/* <div className="col-lg-12 col-md-12">
+												<div className="form-group mt-4">
+													<label className="form-label">Phone Number*</label>
+													<input 
+														className={`form-control h_50 ${errors.phoneNumber ? 'error-input' : ''}`}
+														type="tel" 
+														placeholder="Enter your phone number"
+														name="phoneNumber"
+														value={formData.phoneNumber}
+														onChange={handleChange}
+													/>
+													{errors.phoneNumber && (
+														<div className="error-message">Please enter a valid 10-digit phone number</div>
+													)}
+												</div>
+											</div> */}
 											<div className="col-lg-12 col-md-12">	
 												<div className="form-group mt-4">
 													<div className="field-password">
@@ -143,7 +213,7 @@ export default function SignUp() {
 						</div>
 					</div>
 					<div className="copyright-footer">
-						© 2022, Bukit. All rights reserved. Powered by Gambolthemes
+						© 2024, Bukit. All rights reserved. Powered by shree nex tech
 					</div>
 				</div>			
 			</div>

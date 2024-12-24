@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react'
 
-function Card({ title, dateTime, duration, price, image, remaining, id }: { title: string; dateTime: Date; duration: string; price: string; image: string; remaining: number; id: string }) {
+function Card({ title, dateTime, duration, price, image, id }: { title: string; dateTime: Date; duration: string; price: string; image: string; remaining: number; id: string }) {
 	const date = dateTime.getDate() + ' ' + dateTime.toLocaleString('default', { month: 'short' });
 	const time = dateTime.toLocaleDateString('en-US', { weekday: 'short' }) + ', ' + dateTime.toLocaleString('default', { hour: '2-digit', minute: '2-digit', hour12: true });
 	// const src = `/images/event-imgs/${image}`
@@ -26,7 +26,7 @@ function Card({ title, dateTime, duration, price, image, remaining, id }: { titl
 				<Link href={`/event/${id}`} className="event-title">{title}</Link>
 				<div className="duration-price-remaining">
 					<span className="duration-price">{price}*</span>
-					{remaining > 0 && <span className="remaining"><i className="fa-solid fa-ticket fa-rotate-90"></i>{remaining} Remaining</span>}
+					{/* {remaining > 0 && <span className="remaining"><i className="fa-solid fa-ticket fa-rotate-90"></i>{remaining} Remaining</span>} */}
 				</div>
 			</div>
 			<div className="event-footer">

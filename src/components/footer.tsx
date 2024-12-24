@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 
 export default function Footer() {
@@ -30,17 +31,17 @@ export default function Footer() {
 								<h4>Useful Links</h4>
 								<ul className="footer-link-list">
 									<li>
-										<a href="/createEvent" className="footer-link">Create Event</a>
+										<Link href="/createEvent" className="footer-link">Create Event</Link>
 									</li>
 									{/* <li>
 										<a href="sell_tickets_online.html" className="footer-link">Sell Tickets Online</a>
-									</li>
-									<li>
-										<a href="privacy_policy.html" className="footer-link">Privacy Policy</a>
-									</li>
-									<li>
-										<a href="term_and_conditions.html" className="footer-link">Terms & Conditions</a>
 									</li> */}
+									<li>
+										<Link href="/privacy" className="footer-link">Privacy Policy</Link>
+									</li>
+									<li>
+										<Link href="/terms" className="footer-link">Terms & Conditions</Link>
+									</li>
 								</ul>
 							</div>
 						</div>	
@@ -49,30 +50,30 @@ export default function Footer() {
 								<h4>Follow Us</h4>
 								<ul className="social-links">
 									<li>
-										<a href="#" className="social-link">
+										<a href="https://www.facebook.com/share/1Ec6jCbxDc/?mibextid=wwXIfr" className="social-link" target="_blank">
 											<i className="fab fa-facebook-square"></i>
 										</a>
 									</li>
 									<li>
-										<a href="#" className="social-link">
+										<a href="https://www.instagram.com/bukit.in?igsh=MWV1cGVvZGFzeTFkMA==" className="social-link" target="_blank">
 											<i className="fab fa-instagram"></i>
 										</a>
 									</li>
-									<li>
+									{/* <li>
 										<a href="#" className="social-link">
 											<i className="fab fa-twitter"></i>
 										</a>
-									</li>
+									</li> */}
 									<li>
-										<a href="#" className="social-link">
+										<a href="https://www.linkedin.com/company/bukitnow/" className="social-link" target="_blank">
 											<i className="fab fa-linkedin-in"></i>
 										</a>
 									</li>
-									<li>
+									{/* <li>
 										<a href="#" className="social-link">
 											<i className="fab fa-youtube"></i>
 										</a>
-									</li>
+									</li> */}
 								</ul>
 							</div>
 						</div>
@@ -84,7 +85,7 @@ export default function Footer() {
 					<div className="row">
 						<div className="col-12">
 							<div className="footer-copyright-text">
-								<p className="mb-0">© 2022, <strong>Bukit</strong>. All rights reserved. Powered by Gambolthemes</p>
+								<p className="mb-0">© 2024, <strong>Bukit</strong>. All rights reserved. Powered by shree nex tech</p>
 							</div>
 						</div>
 					</div>

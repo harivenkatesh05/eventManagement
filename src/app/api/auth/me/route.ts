@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDatabase } from "@/lib/mongodb";
 import User from "@/models/User";
 import { getUserIdFromToken } from "../../utility";
+import { storeInRuntime } from "@/lib/runtimeDataStore";
+import { getFromRuntime } from "@/lib/runtimeDataStore";
 
 export async function GET(req: NextRequest) {
 	try {
@@ -10,12 +12,15 @@ export async function GET(req: NextRequest) {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 		
-		await connectDatabase();
-		
-		// Get user details excluding password
-		const user = await User.findById(userId).select('-password');
+		let user = getFromRuntime('users', userId);
 		if (!user) {
-			return NextResponse.json({ error: 'User not found' }, { status: 404 });
+			await connectDatabase();
+			user = await User.findById(userId).select('-password');
+			console.log("user from db - me");
+			if (!user) {
+				return NextResponse.json({ error: 'User not found' }, { status: 404 });
+			}
+			storeInRuntime('users', userId, user);
 		}
 
 		return NextResponse.json(user);

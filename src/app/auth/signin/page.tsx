@@ -7,6 +7,7 @@ import React, { useState } from 'react'
 import { GoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-hot-toast';
 import { useUser } from '@/context/UserContext';
+// import GooglePhoneVerification from '@/components/auth/GooglePhoneVerification';
 
 export default function SignIn() {
 	
@@ -15,6 +16,8 @@ export default function SignIn() {
 	const [formData, setFormData] = useState<SignInForm>({ email: "", password: "" });
 	const [googleLoading, setGoogleLoading] = useState(false);
 	const { setUser } = useUser();
+	// const [showPhoneVerification, setShowPhoneVerification] = useState(false);
+	// const [googleEmail, setGoogleEmail] = useState('');
 
 	const handleSignin = async (e: Event) => {
 		e.preventDefault();
@@ -44,6 +47,11 @@ export default function SignIn() {
 
 			const data = await response.json();
 			if (response.ok) {
+				// if (!data.user.phoneNumber) {
+				// 	setGoogleEmail(data.user.email);
+				// 	setShowPhoneVerification(true);
+				// 	return;
+				// }
 				setUser(data.user);
 				handleSignInSuccess();
 			} else {
@@ -68,6 +76,14 @@ export default function SignIn() {
 		}
 	};
 
+	// const handlePhoneSubmit = async (phoneNumber: string) => {
+	// 	const data = await updatePhone(googleEmail, phoneNumber);
+	// 	if(data.message === "Phone number updated successfully"){
+	// 		setUser(data.user);
+	// 		handleSignInSuccess();
+	// 	}
+	// };
+
 	return (
 		<div className="form-wrapper">
 			<div className="app-form">
@@ -84,10 +100,14 @@ export default function SignIn() {
 						<div className="row justify-content-center">
 							<div className="col-lg-10 col-md-10">
 								<div className="app-top-items">
-									<Link href="/">
-										<div className="sign-logo" id="logo">
-											<img src="/images/logo.svg" alt="" />
-											<img className="logo-inverse" src="/images/dark-logo.svg" alt="" />
+									<Link href="/" style={{justifyContent: 'center', display: 'grid'}}>
+										<div className="main-logo" id="logo" style={{display: 'flex', alignItems: 'center'}}>
+											<img src='/images/icons/logo.png' alt="logo" style={{width: '30%', height: 'auto', margin: '10px'}}/>
+											<img src="/images/icons/light-logo-name.png" alt="logo" style={{width: '70%'}}/>
+										</div>
+										<div className="main-logo" id="logo" style={{display: 'flex', alignItems: 'center'}}>
+											<img className="logo-inverse" src='/images/icons/logo.png' style={{width: '30%', height: 'auto', margin: '10px'}} alt="logo" />
+											<img className="logo-inverse" src="/images/icons/dark-logo-name.png" alt="logo" />
 										</div>
 									</Link>
 									<div className="app-top-right-link">
@@ -150,10 +170,16 @@ export default function SignIn() {
 						</div>
 					</div>
 					<div className="copyright-footer">
-						© 2022, Bukit. All rights reserved. Powered by Gambolthemes
+						© 2024, Bukit. All rights reserved. Powered by shree nex tech
 					</div>
 				</div>			
 			</div>
+			{/* <GooglePhoneVerification
+				isOpen={showPhoneVerification}
+				onClose={() => setShowPhoneVerification(false)}
+				onSubmit={handlePhoneSubmit}
+				email={googleEmail}
+			/> */}
 		</div>
 	)
 }
