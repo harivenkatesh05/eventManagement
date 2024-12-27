@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserIdFromToken } from '../../utility';
-import uniqid from 'uniqid';
 import sha256 from 'sha256';
 import axios from 'axios';
+import Purchase from '@/models/Purchase';
 
 export async function POST(request: NextRequest) {
 	try {
@@ -26,7 +26,22 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		const uniqueId = uniqid();
+		const purchase = new Purchase({
+			eventId: data.eventId,
+			userId,
+			tickets: data.tickets,
+			totalAmount: data.amount,
+			status: 'pending',
+			purchaseDate: new Date(),
+			firstName: data.customerDetails.firstName,
+			lastName: data.customerDetails.lastName,
+			phoneNumber: data.customerDetails.phone,
+			// barcode will be auto-generated
+		});
+
+		await purchase.save();
+
+		const uniqueId = purchase._id.toString();
 
 		// Create PhonePe payment request
 		const paymentRequest = {

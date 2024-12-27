@@ -31,17 +31,19 @@ export async function GET(
 			}
 		);
 
-		if (response.data.code === 'PAYMENT_SUCCESS') {
-			// Get purchase details
-			const purchase = await Purchase.findOne({ transactionId: id })
-				.populate('event', 'name image date type');
+		// Get purchase details
+		const purchase = await Purchase.findById(id).populate('eventId');
+		if (!purchase) {
+			return NextResponse.json({
+				status: 'failure',
+				message: 'Purchase details not found'
+			});
+		}
 
-			if (!purchase) {
-				return NextResponse.json({
-					status: 'failure',
-					message: 'Purchase details not found'
-				});
-			}
+		if (response.data.code === 'PAYMENT_SUCCESS') {
+			const event = purchase.eventId;
+			event.remaining -= purchase.ticketes;
+			await event.save()
 
 			return NextResponse.json({
 				status: 'success',
@@ -55,6 +57,11 @@ export async function GET(
 					barcode: purchase.barcode
 				}
 			});
+		}
+
+		else {
+			purchase.status = "cancelled"
+			await purchase.save()
 		}
 
 		return NextResponse.json({

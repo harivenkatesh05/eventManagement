@@ -100,7 +100,8 @@ export default function Checkout({ event, tickets }: { event: EventFullDetail, t
 					phoneNumber: user!.phoneNumber,
 				},
 				customerDetails: {
-					name: `${purchaseForm.firstName} ${purchaseForm.lastName}`,
+					firstName: purchaseForm.firstName,
+					lastName: purchaseForm.lastName,
 					phone: purchaseForm.phoneNumber,
 					email: user!.email,
 				}
