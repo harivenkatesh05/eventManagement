@@ -53,6 +53,7 @@ interface UserDocument extends Document {
 	email: string;
 	phoneNumber: string;
 	password: string;
+	phoneNumberVerfied: boolean
 }
 
 interface VenueDocument extends Document {

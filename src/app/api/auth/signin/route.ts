@@ -5,6 +5,7 @@ import User from "../../../../models/User";
 import { NextResponse } from "next/server";
 import { TOKEN_COOKIE_NAME } from "../../constants";
 import { getFromRuntimeByKey, storeInRuntime } from "@/lib/runtimeDataStore";
+import { sendOTP } from "@/lib/twilio";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -39,6 +40,12 @@ export async function POST(req: Request) {
 		const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET!, {
 			expiresIn: process.env.JWT_EXPIRATION,
 		});
+
+		
+		if(!user.phoneNumberVerfied) {
+			const status = await sendOTP(user.phoneNumber);
+			console.log("otp sent", status)
+		}
 
 		const response = NextResponse.json({ message: "Login successful", token, user }, { status: 200 });
 		response.cookies.set(TOKEN_COOKIE_NAME, token, {

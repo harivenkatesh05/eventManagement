@@ -18,6 +18,8 @@ type User = {
   lastName: string;
   email: string;
   password: string;
+  phoneNumber: string;
+  phoneNumberVerfied?: boolean
 };
 
 type SignInForm = {
@@ -91,6 +93,8 @@ type EventFullDetail = EventType & {
   createdByName: string;
   startDate: string;
   endDate: string;
+  tax: number;
+  productFee: number;
   venue?: {
     location: string;
     latitude: number;
@@ -129,4 +133,19 @@ type PurchaseType = {
   state: string;
   zip: number;
   country: string;
+};
+
+type PaymentData = {
+  amount: number;
+  currency: string;
+  eventId: string;
+  tickets: number;
+  user: {
+    phoneNumber: string;
+  };
+  customerDetails: {
+    name: string;
+    phone: string;
+    email: string;
+  };
 };

@@ -8,9 +8,9 @@ export async function POST(req: Request) {
 	try {
 		await connectDatabase();
 
-		const { firstName, lastName, email, password } = await req.json();
+		const { firstName, lastName, email, password, phoneNumber } = await req.json();
 
-		if (!firstName || !lastName || !email || !password) {
+		if (!firstName || !lastName || !email || !password || !phoneNumber) {
 			return NextResponse.json({ message: "All fields are required" }, { status: 400 });
 		}
 		
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
 		const hashedPassword = await bcrypt.hash(password, 10);
 
-		const newUser = new User({ firstName, lastName, email, password: hashedPassword });
+		const newUser = new User({ firstName, lastName, email, password: hashedPassword, phoneNumber, phoneNumberVerfied: false});
 		await newUser.save();
 
 		return NextResponse.json({ message: "User created successfully" }, { status: 201 });

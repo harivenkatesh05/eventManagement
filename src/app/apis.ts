@@ -117,6 +117,34 @@ export const fetchPurchase = async (id: string) => {
 	return response.json();
 };
 
+export const initiatePayment = async (paymentData: PaymentData) => {
+	const response = await fetch('/api/payment/initiate', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(paymentData),
+	});
+
+	if (!response.ok) {
+		throw new Error('Failed to initiate payment');
+	}
+
+	return response.json();
+};
+
+export const updatePhone = async (email: string, phoneNumber: string) => {
+	const response = await fetch('/api/auth/update-phone', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ email, phoneNumber }),
+	});
+
+	if (!response.ok) {
+		throw new Error('Failed to update phone number');
+	}
+
+	return response.json();
+};
+
 export const clearRuntimeStore = async (model?: string) => {
 	const body = model ? { model: model } : {};
 	const response = await fetch('/api/runtime-store/clear', {
@@ -125,6 +153,34 @@ export const clearRuntimeStore = async (model?: string) => {
 		body: JSON.stringify(body),
 	});
 	if (!response.ok) throw new Error('Failed to clear runtime store');
+	return response.json();
+};
+
+export const sendPhoneOTP = async (phoneNumber: string) => {
+	const response = await fetch('/api/auth/send-otp', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ phoneNumber }),
+	});
+
+	if (!response.ok) {
+		throw new Error('Failed to send OTP');
+	}
+
+	return response.json();
+};
+
+export const verifyPhoneOTP = async (phoneNumber: string, code: string) => {
+	const response = await fetch('/api/auth/verify-otp', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ phoneNumber, code }),
+	});
+
+	if (!response.ok) {
+		throw new Error('Failed to verify OTP');
+	}
+
 	return response.json();
 };
 

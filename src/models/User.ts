@@ -8,7 +8,8 @@ const UserSchema: Schema<UserDocument> = new Schema({
     password: { type: String },
     googleId: { type: String },
     picture: { type: String },
-    phoneNumber: { type: String,unique: true },
+    phoneNumber: { type: String },
+    phoneNumberVerfied: {type: Boolean}
 });
 
 export default mongoose.models.User || mongoose.model<UserDocument>("User", UserSchema);

@@ -40,7 +40,7 @@ export default function Home() {
 			)
 		}
 
-		return events.map((event) => {
+		return events.map((event: EventType) => {
 			const price = event.isFreeEvent ? "Free" : `${event.locale} ${event.price.toLocaleString('en-IN')}`;
 			const mins = event.eventDuration % 60;
 			const inHour = mins > 0 ? `${Math.floor(event.eventDuration / 60)}h ${mins}m` : `${Math.floor(event.eventDuration / 60)}h`
@@ -69,7 +69,7 @@ export default function Home() {
 							<div className="hero-banner-content">
 								<h2>The Easiest and Most Powerful Online Event Booking and Ticketing System</h2>
 								<p>Bukit is an all-in-one event ticketing platform for event organisers, promoters, and managers. Easily create, promote and manage your events of any type and size.</p>
-								<Link href="/createEvent" className="main-btn btn-hover">Create Event <i className="fa-solid fa-arrow-right ms-3"></i></Link>
+								<Link href="/explore" className="main-btn btn-hover">Book Events<i className="fa-solid fa-arrow-right ms-3"></i></Link>
 							</div>
 						</div>
 					</div>
