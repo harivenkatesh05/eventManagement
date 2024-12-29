@@ -1,12 +1,12 @@
-import { VenueDocument } from '@/types/model';
+import { TicketDocument, VenueDocument } from '@/types/model';
 import mongoose, { Schema } from 'mongoose';
 
-// const TicketSchema: Schema<TicketDocument> = new Schema({
-//   ticketName: { type: String, required: true },
-//   totalTickets: { type: Number, required: true },
-//   maxBookingTickets: { type: Number, required: true },
-//   price: { type: Number, required: true },
-// });
+const TicketSchema: Schema<TicketDocument> = new Schema({
+  ticketName: { type: String, required: true },
+  totalTickets: { type: Number, required: true },
+  maxBookingTickets: { type: Number, required: true },
+  price: { type: Number, required: true },
+});
 
 const VenueEventSchema: Schema<VenueDocument> = new Schema({
   venue: { type: String, required: true },
@@ -18,19 +18,19 @@ const VenueEventSchema: Schema<VenueDocument> = new Schema({
   zipCode: { type: String, required: true },
   latitude: { type: Number, required: true },
   longitude: { type: Number, required: true },
-  // ticketType: { type: String, required: true },
-  // tickets: {
-  //   type: [TicketSchema],
-  //   required: true,
-  //   default: undefined,
-  //   // minlength: 1,
-  //   validate: {
-  //     validator: function (value) {
-      //   return Array.isArray(value) && value.length > 0;
-      // },
-    //   message: 'There must be at least one ticket in the tickets array.',
-    // },
-  // },
+  ticketType: { type: String, required: true },
+  tickets: {
+    type: [TicketSchema],
+    required: true,
+    default: undefined,
+    // minlength: 1,
+    validate: {
+      validator: function (value) {
+        return Array.isArray(value) && value.length > 0;
+      },
+      message: 'There must be at least one ticket in the tickets array.',
+    },
+  },
 });
 
 export default mongoose.models.VenueEvent ||

@@ -64,8 +64,8 @@ export async function POST(req: NextRequest) {
       zipCode: event.zipCode,
       latitude: event.latitude,
       longitude: event.longitude,
-      // ticketType: event.ticketType,
-      // tickets: event.tickets,
+      ticketType: event.ticketType,
+      tickets: event.tickets,
     });
 
     const savedVenueEvent = await newVenueEvent.save();

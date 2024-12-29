@@ -1,77 +1,76 @@
-import { Document } from "mongoose"
+import { Document } from 'mongoose';
 
 interface EventDocument extends Document {
-    name: string
-	tags: string[]
-	eventDate: string
-	eventDuration: number,
-	description: string,
-	image: string
-	type: string
-	
-	price: number,
-	locale: string,
-	totalTickets: number,
-	isFreeEvent: boolean,
-	isDiscount: boolean,
-	discount: number,
-	discountType: string,
-	discountPrice: number,
-	discountEndDateTime: string,
-	
-	tax: number,
-	productFee: number,
+  name: string;
+  tags: string[];
+  eventDate: string;
+  eventDuration: number;
+  description: string;
+  image: string;
+  type: string;
 
-	isBookingStartImmediately: boolean,
-	bookingStartDateTime: string,
-	isBookingContinueTillEventEnd: boolean,
-	bookingEndDateTime: string,
+  price: number;
+  locale: string;
+  totalTickets: number;
+  isFreeEvent: boolean;
+  isDiscount: boolean;
+  discount: number;
+  discountType: string;
+  discountPrice: number;
+  discountEndDateTime: string;
 
-	isRefundPolicies: boolean,
-	refundBefore: number,
-	refundPrecentage: number,
+  tax: number;
+  productFee: number;
 
-	isSpecialInstructions: boolean,
-	specialInstructions: string,
+  isBookingStartImmediately: boolean;
+  bookingStartDateTime: string;
+  isBookingContinueTillEventEnd: boolean;
+  bookingEndDateTime: string;
 
-	linkedEvent: string,
+  isRefundPolicies: boolean;
+  refundBefore: number;
+  refundPrecentage: number;
 
-	createdBy: string,
-	createdAt: Date,
-	updatedAt: Date,
-	status: string,
+  isSpecialInstructions: boolean;
+  specialInstructions: string;
 
-	remaining: number
+  linkedEvent: string;
+
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+  status: string;
+
+  remaining: number;
 }
 
-
 interface UserDocument extends Document {
-    googleId?: string;
-    picture?: string;
-	firstName: string;
-	lastName: string;
-	email: string;
-	phoneNumber: string;
-	password: string;
+  googleId?: string;
+  picture?: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
 }
 
 interface VenueDocument extends Document {
-    venue: string;
-    address1: string;
-    address2: string;
-    country: string;
-    state: string;
-    city: string;
-    zipCode: string;
-	latitude: number;
-	longitude: number;
-	// ticketType: string;
-  // tickets: Array<TicketDocument>;
+  venue: string;
+  address1: string;
+  address2: string;
+  country: string;
+  state: string;
+  city: string;
+  zipCode: string;
+  latitude: number;
+  longitude: number;
+  ticketType: string;
+  tickets: Array<TicketDocument>;
 }
 
 interface TicketDocument extends Document {
-	ticketName: string;
-	totalTickets: number;
-	maxBookingTickets: number;
-	price: number;
+  ticketName: string;
+  totalTickets: number;
+  maxBookingTickets: number;
+  price: number;
 }
