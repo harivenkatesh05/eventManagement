@@ -4,6 +4,7 @@ import User from "@/models/User";
 import { getUserIdFromToken } from "../../utility";
 import { storeInRuntime } from "@/lib/runtimeDataStore";
 import { getFromRuntime } from "@/lib/runtimeDataStore";
+import { sendOTP } from "@/lib/twilio";
 
 export async function GET(req: NextRequest) {
 	try {
@@ -21,6 +22,10 @@ export async function GET(req: NextRequest) {
 				return NextResponse.json({ error: 'User not found' }, { status: 404 });
 			}
 			storeInRuntime('users', userId, user);
+		}
+
+		if(!user.phoneNumberVerfied && user.phoneNumber) {
+			await sendOTP(user.phoneNumber)
 		}
 
 		return NextResponse.json(user);

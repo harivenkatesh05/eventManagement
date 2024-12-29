@@ -1,6 +1,6 @@
 'use client'
 
-import { bookEvent } from '@/app/apis';
+import { bookEvent, initiatePayment } from '@/app/apis';
 import { useUser } from '@/context/UserContext';
 import { formatDateToIST, getDateObj } from '@/util/date';
 import { toast } from 'react-hot-toast';
@@ -25,6 +25,7 @@ export default function Checkout({ event, tickets }: { event: EventFullDetail, t
 		...defaultPurchaseForm,
 		firstName: user?.firstName ?? '',
 		lastName: user?.lastName ?? '',
+		phoneNumber: user?.phoneNumber ?? '',
 		tickets: tickets,
 	});
 	
@@ -81,6 +82,48 @@ export default function Checkout({ event, tickets }: { event: EventFullDetail, t
 				setLoading(false);
 			});
 	}
+
+	const handlePayment = async () => {
+		try {
+			setLoading(true);
+			
+			// Calculate total amount including tax and fees
+			const totalAmount = (event.price * purchaseForm.tickets) + (event.tax || 0) + (event.productFee || 0);
+
+			// Prepare payment data
+			const paymentData = {
+				amount: totalAmount,
+				currency: event.locale,
+				eventId: event.id,
+				tickets: purchaseForm.tickets,
+				user: {
+					phoneNumber: user!.phoneNumber,
+				},
+				customerDetails: {
+					firstName: purchaseForm.firstName,
+					lastName: purchaseForm.lastName,
+					phone: purchaseForm.phoneNumber,
+					email: user!.email,
+				}
+			};
+
+			// Call payment initiation API
+			const response = await initiatePayment(paymentData);
+			
+			// Redirect to PhonePe payment page
+			if (response.redirectUrl) {
+				window.location.href = response.redirectUrl;
+			} else {
+				throw new Error('Payment initiation failed');
+			}
+
+		} catch (error) {
+			console.error('Payment error:', error);
+			toast.error('Payment initiation failed. Please try again.');
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	return (
 		<div className="event-dt-block p-80">
@@ -269,21 +312,41 @@ export default function Checkout({ event, tickets }: { event: EventFullDetail, t
 									</div>
 								</div>
 								<div className="order-total-block">
-									<div className="order-total-dt">
-										<div className="order-text">Total Ticket</div>
-										<div className="order-number">{purchaseForm.tickets}</div>
-									</div>
-									<div className="divider-line"></div>
-									{!event.isFreeEvent && (
-										<div className="order-total-dt">
-											<div className="order-text">Total</div>
-											<div className="order-number">{`${event.locale} ${event.price * purchaseForm.tickets}`}</div>
-										</div>
-									)}
-									{/* <div className="order-total-dt">
-										<div className="order-text">Total</div>
-										<div className="order-number ttl-clr">AUD $50.00</div>
-									</div> */}
+									
+									{
+										event.isFreeEvent ? (
+											<>
+												<div className="order-total-dt">
+													<div className="order-text">Total Ticket</div>
+													<div className="order-number">{purchaseForm.tickets}</div>
+												</div>
+												<div className="divider-line"></div>
+											</>
+										) : (
+											<>
+												<div className="order-total-dt">
+													<div className="order-text">Ticket Price</div>
+													<div className="order-number">
+														<span className="text-nowrap" style={{marginRight: '10px'}}>{`${event.price} * ${purchaseForm.tickets} =`}</span>
+														{event.price * purchaseForm.tickets}
+													</div>
+												</div>
+												<div className="order-total-dt">
+													<div className="order-text">GST</div>
+													<div className="order-number">{event.tax * purchaseForm.tickets}</div>
+												</div>
+												<div className="order-total-dt">
+													<div className="order-text">Product Fee</div>
+													<div className="order-number">{event.productFee * purchaseForm.tickets}</div>
+												</div>
+												<div className="divider-line"></div>
+												<div className="order-total-dt">
+													<div className="order-text">Total</div>
+													<div className="order-number">{`${event.locale} ${(event.price + event.tax + event.productFee) * purchaseForm.tickets}`}</div>
+												</div>
+											</>
+										)
+									}
 								</div>
 								{/* <div className="coupon-code-block">
 									<div className="form-group mt-4">
@@ -297,11 +360,25 @@ export default function Checkout({ event, tickets }: { event: EventFullDetail, t
 								{
 									event.isFreeEvent ? (
 										<div className="confirmation-btn">
-											<button className="main-btn btn-hover h_50 w-100 mt-5" type="button" onClick={handleConfirmBook}>{loading ? 'Confirming...' : 'Confirm & Book'}</button>
+											<button 
+												className="main-btn btn-hover h_50 w-100 mt-5" 
+												type="button" 
+												onClick={handleConfirmBook}
+												disabled={loading}
+											>
+												{loading ? 'Confirming...' : 'Confirm & Book'}
+											</button>
 										</div>
 									) : (
 										<div className="confirmation-btn">
-											<button className="main-btn btn-hover h_50 w-100 mt-5" type="button" onClick={() => window.location.href='booking_confirmed.html'}>Confirm & Pay</button>
+											<button 
+												className="main-btn btn-hover h_50 w-100 mt-5" 
+												type="button" 
+												onClick={handlePayment}
+												disabled={loading}
+											>
+												{loading ? 'Processing...' : 'Confirm & Pay'}
+											</button>
 											<span>Price is inclusive of all applicable GST</span>
 										</div>
 									)

@@ -37,7 +37,8 @@ export async function POST(req: NextRequest) {
 					password: "", // No password for Google auth
 					googleId: payload.sub,
 					picture: payload.picture,
-					phoneNumber: null
+					phoneNumber: null,
+					phoneNumberVerfied: false
 				});
 			}
 

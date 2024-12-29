@@ -45,7 +45,7 @@ export async function GET(
 			console.log("user from db - id ", event.createdBy);
 			if (!user) {
 				return NextResponse.json(
-					{ message: "User not found" },
+					{ message: "Created user not found" },
 					{ status: 404 }
 				);
 			}

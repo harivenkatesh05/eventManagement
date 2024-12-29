@@ -7,7 +7,6 @@ import React, { useState } from 'react'
 import { GoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-hot-toast';
 import { useUser } from '@/context/UserContext';
-// import GooglePhoneVerification from '@/components/auth/GooglePhoneVerification';
 
 export default function SignIn() {
 	
@@ -16,9 +15,7 @@ export default function SignIn() {
 	const [formData, setFormData] = useState<SignInForm>({ email: "", password: "" });
 	const [googleLoading, setGoogleLoading] = useState(false);
 	const { setUser } = useUser();
-	// const [showPhoneVerification, setShowPhoneVerification] = useState(false);
-	// const [googleEmail, setGoogleEmail] = useState('');
-
+	
 	const handleSignin = async (e: Event) => {
 		e.preventDefault();
 		const data = await signin(formData);
@@ -47,11 +44,6 @@ export default function SignIn() {
 
 			const data = await response.json();
 			if (response.ok) {
-				// if (!data.user.phoneNumber) {
-				// 	setGoogleEmail(data.user.email);
-				// 	setShowPhoneVerification(true);
-				// 	return;
-				// }
 				setUser(data.user);
 				handleSignInSuccess();
 			} else {
@@ -75,14 +67,6 @@ export default function SignIn() {
 			router.push('/'); // Default redirect
 		}
 	};
-
-	// const handlePhoneSubmit = async (phoneNumber: string) => {
-	// 	const data = await updatePhone(googleEmail, phoneNumber);
-	// 	if(data.message === "Phone number updated successfully"){
-	// 		setUser(data.user);
-	// 		handleSignInSuccess();
-	// 	}
-	// };
 
 	return (
 		<div className="form-wrapper">
@@ -174,12 +158,6 @@ export default function SignIn() {
 					</div>
 				</div>			
 			</div>
-			{/* <GooglePhoneVerification
-				isOpen={showPhoneVerification}
-				onClose={() => setShowPhoneVerification(false)}
-				onSubmit={handlePhoneSubmit}
-				email={googleEmail}
-			/> */}
 		</div>
 	)
 }
