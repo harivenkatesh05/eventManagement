@@ -9,6 +9,7 @@ import { useUser } from '@/context/UserContext';
 import { getDateObj } from '@/util/date';
 import Link from 'next/link';
 import InvoiceSkeleton from '@/components/invoice/skeleton';
+import NotFound from '@/app/not-found';
 
 export default function Invoice() {
 	const pathname = usePathname();
@@ -22,6 +23,8 @@ export default function Invoice() {
 		fetchPurchase(id)
 			.then((purchase: PurchaseType) => {
 				setPurchase(purchase)
+			}).catch(() => {
+				NotFound()
 			})
 			.finally(() => {
 				setLoading(false);
@@ -105,7 +108,7 @@ export default function Invoice() {
 					<div className="col-lg-8 col-md-10">
 						<div className="invoice-header justify-content-between">
 							<div className="invoice-header-logo">
-								<img src="/images/dark-logo.svg" alt="invoice-logo" />
+								<img src="/images/sign-logo.svg" alt="invoice-logo" />
 							</div>
 							<div className="invoice-header-text">
 								<button 
