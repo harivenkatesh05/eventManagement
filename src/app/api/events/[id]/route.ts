@@ -1,10 +1,6 @@
-import { connectDatabase } from "@/lib/mongodb";
-import Event from "@/models/Event";
-import User from "@/models/User";
-import VenueEvent from "@/models/VenueEvent";
 import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from 'mongodb';
-import { getFromRuntime, storeInRuntime } from "@/lib/runtimeDataStore";
+import { store } from "@/lib/store";
 
 export async function GET(
 	request: NextRequest,
@@ -21,83 +17,77 @@ export async function GET(
 			);
 		}
 
-		let event = getFromRuntime('events', id);
-		
-		if (!event) {
-			await connectDatabase();
-			
-			event = await Event.findById(id) ?? undefined;
-			console.log("event from db - event id ", id);
-			if (!event) {
-				return NextResponse.json(
-					{ message: "Event not found" },
-					{ status: 404 }
-				);
-			}
-			storeInRuntime('events', id, event);
-		}
+		const event = await store.getEvent(id);
+		const user  = await store.getUserByID(event.createdBy)
 
-		let user = getFromRuntime('users', event.createdBy);
-		if (!user) {
-			await connectDatabase();
-
-			user = await User.findById(event.createdBy) ?? undefined;
-			console.log("user from db - id ", event.createdBy);
-			if (!user) {
-				return NextResponse.json(
-					{ message: "Created user not found" },
-					{ status: 404 }
-				);
-			}
-			storeInRuntime('users', event.createdBy, user!);
-		}
-
-		let venue;
 		if(event.type === 'venue') {
-			let venueEvent = getFromRuntime('venueEvents', event.linkedEvent);
-			if (!venueEvent) {
-				venueEvent = await VenueEvent.findById(event.linkedEvent) ?? undefined;
-				console.log("venueEvent from db - id ", event.linkedEvent);
-				if (!venueEvent) {
-					return NextResponse.json(
-						{ message: "Venue event not found" },
-						{ status: 404 }
-					);
+			const venueEvent = await store.getLinkedVenueEvent(event.linkedEvent)
+			const tickets = venueEvent.tickets.map((ticket) => {
+				return {
+					ticketName: ticket.ticketName,
+					maxBooking: ticket.maxBookingTickets,
+					tax: ticket.tax,
+					productFee: ticket.productFee,
+					remaining: ticket.remaining
 				}
-				storeInRuntime('venueEvents', event.linkedEvent, venueEvent!);
-			}
-			venue = {
-				location: `${venueEvent.address1}, ${venueEvent.address2}, ${venueEvent.city}, ${venueEvent.state}, ${venueEvent.country}`,
-				latitude: venueEvent.latitude,
-				longitude: venueEvent.longitude
-			};
+			})
+			return NextResponse.json({
+				event: {
+					id: event.id,
+					type: event.type,
+					name: event.name,
+					image: event.image,
+					description: event.description,
+					eventDate: event.eventDate,
+					eventDuration: event.eventDuration,
+					tags: event.tags,
+					
+					startDate: event.bookingStartDateTime,
+					endDate: event.bookingEndDateTime,
+					specialInstructions: event.specialInstructions,
+
+					createdBy: event.createdBy,
+					createdByName: `${user.firstName} ${user.lastName}`,
+					
+					venue: {
+						location: `${venueEvent.address1}, ${venueEvent.address2}, ${venueEvent.city}, ${venueEvent.state}, ${venueEvent.country}`,
+						latitude: venueEvent.latitude,
+						longitude: venueEvent.longitude,
+	
+						tickets
+					}
+				}
+			}, { status: 200 })
 		}
+		else {
+			const onlineEvent = await store.getLinkedOnlineEvent(event.linkedEvent)
+			return NextResponse.json({
+				event: {
+					id: event._id,
+					type: event.type,
+					name: event.name,
+					description: event.description,
+					eventDate: event.eventDate,
+					eventDuration: event.eventDuration,
+					image: event.image,
+					tags: event.tags,
 
-		return NextResponse.json({
-			event: {
-				id: event._id,
-				type: event.type,
-				name: event.name,
-				description: event.description,
-				eventDate: event.eventDate,
-				eventDuration: event.eventDuration,
-				tax: event.tax,
-				productFee: event.productFee,
-				price: event.price,
-				locale: event.locale,
-				image: event.image,
-				tags: event.tags,
-				createdBy: event.createdBy,
-				createdByName: `${user.firstName} ${user.lastName}`,
-				venue: venue,
-				remaining: event.remaining,
-				isFreeEvent: event.isFreeEvent,
-				startDate: event.bookingStartDateTime,
-				endDate: event.bookingEndDateTime,
-				specialInstructions: event.specialInstructions,
-			}
-		}, { status: 200 });
+					createdBy: event.createdBy,
+					createdByName: `${user.firstName} ${user.lastName}`,
+					
+					startDate: event.bookingStartDateTime,
+					endDate: event.bookingEndDateTime,
+					specialInstructions: event.specialInstructions,
 
+					online: {
+						tax: onlineEvent.tax,
+						productFee: onlineEvent.productFee,
+						price: onlineEvent.price,
+						remaining: onlineEvent.remaining,	
+					}
+				}
+			}, { status: 200 })
+		}
 	} catch (error) {
 		console.error('Error fetching event:', error);
 		return NextResponse.json(

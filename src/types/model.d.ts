@@ -7,29 +7,12 @@ interface EventDocument extends Document {
 	eventDuration: number,
 	description: string,
 	image: string
-	type: string
+	type: "online" | "venue",
 	
-	price: number,
-	locale: string,
-	totalTickets: number,
-	isFreeEvent: boolean,
-	isDiscount: boolean,
-	discount: number,
-	discountType: string,
-	discountPrice: number,
-	discountEndDateTime: string,
-	
-	tax: number,
-	productFee: number,
-
 	isBookingStartImmediately: boolean,
 	bookingStartDateTime: string,
 	isBookingContinueTillEventEnd: boolean,
 	bookingEndDateTime: string,
-
-	isRefundPolicies: boolean,
-	refundBefore: number,
-	refundPrecentage: number,
 
 	isSpecialInstructions: boolean,
 	specialInstructions: string,
@@ -39,9 +22,7 @@ interface EventDocument extends Document {
 	createdBy: string,
 	createdAt: Date,
 	updatedAt: Date,
-	status: string,
-
-	remaining: number
+	status: string
 }
 
 
@@ -66,8 +47,16 @@ interface VenueDocument extends Document {
     zipCode: string;
 	latitude: number;
 	longitude: number;
-	// ticketType: string;
-  // tickets: Array<TicketDocument>;
+  	tickets: Array<TicketDocument>;
+}
+
+interface OnlineDocument extends Document {
+	type: number,
+	price: number,
+	totalTickets: number,
+	tax: number,
+	productFee: number,
+	remaining: number
 }
 
 interface TicketDocument extends Document {
@@ -75,4 +64,8 @@ interface TicketDocument extends Document {
 	totalTickets: number;
 	maxBookingTickets: number;
 	price: number;
+	tax: number;
+	productFee: number
+	remaining: number
 }
+

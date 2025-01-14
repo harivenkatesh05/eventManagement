@@ -9,12 +9,14 @@ import "../../../../public/css/night-mode.css"
 import { TAG_CONSTANTS } from '@/dataset/constants'
 import DateTimePickerWithDuration from '@/components/form/DateTimePickerWithDuration'
 import DateTimePicker from '@/components/form/DateTimePicker'
-import { defaultVenueEvent } from '@/app/defaultValues'
+import { defaultTicket, defaultVenueEvent } from '@/app/defaultValues'
 import Link from 'next/link'
 import { createVenueEvent } from '@/app/apis'
 import { useRouter } from 'next/navigation'
 import { loadGoogleMapsScript } from '@/util/googleMaps'
 import toast from 'react-hot-toast'
+import GroupTicket from '@/components/ticket/groupTicket'
+import Ticket from '@/components/ticket/ticket'
 
 // Define error state interface
 interface FormErrors {
@@ -28,10 +30,9 @@ interface FormErrors {
 
 export default function VenueEvent() {
 	const router = useRouter();
-
-	// const [tickets, setTickets] = useState<Ticket[]>([])
+	const [showTicketModal, setShowTicketModal] = useState(false);
+	const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
 	const [event, setEvent] = useState<VenueEventForm>(defaultVenueEvent)
-	
 	const [loading, setLoading] = useState(false)
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
 	const [errors, setErrors] = useState<FormErrors>({
@@ -83,9 +84,6 @@ export default function VenueEvent() {
 			const values = Array.from(options.selectedOptions).map(option => option.value);
 			setEvent({ ...event, tags: values });
 		} else if (e.target.type === 'checkbox') {
-			if(e.target.name === "isFreeEvent" && (e.target as HTMLInputElement).checked) { 
-				setEvent({ ...event, price: 0 });
-			} 
 			if(e.target.name === "isBookingStartImmediately" && !(e.target as HTMLInputElement).checked) {
 				setEvent({ ...event, bookingStartDateTime: "" });
 			}
@@ -123,38 +121,38 @@ export default function VenueEvent() {
 		}
 	};
 
-	// const handleSaveTicket = (ticket: TicketForm) => {
-	// 	if(!ticket.id) {
-	// 		const newTicket: Ticket = {
-	// 			...ticket,
-	// 			id: crypto.randomUUID(),
-	// 			isTicketEnabled: true
-	// 		}
-	// 		setTickets([...tickets, newTicket])
-	// 	} else {
-	// 		setTickets(tickets.map(t => 
-	// 			t.id === ticket.id 
-	// 			  ? { ...t, ...ticket }
-	// 			  : t
-	// 		))
-	// 	}
-	// 	setTicket(null)
-	// }
+	const handleAddTicket = () => {
+		setSelectedTicket(null);
+		setShowTicketModal(true);
+	};
 
-	// const handleCancelTicket = () => {
-	// 	setTicket(null)
-	// }
+	const handleEditTicket = (ticket: Ticket) => {
+		setSelectedTicket(ticket);
+		setShowTicketModal(true);
+	};
 
-	// const handleDeleteTicket = (ticketId: string) => {
-	// 	setTickets(tickets.filter((ticket) => ticket.id !== ticketId))
-	// }
+	const handleSaveTicket = (ticket: TicketForm) => {
+		if (!ticket.id) {
+			const newTicket: Ticket = {
+				...ticket,
+				id: crypto.randomUUID(),
+			};
+			setEvent({ ...event, tickets: [...event.tickets, newTicket] });
+		} else {
+			setEvent({ ...event, tickets: event.tickets.map(t => 
+				t.id === ticket.id ? { ...t, ...ticket } : t
+			)});
+		}
+		setShowTicketModal(false);
+	};
 
-	// const handleEditTicket = (ticket: Ticket) => {
-	// 	setTicket(ticket)
-		
-	// 	const addTicketButton = document.querySelector("#addTicket") as HTMLElement
-	// 	addTicketButton.click()
-	// }
+	const handleCancelTicket = () => {
+		setShowTicketModal(false);
+	};
+
+	const handleDeleteTicket = (ticketId: string) => {
+		setEvent({ ...event, tickets: event.tickets.filter((ticket) => ticket.id !== ticketId) });
+	}
 
 	const initMap = () => {
 		const mapElement = document.getElementById('venue-map');
@@ -318,7 +316,7 @@ export default function VenueEvent() {
 			name: event.name.trim() === "",
 			tags: event.tags.length === 0,
 			eventDate: event.eventDate === "",
-			totalTickets: event.totalTickets === 0,
+			totalTickets: event.tickets.length === 0,
 			venue: event.venue.trim() === "",
 			address: event.address1.trim() === ""
 		};
@@ -333,7 +331,7 @@ export default function VenueEvent() {
 		
 		if (newErrors.totalTickets) {
 			(globalThis as any).$('#tab_step2_link').click();
-			toast.error('Please fill the required fields');
+			toast.error('Please add at least one ticket');
 			return false;
 		}
 		
@@ -342,7 +340,14 @@ export default function VenueEvent() {
 
 	return (
 		<>
-       		{/* <GroupTicket ticket={ticket ?? {} as Ticket} onSave={handleSaveTicket} onCancel={handleCancelTicket} /> */}
+			{/* Remove Bootstrap modal trigger button */}
+			{showTicketModal && (
+				<GroupTicket 
+					ticket={selectedTicket ?? defaultTicket as Ticket}
+					onSave={handleSaveTicket}
+					onCancel={handleCancelTicket}
+				/>
+			)}
 			<div className="wrapper">
 				<div className="breadcrumb-block">
 					<div className="container">
@@ -626,7 +631,7 @@ export default function VenueEvent() {
 												</div>
 											</div>
 											
-											{/* <div className="step-tab-panel step-tab-gallery" id="tab_step2">
+											<div className="step-tab-panel step-tab-gallery" id="tab_step2">
 												<div className="tab-from-content">
 													<div className="main-card">
 														<div className="bp-title">
@@ -640,19 +645,18 @@ export default function VenueEvent() {
 																		<p className="mt-2 fs-14 d-block mb-3 pe_right">Create tickets for your event by clicking on the &apos;Add Tickets&apos; button below.</p>
 																	</div>
 																	<div className="d-flex align-items-center justify-content-between pt-4 pb-3 full-width">
-																		<h3 className="fs-18 mb-0">Tickets (<span className="venue-event-ticket-counter">{tickets.length}</span>)</h3>
+																		<h3 className="fs-18 mb-0">Tickets (<span className="venue-event-ticket-counter">{event.tickets.length}</span>)</h3>
 																		<div className="btn-ticket-type-top">
 																			<button 
 																				className="main-btn btn-hover h_40 pe-4 ps-4" 
-																				type="button" 
-																				data-bs-toggle="modal" data-bs-target="#groupTicketModal"
-																				id="addTicket"
+																				type="button"
+																				onClick={handleAddTicket}
 																			>
 																				<span>Add Tickets</span>
 																			</button>
 																		</div>
 																	</div>
-																	{tickets.length === 0 ? (
+																	{event.tickets.length === 0 ? (
 																		<div className="ticket-type-item-empty text-center p_30">
 																			<div className="ticket-list-icon d-inline-block">
 																				<img src="/images/ticket.png" alt=""></img>
@@ -661,7 +665,7 @@ export default function VenueEvent() {
 																			<p className="mb-0">You have not created a ticket yet. Please click the button above to create your event ticket.</p>
 																		</div>) : 
 																		<div className="ticket-type-item-list mt-4">
-																			{tickets.map((ticket) => {
+																			{event.tickets.map((ticket) => {
 																				return (
 																					<Ticket key={ticket.id} ticket={ticket} onEdit={() => handleEditTicket(ticket)} onDelete={() => handleDeleteTicket(ticket.id)} />
 																				)
@@ -674,9 +678,9 @@ export default function VenueEvent() {
 														</div>
 													</div>
 												</div>
-											</div> */}
+											</div>
 
-											<div className="step-tab-panel step-tab-gallery" id="tab_step2">
+											{/* <div className="step-tab-panel step-tab-gallery" id="tab_step2">
 												<div className="tab-from-content">
 													<div className="main-card">
 														<div className="bp-title">
@@ -689,7 +693,7 @@ export default function VenueEvent() {
 																	<p className="mt-2 fs-14 d-block mb-3 pe_right">Add the ticket price and the number of your attendees. For free events, keep the price at empty.</p>
 																	<div className="content-holder">
 																		<div className="row g-3">
-																			{!event.isFreeEvent && <div className="col-md-6 disabled-action">
+																			{!event. && <div className="col-md-6 disabled-action">
 																				<label className="form-label mt-3 fs-6">Price*</label>
 																				<div className="loc-group position-relative input-group">
 																					<input 
@@ -706,12 +710,12 @@ export default function VenueEvent() {
 																					/>
 																					<div className="pp-select">
 																						<span className="pp-select-label">INR</span>
-																						{/* <select className="selectpicker dropdown-no-bg" onChange={handleChange} name='locale' defaultValue={"INR"}>
+																						<select className="selectpicker dropdown-no-bg" onChange={handleChange} name='locale' defaultValue={"INR"}>
 																							<option value="AUD">AUD</option>
 																							<option value="USD">USD</option>
 																							<option value="INR">INR</option>
 																							<option value="EUR">EUR</option>
-																						</select> */}
+																						</select> 
 																					</div>
 																				</div>
 																			</div>}
@@ -754,7 +758,7 @@ export default function VenueEvent() {
 																	</div>
 																</div>
 															</div>
-															{/* <div className="stepper-data-set pt_30 disabled-action">
+															<div className="stepper-data-set pt_30 disabled-action">
 																<div className="content-holder">
 																	<div className="form-group">
 																		<div className="d-flex align-items-start">
@@ -790,11 +794,11 @@ export default function VenueEvent() {
 																		</div>
 																	</div>
 																</div>
-															</div> */}
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
+											</div> */}
 
 											<div className="step-tab-panel step-tab-location" id="tab_step3">
 												<div className="tab-from-content">											

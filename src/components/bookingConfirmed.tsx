@@ -5,7 +5,7 @@ import { getDateObj } from '@/util/date'
 import Link from 'next/link';
 import React from 'react'
 
-export default function BookingConfirmed({ event, tickets, ticketID }: { event: EventFullDetail, tickets: number, ticketID: string }) {
+export default function BookingConfirmed({ event, tickets, totalAmount, ticketID }: { event: OnlineEventFullDetail | VenueEventFullDetail, tickets: number, ticketID: string, totalAmount: number }) {
 	const { user } = useUser();
 	const minutes = event.eventDuration % 60;
 	const hours = (event.eventDuration - minutes) / 60;
@@ -46,12 +46,12 @@ export default function BookingConfirmed({ event, tickets, ticketID }: { event: 
 											<i className="fa-solid fa-ticket rotate-icon"></i>
 											<span className="booking-count-tickets mx-2">{tickets}</span>x Ticket
 										</div>
-										{!event.isFreeEvent && <div className="booking-total-grand">
-											Total : <span>${event.price * tickets}</span>
+										{totalAmount > 0 && <div className="booking-total-grand">
+											Total : <span>${totalAmount}</span>
 										</div>}
 									</div>
 								</div>
-								{!(event.type === 'online' && event.isFreeEvent) && <Link href={`/invoice/${ticketID}`} className="main-btn btn-hover h_50 w-100 mt-5"><i className="fa-solid fa-ticket rotate-icon me-3"></i>View Ticket</Link>}
+								{!(event.type === 'online' && totalAmount > 0) && <Link href={`/invoice/${ticketID}`} className="main-btn btn-hover h_50 w-100 mt-5"><i className="fa-solid fa-ticket rotate-icon me-3"></i>View Ticket</Link>}
 							</div>
 						</div>
 					</div>

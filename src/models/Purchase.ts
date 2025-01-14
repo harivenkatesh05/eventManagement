@@ -45,8 +45,10 @@ const purchaseSchema = new mongoose.Schema({
 	phoneNumber: {
 		type: String,
 		required: true
+	},
+	ticketID: {
+		type: String
 	}
-
 });
 
 // Generate and upload barcode after saving

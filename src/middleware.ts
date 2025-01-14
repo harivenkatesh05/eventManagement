@@ -17,7 +17,18 @@ export function middleware(request: NextRequest) {
 		'/createEvent',
 		'/createEvent/online',
 		'/createEvent/venue',
-		'/invoice'
+		'/invoice',
+		'/auth/me',
+		'/auth/send-otp',
+		'/auth/update-phone',
+		'/auth/verify-otp',
+		'/auth/signout',
+		'/events/online',
+		'/events/venue',
+		'/payment/initiate',
+		'/payment/status',
+		'/purchase',
+		'/cache/clear'
 	]
 
 	const isProtectedPath = protectedPaths.some(path => 

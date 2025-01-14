@@ -32,6 +32,7 @@ export const connectDatabase = async () => {
 			serverSelectionTimeoutMS: 5000,
 		};
 
+		console.log("Creating Mongoose connection")
 		cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
 			return mongoose;
 		});

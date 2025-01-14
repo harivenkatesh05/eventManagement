@@ -2304,6 +2304,7 @@ body {
     display: flex;
     width: 100%;
     align-items: center;
+    margin: 5% 0%;
 }
 
 .select-tickets-block h6 {
@@ -2311,9 +2312,7 @@ body {
     font-family: inherit;
     color: #000;
     font-weight: 500;
-    border-bottom: 1px solid #efefef;
     padding-bottom: 15px;
-    margin-bottom: 27px;
 }
 
 .ticket-price {

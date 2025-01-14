@@ -4,60 +4,46 @@ import Card from "@/components/card/card";
 import CardSkeletons from "@/components/card/skeletonCollection";
 import { getDateObj } from "@/util/date";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense } from "react";
 import { fetchEvents } from "./apis";
 
 export default function Home() {
-	const [isLoading, setIsLoading] = useState(true)
-	const [events, setEvents] = useState<EventType[]>([])
-	const [error, setError] = useState<string | null>(null)
+	const renderContent = async () => {
+		try{
+			const events = await fetchEvents()
+			if (!events.length) {
+				return (
+					<div className="text-center p-4">
+						<h3>No events found</h3>
+						<p>Check back later for upcoming events</p>
+					</div>
+				)
+			}
 	
-	useEffect(() => {
-		fetchEvents().then((events: EventType[]) => {
-			setEvents(events)
-			setIsLoading(false)
-		}).catch((err) => {
-			setError(err instanceof Error ? err.message : 'Failed to load events');
-			setIsLoading(false);
-		});
-	}, [])
+			return events.map((event: EventType) => {
+				const price = event.price > 0 ? `INR ${event.price.toLocaleString('en-IN')}` : "Free" ;
+				const mins = event.eventDuration % 60;
+				const inHour = mins > 0 ? `${Math.floor(event.eventDuration / 60)}h ${mins}m` : `${Math.floor(event.eventDuration / 60)}h`
 
-	const renderContent = () => {
-		if (isLoading) {
-			return <CardSkeletons count={8} />
+				return (
+					<div key={event.id} className={"col-xl-3 col-lg-4 col-md-6 col-sm-12 mix " + event.tags.join(" ")} data-ref="mixitup-target">
+						<Card 
+							title={event.name} 
+							dateTime={getDateObj(event.eventDate)} 
+							duration={inHour} 
+							price={price} 
+							image={event.image} 
+							remaining={event.remaining} 
+							id={event.id}
+							type={event.type}
+						/>
+					</div>
+				)
+			})
+		} catch(error) {
+			console.error(error)
+			return <div className="alert alert-danger">Failed to load events</div>
 		}
-
-		if (error) {
-			return <div className="alert alert-danger">{error}</div>
-		}
-
-		if (!events.length) {
-			return (
-				<div className="text-center p-4">
-					<h3>No events found</h3>
-					<p>Check back later for upcoming events</p>
-				</div>
-			)
-		}
-
-		return events.map((event: EventType) => {
-			const price = event.isFreeEvent ? "Free" : `${event.locale} ${event.price.toLocaleString('en-IN')}`;
-			const mins = event.eventDuration % 60;
-			const inHour = mins > 0 ? `${Math.floor(event.eventDuration / 60)}h ${mins}m` : `${Math.floor(event.eventDuration / 60)}h`
-			return (
-				<div key={event.id} className={"col-xl-3 col-lg-4 col-md-6 col-sm-12 mix " + event.tags.join(" ")} data-ref="mixitup-target">
-					<Card 
-						title={event.name} 
-						dateTime={getDateObj(event.eventDate)} 
-						duration={inHour} 
-						price={price} 
-						image={event.image} 
-						remaining={event.remaining} 
-						id={event.id}
-					/>
-				</div>
-			)
-		})
 	}
 
 	return (
@@ -106,7 +92,9 @@ export default function Home() {
 										<button type="button" className="control" data-filter=".theatre ">Theatre </button>
 									</div>
 									<div className="row" data-ref="event-filter-content">
-										{renderContent()}
+										<Suspense fallback={<CardSkeletons count={8}/>}>
+											{renderContent()}
+										</Suspense>
 									</div>
 									<div className="browse-btn">
 										<Link href="/explore" className="main-btn btn-hover ">Browse All</Link>

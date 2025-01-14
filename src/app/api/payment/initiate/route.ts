@@ -3,15 +3,14 @@ import { getUserIdFromToken } from '../../utility';
 import sha256 from 'sha256';
 import axios from 'axios';
 import Purchase from '@/models/Purchase';
+import { store } from '@/lib/store';
 
 export async function POST(request: NextRequest) {
 	try {
 		const data = await request.json();
-		const userId = getUserIdFromToken(request);
-		if (!userId) {
-			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-		}
-
+		const userId = getUserIdFromToken(request)!;
+		const user = await store.getUserByID(userId)!
+		
 		// PhonePe integration configuration
 		const payEndpoint = process.env.PHONEPE_PAY_ENDPOINT;
 		const merchantId = process.env.PHONEPE_MERCHANT_ID;
@@ -51,7 +50,7 @@ export async function POST(request: NextRequest) {
 			redirectUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/callback/${uniqueId}`,
 			redirectMode: "REDIRECT",
 			merchantUserId: userId,
-			mobileNumber: data.user.phoneNumber,
+			mobileNumber: user.phoneNumber,
 			// deviceContext: {
 			// 	deviceOS: "WEB"
 			// },

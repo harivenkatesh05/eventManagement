@@ -154,7 +154,7 @@ export default function Invoice() {
 												<th scope="col">Event Details</th>
 												<th scope="col">Type</th>
 												<th scope="col">Qty</th>
-												{!purchase.event.isFreeEvent && <>
+												{purchase.totalAmount > 0 && <>
 													<th scope="col">Unit Price</th>
 													<th scope="col">Total</th>
 												</>}
@@ -166,16 +166,16 @@ export default function Invoice() {
 												<td><Link href={`/events/${purchase.eventId}`} target="_blank">{purchase.event.name}</Link></td>	
 												<td>{purchase.event.type}</td>	
 												<td>{purchase.tickets}</td>
-												{!purchase.event.isFreeEvent && <>
+												{purchase.totalAmount > 0 && <>
 													<td>${purchase.totalAmount / purchase.tickets}</td>
 													<td>${purchase.totalAmount}</td>
 												</>}
 											</tr>
-											{!purchase.event.isFreeEvent && <tr>
+											{purchase.totalAmount > 0 && <tr>
 												<td colSpan={1}></td>
 												<td colSpan={5}>
 													<div className="user_dt_trans text-end pe-xl-4">
-														<div className="totalinv2">Invoice Total : {`${purchase.event.locale} ${purchase.totalAmount}`}</div>
+														<div className="totalinv2">Invoice Total : {`INR ${purchase.totalAmount}`}</div>
 														<p>Paid via PhonePe</p>
 													</div>
 												</td>
@@ -219,7 +219,7 @@ export default function Invoice() {
 															<i className="fa-solid fa-ticket rotate-icon"></i>
 															<span className="booking-count-tickets mx-2">{purchase.tickets}</span>x Ticket
 														</div>
-														{!purchase.event.isFreeEvent && <div className="booking-total-grand">
+														{purchase.totalAmount > 0 && <div className="booking-total-grand">
 															Total : <span>${purchase.totalAmount}</span>
 														</div>}
 													</div>

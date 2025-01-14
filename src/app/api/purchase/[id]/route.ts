@@ -3,6 +3,7 @@ import Purchase from "@/models/Purchase";
 import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from 'mongodb';
 import { getUserIdFromToken } from "@/app/api/utility";
+import { store } from "@/lib/store";
 
 export async function GET(
 	request: NextRequest,
@@ -21,7 +22,7 @@ export async function GET(
 		}
 
 		// Get current user
-		const userId = await getUserIdFromToken(request);
+		const userId = getUserIdFromToken(request);
 		if (!userId) {
 			return NextResponse.json(
 				{ message: "Unauthorized" },
@@ -31,8 +32,6 @@ export async function GET(
 
 		// Find purchase and populate event details
 		const purchase = await Purchase.findById(id)
-			.populate('eventId');
-
 		if (!purchase) {
 			return NextResponse.json(
 				{ message: "Purchase not found" },
@@ -48,15 +47,14 @@ export async function GET(
 			);
 		}
 
+		const event = await store.getEvent(purchase.eventId)
 		return NextResponse.json({
 			id: purchase._id,
 			event: {
-				name: purchase.eventId.name,
-				image: purchase.eventId.image,
-				locale: purchase.eventId.locale,
-				isFreeEvent: purchase.eventId.isFreeEvent,
-				type: purchase.eventId.type,
-				date: purchase.eventId.eventDate
+				name: event.name,
+				image: event.image,
+				type: event.type,
+				date: event.eventDate
 			},
 			eventId: purchase.eventId._id,
 			tickets: purchase.tickets,

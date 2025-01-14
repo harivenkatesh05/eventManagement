@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react'
 
-function Card({ title, dateTime, duration, price, image, id }: { title: string; dateTime: Date; duration: string; price: string; image: string; remaining: number; id: string }) {
+function Card({ title, dateTime, duration, price, image, id, type }: { title: string; dateTime: Date; duration: string; price: string; image: string; remaining: number; id: string, type: EventTypeName }) {
 	const date = dateTime.getDate() + ' ' + dateTime.toLocaleString('default', { month: 'short' });
 	const time = dateTime.toLocaleDateString('en-US', { weekday: 'short' }) + ', ' + dateTime.toLocaleString('default', { hour: '2-digit', minute: '2-digit', hour12: true });
 	// const src = `/images/event-imgs/${image}`
@@ -17,13 +17,13 @@ function Card({ title, dateTime, duration, price, image, id }: { title: string; 
   	return (
 		<div className="main-card mt-4">
 			<div className="event-thumbnail">
-				<Link href={`/event/${id}`} className="thumbnail-img">
+				<Link href={`/event/${type}/${id}`} className="thumbnail-img">
 					<Image src={imageSrc} alt="" onError={handleError} width={100} height={100}/>
 				</Link>
 				{/* <span className="bookmark-icon" title="Bookmark"></span> */}
 			</div>
 			<div className="event-content">
-				<Link href={`/event/${id}`} className="event-title">{title}</Link>
+				<Link href={`/event/${type}/${id}`} className="event-title">{title}</Link>
 				<div className="duration-price-remaining">
 					<span className="duration-price">{price}*</span>
 					{/* {remaining > 0 && <span className="remaining"><i className="fa-solid fa-ticket fa-rotate-90"></i>{remaining} Remaining</span>} */}

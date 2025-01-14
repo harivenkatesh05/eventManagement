@@ -1,21 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDatabase } from "../../../../lib/mongodb";
 import OnlineEvent from "@/models/OnlineEvent";
 import Event from "@/models/Event";
 import cloudinary from "@/lib/cloudinary";
 import { getUserIdFromToken } from "../../utility";
-import { storeInRuntime } from "@/lib/runtimeDataStore";
+import { store } from "@/lib/store";
 
 export async function POST(req: NextRequest) {
 	try {
 		const userId = getUserIdFromToken(req);
-		if (!userId) {
-			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-		}
-		
-		await connectDatabase();
-		
-		const event = await req.json();
+		const event: OnlineEventForm = await req.json();
 		
 		if (!event.name || event.tags.length <= 0 || !event.eventDate || !event.eventDuration || !event.type || !event.totalTickets) {
 			return NextResponse.json({ message: "Required fields are missing" }, { status: 400 });
@@ -23,7 +16,7 @@ export async function POST(req: NextRequest) {
 		
 		let imageUrl = "";
 		if (event.image) {
-			const uploadResponse = await cloudinary.uploader.upload(event.image, {
+			const uploadResponse = await cloudinary.uploader.upload(event.image as unknown as string, {
 				folder: 'events',
 				resource_type: 'auto'
 			});
@@ -32,10 +25,14 @@ export async function POST(req: NextRequest) {
 
 		const newOnlineEvent = new OnlineEvent({
 			type: event.type,
+			price: event.price,
+			totalTickets: event.totalTickets,
+			remaining: event.totalTickets,
+			tax: 0,
+			productFee: 0
 		});
 
-		const savedEvent = await newOnlineEvent.save();
-		console.log("savedEvent", savedEvent);
+		const id = await store.createOnlineEvent(newOnlineEvent)
 		
 		const newEvent = new Event({
 			name: event.name,
@@ -45,17 +42,7 @@ export async function POST(req: NextRequest) {
 			eventDate: event.eventDate,
 			eventDuration: event.eventDuration,
 			type: "online",
-			linkedEvent: savedEvent._id,
-
-			price: event.price,
-			locale: event.locale,
-			totalTickets: event.totalTickets,
-			isFreeEvent: event.isFreeEvent,
-			isDiscount: event.isDiscount,
-			discount: event.discount,
-			discountType: event.discountType,
-			discountPrice: event.discountPrice,
-			discountEndDateTime: event.discountEndDateTime,
+			linkedEvent: id,
 
 			isBookingStartImmediately: event.isBookingStartImmediately,
 			bookingStartDateTime: event.bookingStartDateTime,
@@ -65,24 +52,14 @@ export async function POST(req: NextRequest) {
 			isSpecialInstructions: event.isSpecialInstructions,
 			specialInstructions: event.specialInstructions,
 
-			isRefundPolicies: event.isRefundPolicies,
-			refundBefore: event.refundBefore,
-			refundPrecentage: event.refundPrecentage,
-
 			createdBy: userId,
 			createdAt: new Date().toISOString(),
 			updatedAt: new Date().toISOString(),
 			status: "waitingForApproval",
-
-			remaining: event.totalTickets,
 		});
 		
-		await newEvent.save();
-		console.log("newEvent", newEvent);
-
-		storeInRuntime('events', newEvent._id.toString(), newEvent);
-
-		return NextResponse.json({ message: "Event created successfully", eventId: newEvent._id }, { status: 201 });
+		const eventID = store.createEvent(newEvent)
+		return NextResponse.json({ message: "Event created successfully", eventId: eventID }, { status: 201 });
 	} catch (error) {
 		console.error('Server error:', error);
 		return NextResponse.json({ message: "Server error", error }, { status: 500 });

@@ -3,6 +3,8 @@ import { NextRequest } from "next/server";
 import { TOKEN_COOKIE_NAME } from "./constants";
 import cloudinary from '@/lib/cloudinary';
 import QRCode from 'qrcode';
+import { VenueDocument } from "@/types/model";
+import { OnlineDocument } from "@/types/model";
 
 export function getUserIdFromToken(req: NextRequest) {
 	const authToken = req.cookies.get(TOKEN_COOKIE_NAME);
@@ -36,4 +38,8 @@ export async function generateQRCode(data: string): Promise<string> {
 		console.error('Error generating QR code:', error);
 		throw error;
 	}
+}
+
+export function isOnlineEvent(event: OnlineDocument | VenueDocument): event is OnlineDocument {
+	return "type" in event
 }

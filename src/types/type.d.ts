@@ -1,16 +1,25 @@
+type EventTypeName = 'online' | 'venue'
+
+type EventType = {
+	id: string;
+	name: string;
+	description: string,
+	tags: string[];
+	type: EventTypeName;
+	image: string;
+	eventDuration: number
+	eventDate: string
+
+	price: number;
+	remaining: number;
+};
+
 type Ticket = {
 	id: string;
 	ticketName: string;
-	isTicketLimitEnabled: boolean;
-	ticketLimit: number;
-	isTicketLimitPerUserEnabled: boolean;
-	isTicketEnabled: boolean;
-	ticketLimitPerUser: number;
-	ticketPrice: number;
-	isTicketDiscountEnabled: boolean;
-	discountPrice: number;
-	discountEndDateTime: string;
-	discountType: string;
+	totalTickets: number;
+	// maxBookingTickets: number;
+	price: number;
 };
 
 type User = {
@@ -27,7 +36,7 @@ type SignInForm = {
 	password: string;
 };
 
-type TicketForm = Omit<Ticket, 'id' | 'isTicketEnabled'> & { id?: string };
+type TicketForm = Omit<Ticket, 'id'> & { id?: string };
 
 type EventForm = {
 	name: string;
@@ -37,25 +46,10 @@ type EventForm = {
 	eventDuration: number;
 	image: File | null;
 
-	price: number;
-	locale: string;
-	totalTickets: number;
-	isFreeEvent: boolean;
-	isDiscount: boolean;
-	discount: number;
-	discountType: string;
-	discountPrice: number;
-	discountEndDateTime: string;
-
 	isBookingStartImmediately: boolean;
 	bookingStartDateTime: string;
 	isBookingContinueTillEventEnd: boolean;
 	bookingEndDateTime: string;
-
-	isRefundPolicies: boolean;
-	refundBefore: number;
-	refundAmount: number;
-	refundPrecentage: number;
 
 	isSpecialInstructions: boolean;
 	specialInstructions: string;
@@ -63,6 +57,9 @@ type EventForm = {
 
 type OnlineEventForm = EventForm & {
 	type: number;
+
+	price: number;
+	totalTickets: number;
 };
 
 // type VenueTicket = {
@@ -79,35 +76,67 @@ type VenueEventForm = EventForm & {
 	zipCode: string;
 	latitude: number;
 	longitude: number;
+
+	tickets: Ticket[];
 };
 
-type EventType = Omit<EventForm, 'image'> & {
+
+type EventFullDetail = {
 	id: string;
-	type: string;
+	type: "online" | "venue";
+	name: string;
+	description: string,
+	tags: string[];
 	image: string;
-	remaining: number;
-};
+	eventDuration: number
+	eventDate: string
 
-type EventFullDetail = EventType & {
-	createdBy: User;
+	createdBy: string;
 	createdByName: string;
+
 	startDate: string;
 	endDate: string;
-	tax: number;
-	productFee: number;
-	venue?: {
-		location: string;
-		latitude: number;
-		longitude: number;
-	};
+	specialInstructions: string,
 };
 
-type PurchaseForm = {
+type OnlineEventFullDetail = EventFullDetail & {
+	price: number,
+	tax: number;
+	productFee: number; 
+	remaining: number; 
+};
+
+type VenueEventFullDetail = EventFullDetail & {
+	location: string;
+	latitude: number;
+	longitude: number;
+
+	tickets: {
+		ticketID: string
+		ticketName: string,
+		// maxBooking: number
+		tax: number;
+		productFee: number;
+		remaining: number;
+		price: number
+	}[];
+}
+
+type OnlinePurchaseForm = {
 	firstName: string;
 	lastName: string;
 	phoneNumber: string;
 	tickets: number;
 };
+
+type VenuePurchaseForm = {
+	firstName: string;
+	lastName: string;
+	phoneNumber: string;
+
+	ticketID: string,
+	tickets: number
+}
 
 type PurchaseType = {
 	id: string;
@@ -116,8 +145,6 @@ type PurchaseType = {
 	event: {
 		name: string;
 		image: string;
-		locale: string;
-		isFreeEvent: boolean;
 		type: string;
 		date: string;
 	};
@@ -137,12 +164,8 @@ type PurchaseType = {
 
 type PaymentData = {
 	amount: number;
-	currency: string;
 	eventId: string;
 	tickets: number;
-	user: {
-		phoneNumber: string;
-	};
 	customerDetails: {
 		firstName: string,
 		lastName: string,

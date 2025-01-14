@@ -1,23 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectDatabase } from '../../../../lib/mongodb';
 import Event from '@/models/Event';
 import cloudinary from '@/lib/cloudinary';
 import { getUserIdFromToken } from '../../utility';
 import VenueEvent from '@/models/VenueEvent';
-import { storeInRuntime } from '@/lib/runtimeDataStore';
+import { store } from '@/lib/store';
 
 export async function POST(req: NextRequest) {
 	try {
-		await connectDatabase();
-
-		const event = await req.json();
-	
+		const event: VenueEventForm = await req.json();	
 		const userId = getUserIdFromToken(req);
-		if (!userId) {
-			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-		}
-
-		console.log('venue event create', event);
 
 		if (
 			!event.name ||
@@ -39,7 +30,7 @@ export async function POST(req: NextRequest) {
 
 		let imageUrl = '';
 		if (event.image) {
-			const uploadResponse = await cloudinary.uploader.upload(event.image, {
+			const uploadResponse = await cloudinary.uploader.upload(event.image as unknown as string, {
 				folder: 'events',
 				resource_type: 'auto',
 			});
@@ -56,13 +47,20 @@ export async function POST(req: NextRequest) {
 			zipCode: event.zipCode,
 			latitude: event.latitude,
 			longitude: event.longitude,
-			// ticketType: event.ticketType,
-			// tickets: event.tickets,
+			tickets: event.tickets.map((ticket) => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const {id, ...remainingTicket} = ticket
+				return {
+					...remainingTicket,
+					tax: 0,
+					productFee: 0,
+					remaining: remainingTicket.totalTickets
+				}
+			}),
 		});
 
-		const savedVenueEvent = await newVenueEvent.save();
-		console.log('savedVenueEvent', savedVenueEvent);
-		
+		const venueEventID = await store.createVenueEvent(newVenueEvent)
+
 		const newEvent = new Event({
 			name: event.name,
 			tags: event.tags,
@@ -72,16 +70,6 @@ export async function POST(req: NextRequest) {
 			eventDuration: event.eventDuration,
 			type: 'venue',
 
-			price: event.price,
-			locale: event.locale,
-			totalTickets: event.totalTickets,
-			isFreeEvent: event.isFreeEvent,
-			isDiscount: event.isDiscount,
-			discount: event.discount,
-			discountType: event.discountType,
-			discountPrice: event.discountPrice,
-			discountEndDateTime: event.discountEndDateTime,
-
 			isBookingStartImmediately: event.isBookingStartImmediately,
 			bookingStartDateTime: event.bookingStartDateTime,
 			isBookingContinueTillEventEnd: event.isBookingContinueTillEventEnd,
@@ -90,28 +78,18 @@ export async function POST(req: NextRequest) {
 			isSpecialInstructions: event.isSpecialInstructions,
 			specialInstructions: event.specialInstructions,
 
-			isRefundPolicies: event.isRefundPolicies,
-			refundBefore: event.refundBefore,
-			refundPrecentage: event.refundPrecentage,
-
 			createdBy: userId,
 			createdAt: new Date().toISOString(),
 			updatedAt: new Date().toISOString(),
 			status: 'waitingForApproval',
 
-			linkedEvent: savedVenueEvent._id,
-
-			remaining: event.totalTickets,
+			linkedEvent: venueEventID
 		});
 		
-		const savedEvent = await newEvent.save();
-		console.log('savedEvent', savedEvent);
-		
-		storeInRuntime('events', savedEvent._id.toString(), savedEvent);
-		storeInRuntime('venueEvents', savedVenueEvent._id.toString(), savedVenueEvent);
+		const eventID = await store.createEvent(newEvent);
 		
 		return NextResponse.json(
-			{ message: 'Event created successfully', eventId: savedEvent._id },
+			{ message: 'Event created successfully', eventId: eventID },
 			{ status: 201 }
 		);
 	} catch (error) {

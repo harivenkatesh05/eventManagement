@@ -53,12 +53,12 @@ function ExploreComponent() {
 	}, [filter]);
 
 	const eventCards = filteredEvents.map((event) => {
-		const price = event.isFreeEvent ? "Free" : `${event.locale} ${event.price.toLocaleString('en-IN')}`;
+		const price = event.price === 0 ? "Free" : `INR ${event.price.toLocaleString('en-IN')}`;
 		const mins = event.eventDuration % 60;
 		const inHour = mins > 0 ? `${Math.floor(event.eventDuration / 60)}h ${mins}m` : `${Math.floor(event.eventDuration / 60)}h`
 		return (
 			<div key={event.id} className={"col-xl-3 col-lg-4 col-md-6 col-sm-12 mix " + event.tags.join(" ")} data-ref="mixitup-target">
-				<Card title={event.name} dateTime={getDateObj(event.eventDate)} duration={inHour} price={price} image={event.image} remaining={event.remaining} id={event.id} />
+				<Card title={event.name} dateTime={getDateObj(event.eventDate)} duration={inHour} price={price} image={event.image} remaining={event.remaining} id={event.id} type={event.type} />
 			</div>
 		)
 	})

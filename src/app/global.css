@@ -282,3 +282,22 @@ a:hover {
 .contact-details p:first-child {
   font-weight: 500;
 }
+
+.sl-flex{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid #efefef;
+}
+
+.form-select.h_50{
+  width: 50%;
+  height: 30%;
+  margin-top: -13px;
+  font-size: 18px;
+  font-family: inherit;
+}
+
+.sl-flex .select-tickets-block.h6{
+  
+}
