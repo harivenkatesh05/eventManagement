@@ -167,9 +167,9 @@ export const updatePhone = async (email: string, phoneNumber: string) => {
 	return response.json();
 };
 
-export const clearRuntimeStore = async (model?: string) => {
+export const clearCacheStore = async (model?: string) => {
 	const body = model ? { model: model } : {};
-	const response = await fetch(`${BASE_URL}/api/runtime-store/clear`, {
+	const response = await fetch(`${BASE_URL}/api/cache/clear`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(body),
@@ -207,4 +207,4 @@ export const verifyPhoneOTP = async (phoneNumber: string, code: string) => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(globalThis as any).clearRuntimeStore = clearRuntimeStore;
+(globalThis as any).clearCacheStore = clearCacheStore;

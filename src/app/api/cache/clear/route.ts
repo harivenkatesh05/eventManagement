@@ -5,7 +5,7 @@ import { store } from "@/lib/store";
 export async function POST(request: NextRequest) {
 	try {
 		const userId = getUserIdFromToken(request);
-		if(userId !== "67606b08bc7c529fa74a1528") {
+		if(userId !== "676d9d8a86d9dabaf29972df") {
 			return NextResponse.json({ message: 'You are not authorized to clear the runtime store' });
 		}
 
