@@ -1,6 +1,6 @@
 'use client'
 
-import { initiatePayment, bookOnlineEvent, bookVenueEvent } from '@/app/apis';
+import { initiatePayment, bookVenueEvent } from '@/app/apis';
 import { useUser } from '@/context/UserContext';
 import { formatDateToIST, getDateObj } from '@/util/date';
 import { toast } from 'react-hot-toast';
