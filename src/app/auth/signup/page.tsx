@@ -55,46 +55,43 @@ export default function SignUp() {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
-	const handleSignup = (e: Event) => {
+	const handleSignup = async (e: Event) => {
 		e.preventDefault();
 		if (!validateForm()) {
 			toast.error('Please fill all required fields correctly');
 			return;
 		}
 
-		signup(formData)
-			.then(data => {
-				if(data.message === "User created successfully"){
-					router.push("/auth/signin");
-					toast.success('Account created successfully! Please sign in.');
-				}
-			})
-			.catch(() => {
-				toast.error('Failed to create account');
-			});
+		try {
+			const data = await signup(formData);
+			if(data.message === "User created successfully"){
+				router.push("/auth/signin");
+				toast.success('Account created successfully! Please sign in.');
+			}
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		} catch (error) {
+			toast.error('Failed to create account');
+		}
 	}
 
-	const handleGoogleSuccess = (credentialResponse: { credential: string }) => {
-		fetch('/api/auth/google', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ credential: credentialResponse.credential })
-		})
-			.then(response => {
-				if (!response.ok) {
-					return response.json().then(data => {
-						throw new Error(data.error || 'Google login failed');
-					});
-				}
-				return response.json();
-			})
-			.then(() => {
-				router.push('/');
-			})
-			.catch(error => {
-				console.error('Google login error:', error);
-				alert('Failed to login with Google');
+	const handleGoogleSuccess = async (credentialResponse: { credential: string }) => {
+		try {
+			const response = await fetch('/api/auth/google', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ credential: credentialResponse.credential })
 			});
+
+			const data = await response.json();
+			if (response.ok) {
+				router.push('/');
+			} else {
+				throw new Error(data.error || 'Google login failed');
+			}
+		} catch (error) {
+			console.error('Google login error:', error);
+			alert('Failed to login with Google');
+		}
 	}
 
 	return (
