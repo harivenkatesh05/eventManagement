@@ -142,23 +142,16 @@ class Store{
 	}
 
 	async getEvents() {
-		const eventMap = await redis.hgetall("event:map")
-		let events = eventMap ? Object.values(eventMap) : []
+		const eventMap = await redis.hgetall("event:map") as {[x: string]: EventDocument}
+		let events: EventDocument[] = eventMap ? Object.values(eventMap) : []
 		
 		if(events.length === 0) {
 			await connectDatabase();
-			events = await Event.find({ status: { $ne: 'waitingForApproval' } });
+			events = await Event.find({ status: { $ne: 'waitingForApproval' } }) as EventDocument[];
 			console.log("events from db - events");
 			
-			const eventMap: {[x: string]: EventDocument} = {}
 			for (const event of events) {
-				if (event && typeof event === 'object' && '_id' in event) {
-					eventMap[event.id] = event;
-				}
-			}
-
-			if (Object.keys(eventMap).length > 0) {
-				await redis.hset("event:map", eventMap)
+				await redis.hset("event:map", {[event.id]: event})
 			}
 		}
 
