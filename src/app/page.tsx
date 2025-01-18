@@ -6,6 +6,7 @@ import { getDateObj } from "@/util/date";
 import Link from "next/link";
 import { Suspense } from "react";
 import { fetchEvents } from "./apis";
+import Image from "next/image";
 
 export default function Home() {
 	const renderContent = async () => {
@@ -49,6 +50,7 @@ export default function Home() {
 	return (
 		<div className="wrapper">
 			<div className="hero-banner">
+				<Image src={"/images/banners/purple_tinted_banner.jpg"} alt="" layout="fill" objectFit="cover" loading="eager"/>
 				<div className="container">
 					<div className="row justify-content-center">
 						<div className="col-xl-7 col-lg-9 col-md-10">

@@ -743,11 +743,16 @@ body {
 }
 
 .hero-banner {
-	background-image: url(/images/banners/purple_tinted_banner.jpg);
+    position: relative;
+    padding: 70px 0 80px;
+}
+
+.hero-banner img {
+	/* background-image: url(/images/banners/purple_tinted_banner.jpg); */
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-	padding: 70px 0 80px;
+    z-index: -1;	
 }
 
 .hero-banner-content {
