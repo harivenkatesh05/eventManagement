@@ -85,7 +85,7 @@ class Store{
 		const eventSaved = await event.save()
 		console.log("saved online event", event.id);
 
-		await redis.hset("onlineEvent:map", {[event.id]: event})
+		// await redis.hset("onlineEvent:map", {[event.id]: event})
 		return eventSaved.id
 	}
 
@@ -96,7 +96,7 @@ class Store{
 		const eventSaved = await event.save()
 		console.log("saved venue event ", eventSaved.id)
 
-		await redis.hset("venueEvent:map", {[event.id]: event})
+		// await redis.hset("venueEvent:map", {[event.id]: event})
 		return eventSaved.id
 	}
 
@@ -107,7 +107,7 @@ class Store{
 		const eventSaved = await event.save()
 		console.log("saved event ", eventSaved.id)
 
-		await redis.hset("event:map", {[event.id]: event})
+		// await redis.hset("event:map", {[event.id]: event})
 		return eventSaved.id
 	}
 
@@ -142,33 +142,24 @@ class Store{
 	}
 
 	async getEvents() {
-		// let events = this.cache.getEvents()
 		const eventMap = await redis.hgetall("event:map")
-		const events = eventMap ? Object.values(eventMap) : []
+		let events = eventMap ? Object.values(eventMap) : []
 		
 		if(events.length === 0) {
 			await connectDatabase();
-			const events = await Event.find({ status: { $ne: 'waitingForApproval' } });
+			events = await Event.find({ status: { $ne: 'waitingForApproval' } });
 			console.log("events from db - events");
 			
 			const eventMap: {[x: string]: EventDocument} = {}
-			events.forEach(event => {
+			for (const event of events) {
 				if (event && typeof event === 'object' && '_id' in event) {
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					eventMap[event.id] = event;
 				}
-				events.push(event)
-			});
+			}
 
-			await redis.hset("event:map", eventMap)
-
-			// events.forEach(event => {
-			// 	if (event && typeof event === 'object' && '_id' in event) {
-			// 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			// 		this.cache.setEvent(event.id, event);
-			// 	}
-			// });
-
+			if (Object.keys(eventMap).length > 0) {
+				await redis.hset("event:map", eventMap)
+			}
 		}
 
 		return events as EventDocument[];
