@@ -21,18 +21,21 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ error: "Invalid token" }, { status: 400 });
 		}
 		
-		const user = await User.create({
-			email: payload.email,
-			firstName: payload.given_name,
-			lastName: payload.family_name,
-			password: "", // No password for Google auth
-			googleId: payload.sub,
-			picture: payload.picture,
-			phoneNumber: null,
-			phoneNumberVerfied: false
-		});
-
-		await store.createUser(user)
+		let user = await store.getUserByEmail(payload.email!);
+		if(!user) {
+			user = await User.create({
+				email: payload.email,
+				firstName: payload.given_name,
+				lastName: payload.family_name,
+				password: "", // No password for Google auth
+				googleId: payload.sub,
+				picture: payload.picture,
+				phoneNumber: null,
+				phoneNumberVerfied: false
+			});
+			await store.createUser(user)
+		}
+		
 
 		// Generate JWT
 		const token = jwt.sign(
