@@ -28,7 +28,8 @@ export async function GET() {
 				tags: event.tags,
 				
 				price,
-				remaining
+				remaining,
+				isHighlighted: event.isHighlighted ?? false
 			}
 		})
 

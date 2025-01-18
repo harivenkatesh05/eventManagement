@@ -22,7 +22,9 @@ interface EventDocument extends Document {
 	createdBy: string,
 	createdAt: Date,
 	updatedAt: Date,
-	status: string
+	status: string,
+
+	isHighlighted: boolean
 }
 
 

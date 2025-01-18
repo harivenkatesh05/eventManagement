@@ -4,6 +4,8 @@
   --primary-hover: #553C9A;  /* Darker purple for hover */
   --primary-light: #9F7AEA;  /* Light purple */
   --primary-very-light: #E9D8FD;  /* Very light purple */
+  --swiper-theme-color: #8B2EB9 !important;
+  --swiper-navigation-size: 30px !important
 }
 
 .skeleton-box {
@@ -300,4 +302,43 @@ a:hover {
 
 .sl-flex .select-tickets-block.h6{
   
+}
+
+.mySwiper{
+  height: 353px;
+}
+
+.swiper-wrapper{
+  height: 85% !important;
+}
+
+.swiper-button-prev, .swiper-button-next{
+  top: 40% !important;
+}
+
+.swiper-slide {
+  opacity: 0.5; /* All slides are initially hidden */
+  transition: opacity 0.5s ease; /* Smooth fade transition */
+}
+
+.swiper-slide-active {
+  opacity: 1; /* Only the active slide is fully visible */
+}
+
+.swiper .swiper-button-next, .swiper .swiper-button-prev{
+  background-color: #8B2EB9;
+  border-radius: 30%;
+  width: 70px;
+  color: #fff;
+  height: 50px;
+}
+  
+.swiper .swiper-button-next {
+  padding: 10px 30px 10px 10px;
+  right: -30px;
+}
+
+.swiper .swiper-button-prev{
+  padding: 10px 10px 10px 30px;
+  left: -30px;
 }

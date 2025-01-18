@@ -1,5 +1,12 @@
 type EventTypeName = 'online' | 'venue'
 
+type HightLightedEventType = {
+	id: string;
+	name: string;
+	type: string
+	image: string;
+}
+
 type EventType = {
 	id: string;
 	name: string;
@@ -12,6 +19,7 @@ type EventType = {
 
 	price: number;
 	remaining: number;
+	isHighlighted: boolean
 };
 
 type Ticket = {

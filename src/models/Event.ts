@@ -24,6 +24,8 @@ const EventSchema: Schema<EventDocument> = new Schema({
 	createdAt: { type: Date, required: true },
 	updatedAt: { type: Date, required: true },
 	status: { type: String, required: true },
+
+	isHighlighted: { type: Boolean, default: false }
 });
 
 export default mongoose.models.Event || mongoose.model<EventDocument>("Event", EventSchema);

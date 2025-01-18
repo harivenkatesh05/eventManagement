@@ -4,14 +4,26 @@ import Card from "@/components/card/card";
 import CardSkeletons from "@/components/card/skeletonCollection";
 import { getDateObj } from "@/util/date";
 import Link from "next/link";
-import { Suspense } from "react";
+import { useEffect, useState } from "react";
 import { fetchEvents } from "./apis";
 import Image from "next/image";
+import Swipper from "@/components/slider/Swiper";
 
 export default function Home() {
-	const renderContent = async () => {
-		try{
-			const events = await fetchEvents()
+	const [highlightedEvents, setHighlightedEvents] = useState([])
+	const [events, setEvents] = useState([])
+	const [isLoading, setIsLoading] = useState(true)
+	
+	useEffect(() => {
+		fetchEvents().then((events) => {
+			setEvents(events)
+			setHighlightedEvents(events.filter((event: EventType) => event.isHighlighted).slice(-4)) //slice last four highlighted events
+			setIsLoading(false)
+		})
+	}, [])
+
+	const renderContent = () => {
+		try {
 			if (!events.length) {
 				return (
 					<div className="text-center p-4">
@@ -47,11 +59,19 @@ export default function Home() {
 		}
 	}
 
+	const highlightedEventsFC = [...highlightedEvents, ...highlightedEvents, ...highlightedEvents].map((event: HightLightedEventType) => {
+		return (
+			<Link key={event.id} href={`/event/${event.type}/${event.id}`}>
+				<Image src={event.image} alt={event.name} layout="fill" objectFit="cover"></Image>
+			</Link>
+		)
+	})
+
 	return (
 		<div className="wrapper">
-			<div className="hero-banner">
-				<Image src={"/images/banners/purple_tinted_banner.jpg"} alt="" layout="fill" objectFit="cover" loading="eager"/>
-				<div className="container">
+			{highlightedEventsFC.length > 0 && <div className="hero-banner hero-swipper">
+				{/* <Image src={"/images/banners/purple_tinted_banner.jpg"} alt="" layout="fill" objectFit="cover" loading="eager"/> */}
+				{/* <div className="container">
 					<div className="row justify-content-center">
 						<div className="col-xl-7 col-lg-9 col-md-10">
 							<div className="hero-banner-content">
@@ -61,8 +81,10 @@ export default function Home() {
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>
+				</div> */}
+
+				<Swipper slides={highlightedEventsFC}></Swipper>
+			</div> }
 			<div className="explore-events p-80">
 				<div className="container">
 					<div className="row">
@@ -94,9 +116,7 @@ export default function Home() {
 										<button type="button" className="control" data-filter=".theatre ">Theatre </button>
 									</div>
 									<div className="row" data-ref="event-filter-content">
-										<Suspense fallback={<CardSkeletons count={8}/>}>
-											{renderContent()}
-										</Suspense>
+										{isLoading ? <CardSkeletons count={8}/> : renderContent()}
 									</div>
 									<div className="browse-btn">
 										<Link href="/explore" className="main-btn btn-hover ">Browse All</Link>

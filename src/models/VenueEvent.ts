@@ -4,7 +4,6 @@ import mongoose, { Schema } from 'mongoose';
 const TicketSchema: Schema<TicketDocument> = new Schema({
 	ticketName: { type: String, required: true },
 	totalTickets: { type: Number, required: true },
-	maxBookingTickets: { type: Number, required: true },
 	price: { type: Number, required: true, default: 0 },
 	tax: { type: Number, default: 0 },
 	productFee: { type: Number, default: 0 },
