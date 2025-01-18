@@ -18,6 +18,7 @@ export const defaultEvent: EventForm = {
 export const defaultOnlineEvent: OnlineEventForm = {
     ...defaultEvent,
     type: 1,
+    isFreeEvent: false,
     totalTickets: 0,
     price: 0
 }
