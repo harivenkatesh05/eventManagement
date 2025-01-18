@@ -385,7 +385,7 @@ export default function OnlineEvent() {
 																<p className="mt-2 fs-14 d-block mb-3 pe_right">Add the ticket price and the number of your attendees. For free events, keep the price at empty.</p>
 																<div className="content-holder">
 																	<div className="row g-3">
-																		{event.price > 0 && <div className="col-md-6 disabled-action">
+																		{!event.isFreeEvent && <div className="col-md-6 disabled-action">
 																			<label className="form-label mt-3 fs-6">Price*</label>
 																			<div className="loc-group position-relative input-group">
 																				<input 

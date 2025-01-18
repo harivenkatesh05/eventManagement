@@ -65,6 +65,7 @@ type EventForm = {
 
 type OnlineEventForm = EventForm & {
 	type: number;
+	isFreeEvent: boolean;
 
 	price: number;
 	totalTickets: number;
