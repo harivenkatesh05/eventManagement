@@ -28,12 +28,13 @@ class Store{
 		// }
 		const redisUser = await redis.hget("user:map", userId)
 		if(redisUser) {
+			console.log("user from redis", userId)
 			return redisUser as UserDocument;
 		}
 
 		await connectDatabase();
 		const user = await User.findById(userId) as UserDocument;
-		console.log("user from db")
+		console.log("user from db", userId)
 		// this.cache.setUser(userId, user);
 		redis.hset("user:map", {[userId]: user})
 		
@@ -47,6 +48,7 @@ class Store{
 		if(redisUser) {
 			for(const [, user] of Object.entries(redisUser)) {
 				if((user as UserDocument).email === userEmail) {
+					console.log("user from redis", userEmail)
 					return user as UserDocument
 				}
 			}
@@ -72,7 +74,7 @@ class Store{
 		const userSaved = await user.save()
 		console.log("saved user", user.id);
 
-		redis.hset("user:map", {[user.id]: user})
+		await redis.hset("user:map", {[user.id]: user})
 		return userSaved.id
 	}
 
@@ -83,7 +85,7 @@ class Store{
 		const eventSaved = await event.save()
 		console.log("saved online event", event.id);
 
-		redis.hset("onlineEvent:map", {[event.id]: event})
+		await redis.hset("onlineEvent:map", {[event.id]: event})
 		return eventSaved.id
 	}
 
@@ -94,7 +96,7 @@ class Store{
 		const eventSaved = await event.save()
 		console.log("saved venue event ", eventSaved.id)
 
-		redis.hset("venueEvent:map", {[event.id]: event})
+		await redis.hset("venueEvent:map", {[event.id]: event})
 		return eventSaved.id
 	}
 
@@ -105,7 +107,7 @@ class Store{
 		const eventSaved = await event.save()
 		console.log("saved event ", eventSaved.id)
 
-		redis.hset("event:map", {[event.id]: event})
+		await redis.hset("event:map", {[event.id]: event})
 		return eventSaved.id
 	}
 
@@ -115,7 +117,7 @@ class Store{
 		const userSaved = await user.save()
 		console.log("update user", userSaved.id);
 
-		redis.hset("user:map", {[userSaved.id]: userSaved})
+		await redis.hset("user:map", {[userSaved.id]: userSaved})
 		return userSaved.id
 	}
 
@@ -125,7 +127,7 @@ class Store{
 		const eventSaved = await event.save()
 		console.log("update online event", event.id);
 
-		redis.hset("onlineEvent:map", {[event.id]: event})
+		await redis.hset("onlineEvent:map", {[event.id]: event})
 		return eventSaved.id
 	}
 
@@ -135,7 +137,7 @@ class Store{
 		const eventSaved = await event.save()
 		console.log("update venue event ", eventSaved.id)
 
-		redis.hset("venueEvent:map", {[event.id]: event})
+		await redis.hset("venueEvent:map", {[event.id]: event})
 		return eventSaved.id 
 	}
 

@@ -8,6 +8,7 @@ import { useSearchParams } from 'next/navigation'
 import React, { Suspense, useCallback, useEffect, useState } from 'react'
 import { fetchEvents } from '../apis'
 import EventSkeleton from '@/components/skeleton/EventSkeleton'
+import Image from 'next/image'
 
 
 export default function Explore() {
@@ -78,6 +79,7 @@ function ExploreComponent() {
 	return (
 		<div className="wrapper">
 			<div className="hero-banner">
+				<Image src={"/images/banners/purple_tinted_banner.jpg"} alt="" layout="fill" objectFit="cover" loading="eager"/>			
 				<div className="container">
 					<div className="row justify-content-center">
 						<div className="col-xl-8 col-lg-8 col-md-10">
