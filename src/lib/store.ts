@@ -1,127 +1,175 @@
 import { EventDocument, OnlineDocument, UserDocument, VenueDocument } from "@/types/model";
-import { Cache } from "./cache";
+// import { Cache } from "./cache";
 import connectDatabase from "./mongodb";
 import User from "@/models/User";
 import Event from "@/models/Event";
 import OnlineEvent from "@/models/OnlineEvent";
 import VenueEvent from "@/models/VenueEvent";
+import { Redis } from "@upstash/redis";
+
+const redis = Redis.fromEnv()
 
 class Store{
-	private cache: Cache
+	// private cache: Cache
 
-	constructor() {
-		this.cache = new Cache()
-	}
+	// constructor() {
+		// this.cache = new Cache()
+		// redis.hset("userMap", {})
+		// redis.hset("eventMap", {})
+		// redis.hset("venueMap", {})
+		// redis.hset("onlineMap", {})
+	// }
 
 	async getUserByID(userId: string) {
-		const cachedUser = this.cache.getUserByID(userId)
-		if(cachedUser) {
-			return cachedUser
+		// const cachedUser = this.cache.getUserByID(userId)
+		// if(cachedUser) {
+		// 	return cachedUser
+		// }
+		const redisUser = await redis.hget("userMap", userId)
+		if(redisUser) {
+			return redisUser;
 		}
 
 		await connectDatabase();
 		const user = await User.findById(userId).select('-password') as UserDocument;
-		this.cache.setUser(userId, user);
+		console.log("user from db")
+		// this.cache.setUser(userId, user);
+		redis.hset("user:map", {[userId]: user})
 		return user
 	}
 
-	async isUserExistByEmail(mail: string) {
-		const user = this.cache.getUserByEmail(mail)
-		return user !== null
-	}
+	// async isUserExistByEmail(mail: string) {
+	// 	const user = this.cache.getUserByEmail(mail)
+	// 	return user !== null
+	// }
 
 	async createUser(user: UserDocument) {
-		this.cache.setUser(user.id, user)
+		// this.cache.setUser(user.id, user)
+		
 		await connectDatabase();
 		const userSaved = await user.save()
 		console.log("saved user", user.id);
+
+		redis.hset("user:map", {[user.id]: user})
 		return userSaved.id
 	}
 
 	async createOnlineEvent(event: OnlineDocument) {
-		this.cache.setOnlineEvent(event.id, event)
+		// this.cache.setOnlineEvent(event.id, event)
+		
 		await connectDatabase()
 		const eventSaved = await event.save()
 		console.log("saved online event", event.id);
+
+		redis.hset("onlineEvent:map", {[event.id]: event})
 		return eventSaved.id
 	}
 
 	async createVenueEvent(event: VenueDocument) {
-		this.cache.setVenueEvent(event.id, event)
+		// this.cache.setVenueEvent(event.id, event)
+		
 		await connectDatabase()
 		const eventSaved = await event.save()
 		console.log("saved venue event ", eventSaved.id)
+
+		redis.hset("venueEvent:map", {[event.id]: event})
 		return eventSaved.id
 	}
 
 	async createEvent(event: EventDocument) {
-		this.cache.setEvent(event.id, event)
+		// this.cache.setEvent(event.id, event)
+		
 		await connectDatabase()
 		const eventSaved = await event.save()
 		console.log("saved event ", eventSaved.id)
+
+		redis.hset("event:map", {[event.id]: event})
 		return eventSaved.id
 	}
 
 	async saveOnlineEvent(event: OnlineDocument) {
-		this.cache.setOnlineEvent(event.id, event)
+		// this.cache.setOnlineEvent(event.id, event)
 		await connectDatabase()
 		const eventSaved = await event.save()
 		console.log("update online event", event.id);
+
+		redis.hset("onlineEvent:map", {[event.id]: event})
 		return eventSaved.id
 	}
 
 	async saveVenueEvent(event: VenueDocument) {
-		this.cache.setVenueEvent(event.id, event)
+		// this.cache.setVenueEvent(event.id, event)
 		await connectDatabase()
 		const eventSaved = await event.save()
 		console.log("update venue event ", eventSaved.id)
+
+		redis.hset("venueEvent:map", {[event.id]: event})
 		return eventSaved.id 
 	}
 
 	async getEvents() {
-		let events = this.cache.getEvents()
+		// let events = this.cache.getEvents()
+		const eventMap = await redis.hgetall("event:map")
+		const events = eventMap ? Object.values(eventMap) : []
+		
 		if(events.length === 0) {
 			await connectDatabase();
-			events = await Event.find({ status: { $ne: 'waitingForApproval' } });
+			const events = await Event.find({ status: { $ne: 'waitingForApproval' } });
 			console.log("events from db - events");
-
+			
+			const eventMap: {[x: string]: EventDocument} = {}
 			events.forEach(event => {
 				if (event && typeof event === 'object' && '_id' in event) {
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					this.cache.setEvent(event.id, event);
+					eventMap[event.id] = event;
 				}
+				events.push(event)
 			});
+
+			await redis.hset("event:map", eventMap)
+
+			// events.forEach(event => {
+			// 	if (event && typeof event === 'object' && '_id' in event) {
+			// 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			// 		this.cache.setEvent(event.id, event);
+			// 	}
+			// });
+
 		}
 
-		return events;
+		return events as EventDocument[];
 	}
 
 	async getLinkedOnlineEvent(id: string) {
-		let onlineEvent = this.cache.getOnlineEvent(id)
+		// let onlineEvent = this.cache.getOnlineEvent(id)
+		let onlineEvent = await redis.hget("onlineEvent:map", id);
 		if(!onlineEvent) {
 			await connectDatabase()
 			onlineEvent = await OnlineEvent.findById(id)
 			if(!onlineEvent) {throw new Error("Linked online event not found")}
 			console.log("online event from db ", id)
 
-			this.cache.setOnlineEvent(id, onlineEvent)
+			// this.cache.setOnlineEvent(id, onlineEvent)
+			await redis.hset("onlineEvent:map", {[id]: onlineEvent})
 		}
 
-		return onlineEvent
+		return onlineEvent as OnlineDocument
 	}
 
 	async getLinkedVenueEvent(id: string) {
-		let venueEvent = this.cache.getVenueEvent(id)
+		// let venueEvent = this.cache.getVenueEvent(id)
+		let venueEvent = await redis.hget("venueEvent:map", id);
 		if(!venueEvent) {
 			await connectDatabase()
 			venueEvent = await VenueEvent.findById(id)
 			if(!venueEvent) {throw new Error("Linked Venue Event not found")}
 			console.log("Venue event from db ", id)
 
-			this.cache.setVenueEvent(id, venueEvent)
+			// this.cache.setVenueEvent(id, venueEvent)
+			await redis.hset("venueEvent:map", {[id]: venueEvent})
 		}
 
-		return venueEvent
+		return venueEvent as VenueDocument
 	}
 
 	async getLinkedEvent(id: string, type: string) {
@@ -129,21 +177,24 @@ class Store{
 	}
 
 	async getEvent(id: string) {
-		let event = this.cache.getEvent(id)
+		// let event = this.cache.getEvent(id)
+		let event = await redis.hget("event:map", id);
 		if(!event) {
 			await connectDatabase()
 			event = await Event.findById(id)
 			if(!event) {throw new Error("Event not found ")}
 			console.log("event from db ", id)
 
-			this.cache.setEvent(event.id, event)
+			// this.cache.setEvent(event.id, event)
+			await redis.hset("event:map", {[id]: event})
 		}
 
 		return event
 	}
 
 	clear() {
-		this.cache = new Cache()
+		// this.cache = new Cache()
+		redis.flushall()
 	}
 
 }

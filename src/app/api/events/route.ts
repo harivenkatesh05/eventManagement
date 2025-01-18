@@ -17,9 +17,8 @@ export async function GET() {
 				price = Math.min(...linkedEvent.tickets.map((ticket) => ticket.price))
 				remaining = linkedEvent.tickets.reduce((sum, ticket) => sum + ticket.remaining, 0)
 			}
-
 			return {
-				id: event.id,
+				id: event._id,
 				type: event.type,
 				name: event.name,
 				description: event.description,
