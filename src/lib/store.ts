@@ -26,21 +26,24 @@ class Store{
 		// if(cachedUser) {
 		// 	return cachedUser
 		// }
-		const redisUser = await redis.hget("userMap", userId)
+		const redisUser = await redis.hget("user:map", userId)
 		if(redisUser) {
 			return redisUser as UserDocument;
 		}
 
 		await connectDatabase();
-		const user = await User.findById(userId).select('-password') as UserDocument;
+		const user = await User.findById(userId) as UserDocument;
 		console.log("user from db")
 		// this.cache.setUser(userId, user);
 		redis.hset("user:map", {[userId]: user})
-		return user as UserDocument
+		
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const {password, ...userObjWithoutPassword} = user
+		return userObjWithoutPassword as UserDocument
 	}
 
 	async getUserByEmail(userEmail: string) {
-		const redisUser = await redis.hgetall("userMap")
+		const redisUser = await redis.hgetall("user:map")
 		if(redisUser) {
 			for(const [, user] of Object.entries(redisUser)) {
 				if((user as UserDocument).email === userEmail) {
