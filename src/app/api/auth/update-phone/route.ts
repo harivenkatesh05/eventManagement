@@ -1,22 +1,17 @@
-import { NextResponse } from 'next/server';
-import User from '@/models/User';
-import connectDatabase from '@/lib/mongodb';
+import { NextRequest, NextResponse } from 'next/server';
 import { sendOTP } from '@/lib/twilio';
-import { storeInRuntime } from '@/lib/runtimeDataStore';
+import { store } from '@/lib/store';
+import { getUserIdFromToken } from '../../utility';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
 	try {
-		const { email, phoneNumber } = await request.json();
-		
-		await connectDatabase();
+		const { phoneNumber } = await request.json();
+		const userId = getUserIdFromToken(request)!;
 
-		const user = await User.findOneAndUpdate(
-			{ email },
-			{ phoneNumber },
-			{ new: true }
-		);
+		const user = await store.getUserByID(userId)
+		user.phoneNumber = phoneNumber
 
-		storeInRuntime("users", user._id, user)
+		await store.saveUser(user)
 
 		if (!user) {
 			return NextResponse.json(

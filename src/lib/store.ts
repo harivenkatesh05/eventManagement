@@ -9,6 +9,7 @@ import { Redis } from "@upstash/redis";
 
 const redis = Redis.fromEnv()
 
+  
 class Store{
 	// private cache: Cache
 
@@ -27,7 +28,7 @@ class Store{
 		// }
 		const redisUser = await redis.hget("userMap", userId)
 		if(redisUser) {
-			return redisUser;
+			return redisUser as UserDocument;
 		}
 
 		await connectDatabase();
@@ -35,7 +36,25 @@ class Store{
 		console.log("user from db")
 		// this.cache.setUser(userId, user);
 		redis.hset("user:map", {[userId]: user})
-		return user
+		return user as UserDocument
+	}
+
+	async getUserByEmail(userEmail: string) {
+		const redisUser = await redis.hgetall("userMap")
+		if(redisUser) {
+			for(const [, user] of Object.entries(redisUser)) {
+				if((user as UserDocument).email === userEmail) {
+					return user as UserDocument
+				}
+			}
+		}
+
+		await connectDatabase();
+		const user = await User.findOne({ email: userEmail }) as UserDocument;
+		console.log("user from db")
+		// this.cache.setUser(userId, user);
+		redis.hset("user:map", {[user.id]: user})
+		return user as UserDocument
 	}
 
 	// async isUserExistByEmail(mail: string) {
@@ -85,6 +104,16 @@ class Store{
 
 		redis.hset("event:map", {[event.id]: event})
 		return eventSaved.id
+	}
+
+	async saveUser(user: UserDocument) {
+		// this.cache.setOnlineEvent(event.id, event)
+		await connectDatabase()
+		const userSaved = await user.save()
+		console.log("update user", userSaved.id);
+
+		redis.hset("user:map", {[userSaved.id]: userSaved})
+		return userSaved.id
 	}
 
 	async saveOnlineEvent(event: OnlineDocument) {
@@ -189,7 +218,7 @@ class Store{
 			await redis.hset("event:map", {[id]: event})
 		}
 
-		return event
+		return event as EventDocument
 	}
 
 	clear() {

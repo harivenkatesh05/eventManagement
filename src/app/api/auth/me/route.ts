@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDatabase } from "@/lib/mongodb";
-import User from "@/models/User";
 import { getUserIdFromToken } from "../../utility";
-import { storeInRuntime } from "@/lib/runtimeDataStore";
 import { sendOTP } from "@/lib/twilio";
 import { store } from "@/lib/store";
 
@@ -13,17 +10,11 @@ export async function GET(req: NextRequest) {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 		
-		let user = await store.getUserByID(userId);
+		const user = await store.getUserByID(userId);
 		if (!user) {
-			await connectDatabase();
-			user = await User.findById(userId).select('-password');
-			console.log("user from db - me");
-			if (!user) {
-				return NextResponse.json({ error: 'User not found' }, { status: 404 });
-			}
-			storeInRuntime('users', userId, user);
+			return NextResponse.json({ error: 'User not found' }, { status: 404 });
 		}
-
+		
 		if(!user.phoneNumberVerfied && user.phoneNumber) {
 			await sendOTP(user.phoneNumber)
 		}
