@@ -15,11 +15,13 @@ interface FormErrors {
 	phoneNumber: boolean;
 }
 
-export default function VenueEventCheckout({ event, selectedTicketID, ticketCount }: { event: VenueEventFullDetail, selectedTicketID: string, ticketCount: number }) {
+export default function VenueEventCheckout({ event, selectedTicketIndex, ticketCount }: { event: VenueEventFullDetail, selectedTicketIndex: number, ticketCount: number }) {
 	const { user } = useUser();
 
 	const [ticketID, setTicketID] = useState('');
 	const [loading, setLoading] = useState(false);
+	
+	const selectTicketID = event.tickets[selectedTicketIndex].ticketID
 	
 	const [purchaseForm, setPurchaseForm] = useState<VenuePurchaseForm>({
 		...defaultPurchaseForm,
@@ -27,7 +29,7 @@ export default function VenueEventCheckout({ event, selectedTicketID, ticketCoun
 		lastName: user?.lastName ?? '',
 		phoneNumber: user?.phoneNumber ?? '',
 		tickets: ticketCount,
-		ticketID: selectedTicketID
+		ticketID: selectTicketID
 	});
 	
 	// Add error state
@@ -37,16 +39,8 @@ export default function VenueEventCheckout({ event, selectedTicketID, ticketCoun
 		phoneNumber: false
 	});
 	
-	useEffect(() => {
-		setTimeout(() => {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(globalThis as any).$('.selectpicker').selectpicker();
-		}, 10)
-	}, []);
-	
-	
 	// Calculate total amount including tax and fees
-	const currentTicket = event.tickets.find((ticket) => ticket.ticketID === selectedTicketID)!
+	const currentTicket = event.tickets.find((ticket) => ticket.ticketID === selectTicketID)!
 	const totalAmount = (currentTicket.price + currentTicket.tax + currentTicket.productFee) * ticketCount;
 	
 	if(getDateObj(event.eventDate) < new Date()) {

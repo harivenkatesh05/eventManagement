@@ -43,7 +43,7 @@ export async function GET(
 			location: venueEvent.address1 + venueEvent.address2 + venueEvent.city + venueEvent.state + venueEvent.zipCode,
 
 			tickets: venueEvent.tickets.map((ticket) => {return {
-				ticketID: ticket.id,
+				ticketID: ticket._id as string,
 				ticketName: ticket.ticketName,
 				// maxBooking: number
 				tax: ticket.tax,

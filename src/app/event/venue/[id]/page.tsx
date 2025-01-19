@@ -22,7 +22,7 @@ export default function EventDetail() {
 	const [loading, setLoading] = useState(true);
 	const [count, setCount] = useState(1);
 	const [checkout, setCheckout] = useState(false);
-	const [selectedTicketIndex, setSelectedTicketIndex] = useState(0) 
+	const [selectedTicketIndex, setSelectedTicketIndex] = useState(0);
 
 	const handleDecreaseCount = () => {
 		setCount(count - 1 < 0 ? 0 : count - 1);
@@ -45,6 +45,8 @@ export default function EventDetail() {
 					return;
 				}
 				setVenueEvent(event);
+				// Reset selectedTicketIndex when event changes
+				setSelectedTicketIndex(0);
 			})
 			.catch((error) => {
 				console.error('Error fetching event:', error);
@@ -92,6 +94,7 @@ export default function EventDetail() {
 		// Existing booking logic...
 		setCheckout(true);
 	};
+
 	return (
 		<div className='wrapper'>
 			<div className='breadcrumb-block'>
@@ -118,7 +121,7 @@ export default function EventDetail() {
 				</div>
 			</div>
 			{checkout ? (
-				<VenueEventCheckout event={venueEvent} ticketCount={count} selectedTicketID={venueEvent.tickets[selectedTicketIndex].ticketID} />
+				<VenueEventCheckout event={venueEvent} ticketCount={count} selectedTicketIndex={selectedTicketIndex} />
 			) : (
 				<div className='event-dt-block p-80'>
 					<div className='container'>
