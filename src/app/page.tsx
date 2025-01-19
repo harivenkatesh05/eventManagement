@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { fetchEvents } from "./apis";
 import Image from "next/image";
 import Swipper from "@/components/slider/Swiper";
+import ImageSkeleton from "@/components/card/imageSkeleton";
 
 export default function Home() {
 	const [highlightedEvents, setHighlightedEvents] = useState([])
@@ -62,14 +63,24 @@ export default function Home() {
 	const highlightedEventsFC = highlightedEvents.map((event: HightLightedEventType) => {
 		return (
 			<Link key={event.id} href={`/event/${event.type}/${event.id}`} className="thumbnail-img">
-				<Image src={event.image} alt={event.name} layout="fill" objectFit="cover"></Image>
+				<Image src={event.image} alt={event.name} fill style={{ objectFit: 'cover' }}
+					sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+				></Image>
 			</Link>
 		)
 	})
 
+	const renderSkeletons = () => {
+		return [
+			<ImageSkeleton key={1} />,
+			<ImageSkeleton key={2} />,
+			<ImageSkeleton key={3} />,
+			<ImageSkeleton key={4} />
+		]
+	}
 	return (
 		<div className="wrapper">
-			{highlightedEventsFC.length > 0 && <div className="hero-banner hero-swipper">
+			<div className="hero-banner hero-swipper">
 				{/* <Image src={"/images/banners/purple_tinted_banner.jpg"} alt="" layout="fill" objectFit="cover" loading="eager"/> */}
 				{/* <div className="container">
 					<div className="row justify-content-center">
@@ -83,8 +94,8 @@ export default function Home() {
 					</div>
 				</div> */}
 
-				<Swipper slides={highlightedEventsFC}></Swipper>
-			</div> }
+				<Swipper slides={highlightedEventsFC.length ? highlightedEventsFC : renderSkeletons()}></Swipper>
+			</div>
 			<div className="explore-events p-80">
 				<div className="container">
 					<div className="row">

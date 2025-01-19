@@ -2,6 +2,7 @@
 
 import { signout } from '@/app/apis';
 import { useUser } from '@/context/UserContext';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react'
@@ -33,22 +34,22 @@ export default function Header() {
 						</button>
 						<Link className="navbar-brand order-1 order-lg-0 ml-lg-0 ml-2 me-auto" href="/">
 							<div className="res-main-logo">
-								<img src="/images/icons/light-logo-name.png" alt="logo"style={{height: '25px', marginLeft: '10px'}}/>
+								<Image src="/images/icons/light-logo-name.png" alt="logo" width={80} height={25} style={{height: "25px", marginLeft: '10px'}}/>
 							</div>
 							<div className="main-logo" id="logo">
-								<img src='/images/icons/logo.png' alt="logo" style={{width: '30%', height: 'auto', margin: '10px'}}/>
-								<img src="/images/icons/light-logo-name.png" alt="logo" style={{width: '70%'}}/>
+								<Image src='/images/icons/logo.png' alt="logo" width={30} height={30} style={{width: '30%', height: 'auto', margin: '10px'}}/>
+								<Image src="/images/icons/light-logo-name.png" alt="logo" width={70} height={25} style={{width: '70%'}}/>
 							</div>
 							<div className="main-logo" id="logo">
-								<img className="logo-inverse" src='/images/icons/logo.png' style={{width: '30%', height: 'auto', margin: '10px'}} alt="logo" />
-								<img className="logo-inverse" src="/images/icons/dark-logo-name.png" alt="logo" />
+								<Image className="logo-inverse" src='/images/icons/logo.png' width={30} height={30} style={{width: '30%', height: 'auto', margin: '10px'}} alt="logo" />
+								<Image className="logo-inverse" src="/images/icons/dark-logo-name.png" width={70} height={25} alt="logo" />
 							</div>
 
 						</Link>
 						<div className="offcanvas offcanvas-start" tabIndex={-1} id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
 							<div className="offcanvas-header">
 								<div className="offcanvas-logo" id="offcanvasNavbarLabel">
-									<img src="/images/icons/logo.png" alt="" />
+									<Image src='/images/icons/logo.png' alt="logo" width={100} height={70} style={{width: '40%', height: 'auto'}}/>							
 								</div>
 								<button type="button" className="close-btn" data-bs-dismiss="offcanvas" aria-label="Close">
 									<i className="fa-solid fa-xmark"></i>
