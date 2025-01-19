@@ -3,14 +3,15 @@
 import { signin } from '@/app/apis';
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { GoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-hot-toast';
 import { useUser } from '@/context/UserContext';
+import SignInSkeleton from '@/components/skeletons/SignInSkeleton';
 
-export default function SignIn() {
-	const router = useRouter();
+function SignInForm() {
 	const searchParams = useSearchParams();
+	const router = useRouter();
 	const [showPassword, setShowPassword] = useState(false);
 	const [formData, setFormData] = useState<SignInForm>({ email: "", password: "" });
 	const [googleLoading, setGoogleLoading] = useState(false);
@@ -165,4 +166,12 @@ export default function SignIn() {
 			</div>
 		</div>
 	)
+}
+
+export default function SignIn() {
+	return (
+		<Suspense fallback={<SignInSkeleton />}>
+			<SignInForm />
+		</Suspense>
+	);
 }
