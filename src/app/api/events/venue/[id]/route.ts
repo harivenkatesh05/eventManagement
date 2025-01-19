@@ -22,7 +22,7 @@ export async function GET(
 
 		const venueEvent = await store.getLinkedVenueEvent(event.linkedEvent)
 		const eventFullDetails: VenueEventFullDetail = {
-			id: event.id,
+			id: event._id as string,
 			type: event.type,
 			name: event.name,
 			description: event.description,

@@ -22,7 +22,7 @@ export async function GET(
 
 		const onlineEvent = await store.getLinkedOnlineEvent(event.linkedEvent)
 		const eventFullDetails: OnlineEventFullDetail = {
-			id: event.id,
+			id: event._id as string,
 			type: event.type,
 			name: event.name,
 			description: event.description,

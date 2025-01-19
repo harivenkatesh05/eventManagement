@@ -33,7 +33,7 @@ export async function GET(
 			})
 			return NextResponse.json({
 				event: {
-					id: event.id,
+					id: event._id,
 					type: event.type,
 					name: event.name,
 					image: event.image,
