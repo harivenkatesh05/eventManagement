@@ -23,6 +23,13 @@ export const fetchEvents = async () => {
 	return data.events;
 };
 
+export const fetchUserOrders = async () => {
+	const response = await fetch(`${BASE_URL}/api/orders`);
+	if (!response.ok) throw new Error('Failed to fetch ouser orders');
+	const data = await response.json();
+	return data.order;
+};
+
 export const fetchOnlineEvent = async (id: string) => {
 	const response = await fetch(`${BASE_URL}/api/events/online/${id}`);
 	if (!response.ok) throw new Error('Failed to fetch events');

@@ -1,12 +1,13 @@
 'use client'
 
-import { sendPhoneOTP, updateUserProfile } from '@/app/apis';
+import { fetchUserOrders, sendPhoneOTP, updateUserProfile } from '@/app/apis';
 import { useUser } from '@/context/UserContext';
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast';
 import Link from 'next/link'
 import ProfileSkeleton from '@/components/skeletons/ProfileSkeleton';
 import OTPVerificationModal from '@/components/auth/OTPVerificationModal';
+import PurchaseCard from '@/components/order/card'
 
 export default function MyProfile() {
 	const { user, setUser } = useUser();
@@ -14,6 +15,7 @@ export default function MyProfile() {
 	const [activeTab, setActiveTab] = useState('about');
 	const [orders, setOrders] = useState<PurchaseType[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isUserUpdating, setIsUserUpdating] = useState(false);
 	const [showPhoneNumberVerificationModal, setShowPhoneNumberVerificationModal] = useState(false);
 	const [userProfile, setUserProfile] = useState<UserProfile>({
 		firstName: user?.firstName || '',
@@ -44,11 +46,11 @@ export default function MyProfile() {
 			// 		...userProfile,
 			// 	});
 			// }
-			setIsLoading(true);
+			setIsUserUpdating(true);
 			const user = await updateUserProfile(userProfile);
 			setUser(user);
 			setUserProfile(user);
-			setIsEditing(false);
+			setIsUserUpdating(false);
 			toast.success('Profile updated successfully');
 		} catch (error) {
 			console.error('Failed to update profile:', error);
@@ -66,9 +68,22 @@ export default function MyProfile() {
 		})
 	}
 
-	if (isLoading && !user) {
+	const handleOrderLoad = () => {
+		setActiveTab('orders')
+		setIsLoading(true)
+		fetchUserOrders().then((loadedorders) => {
+			setOrders(loadedorders)
+			setIsLoading(false)
+		})
+	}
+
+	if (isLoading) {
 		return <ProfileSkeleton />;
 	}
+
+	const orderCards = orders.map((order) => {
+		return <PurchaseCard key={order.id} purchase={order}></PurchaseCard>
+	})
 
 	return (
 		<>
@@ -113,7 +128,7 @@ export default function MyProfile() {
 									<li className="nav-item">
 										<button 
 											className={`nav-link ${activeTab === 'orders' ? 'active' : ''}`}
-											onClick={() => setActiveTab('orders')}
+											onClick={handleOrderLoad}
 										>
 											My Orders
 										</button>
@@ -185,7 +200,7 @@ export default function MyProfile() {
 										{isEditing && (
 											<div className="mt-3">
 												<button className="create-btn btn-hover me-2" onClick={handleUpdate}>
-													{isLoading ? 'Updating...' : 'Update Profile'}
+													{isUserUpdating ? 'Updating...' : 'Update Profile'}
 												</button>
 												<button className="cancel-btn create-btn btn-hover" onClick={() => setIsEditing(false)}>
 													Cancel
@@ -203,34 +218,7 @@ export default function MyProfile() {
 										{orders.length === 0 ? (
 											<p className="text-center">No orders found</p>
 										) : (
-											<div className="table-responsive">
-												<table className="table">
-													<thead>
-														<tr>
-															<th>Order ID</th>
-															<th>Event</th>
-															<th>Date</th>
-															<th>Tickets</th>
-															<th>Amount</th>
-															<th>Status</th>
-														</tr>
-													</thead>
-													<tbody>
-														{orders.map((order) => (
-															<tr key={order.id}>
-																<td>{order.id}</td>
-																<td>{order.event.name}</td>
-																<td>{new Date(order.purchaseDate).toLocaleDateString()}</td>
-																<td>{order.tickets}</td>
-																<td>₹{order.totalAmount.toLocaleString('en-IN')}</td>
-																<td>
-																	<span className="badge bg-success">Confirmed</span>
-																</td>
-															</tr>
-														))}
-													</tbody>
-												</table>
-											</div>
+											orderCards
 										)}
 									</div>
 								</div>

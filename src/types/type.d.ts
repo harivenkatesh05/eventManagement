@@ -173,6 +173,17 @@ type PurchaseType = {
 	country: string;
 };
 
+type PurchaseInfoType = {
+	id: string;
+	event: {
+		name: string;
+		image: string;
+		date: string;
+	};
+	totalAmount: number;
+	tickets: number;
+};
+
 type PaymentData = {
 	amount: number;
 	eventId: string;
