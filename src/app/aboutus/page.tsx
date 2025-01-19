@@ -1,9 +1,11 @@
+import Image from 'next/image'
 import React from 'react'
 
 export default function AboutUs() {
 	return (
 		<div className="wrapper">
 			<div className="hero-banner">
+				<Image src={"/images/banners/purple_tinted_banner.jpg"} alt="" layout="fill" objectFit="cover" loading="eager"/>
 				<div className="container">
 					<div className="row justify-content-center">
 						<div className="col-xl-6 col-lg-9 col-md-10">
