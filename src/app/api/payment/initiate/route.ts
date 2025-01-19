@@ -4,6 +4,7 @@ import sha256 from 'sha256';
 import axios from 'axios';
 import Purchase from '@/models/Purchase';
 import { store } from '@/lib/store';
+import connectDatabase from '@/lib/mongodb';
 
 export async function POST(request: NextRequest) {
 	try {
@@ -25,6 +26,7 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
+		await connectDatabase();
 		const purchase = new Purchase({
 			eventId: data.eventId,
 			userId,
