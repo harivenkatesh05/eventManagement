@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import { connectDatabase } from "../../../../lib/mongodb";
 import { NextResponse } from "next/server";
 import { TOKEN_COOKIE_NAME } from "../../constants";
-import { sendOTP } from "@/lib/twilio";
 import { store } from "@/lib/store";
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -34,11 +33,6 @@ export async function POST(req: Request) {
 		});
 
 		
-		if(!user.phoneNumberVerfied) {
-			const status = await sendOTP(user.phoneNumber);
-			console.log("otp sent", status)
-		}
-
 		const response = NextResponse.json({ message: "Login successful", token, user }, { status: 200 });
 		response.cookies.set(TOKEN_COOKIE_NAME, token, {
 			httpOnly: true,

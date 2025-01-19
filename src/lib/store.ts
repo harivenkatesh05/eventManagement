@@ -38,9 +38,7 @@ class Store{
 		// this.cache.setUser(userId, user);
 		redis.hset("user:map", {[userId]: user})
 		
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const {password, ...userObjWithoutPassword} = user
-		return userObjWithoutPassword as UserDocument
+		return user as UserDocument
 	}
 
 	async getUserByEmail(userEmail: string) {
@@ -114,7 +112,12 @@ class Store{
 	async saveUser(user: UserDocument) {
 		// this.cache.setOnlineEvent(event.id, event)
 		await connectDatabase()
-		const userSaved = await user.save()
+		
+		const userSaved = await User.findOneAndUpdate(
+			{ id: user.id },
+			user,
+			{ new: true }
+		);
 		console.log("update user", userSaved.id);
 
 		await redis.hset("user:map", {[userSaved.id]: userSaved})

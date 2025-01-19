@@ -133,6 +133,16 @@ export const bookVenueEvent = async (eventId: string, purchaseForm: VenuePurchas
 	return response.json();
 };
 
+export const updateUserProfile = async (userProfile: UserProfile) => {
+	const response = await fetch(`${BASE_URL}/api/auth/update-user`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(userProfile),
+	});
+	if (!response.ok) throw new Error('Failed to update user profile');
+	return response.json();
+};
+
 export const fetchPurchase = async (id: string) => {
 	const response = await fetch(`${BASE_URL}/api/purchase/${id}`);
 	if (!response.ok) throw new Error('Failed to fetch purchase');

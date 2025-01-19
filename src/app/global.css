@@ -5,7 +5,7 @@
   --primary-light: #9F7AEA;  /* Light purple */
   --primary-very-light: #E9D8FD;  /* Very light purple */
   --swiper-theme-color: #8B2EB9 !important;
-  --swiper-navigation-size: 30px !important
+  --swiper-navigation-size: 30px !important;
 }
 
 .skeleton-box {
@@ -365,4 +365,10 @@ a:hover {
   .mySwiper{
     height: 250px;
   }
+}
+
+.cancel-btn.create-btn{
+  background-color: #F3E8FF;
+  border: #F3E8FF;
+  color: #8B2EB9;
 }

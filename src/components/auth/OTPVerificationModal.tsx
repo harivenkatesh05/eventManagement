@@ -13,6 +13,7 @@ export default function OTPVerificationModal({
 
 	const {user} = useUser();
 	const [otp, setOtp] = useState('');
+	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	
 	const handleVerify = async () => {
@@ -25,7 +26,10 @@ export default function OTPVerificationModal({
 
 		try {
 			const phoneNumber = user?.phoneNumber
+
+			setLoading(true);
 			const response = await verifyPhoneOTP(phoneNumber!, otp);
+			setLoading(false);
 			if (response.verified) {
 				onVerificationSuccess();
 			} else {
@@ -44,7 +48,7 @@ export default function OTPVerificationModal({
 			closeOnlyOnSubmit={true}
 			title="Verify phonenumber"
 			onSave={handleVerify}	
-			buttonText="Verify OTP"
+			buttonText={loading ? "Verifying..." : "Verify OTP"}
 		>
 			<div className="modal-body">
 				<p className='mb-4'>

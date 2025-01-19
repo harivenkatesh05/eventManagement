@@ -39,6 +39,8 @@ type User = {
 	phoneNumberVerfied?: boolean
 };
 
+type UserProfile = Omit<User, 'password'>
+
 type SignInForm = {
 	email: string;
 	password: string;

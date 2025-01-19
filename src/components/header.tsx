@@ -249,7 +249,15 @@ export default function Header() {
 											</div>
 										</li>
 										<li className="profile-link">
-											{user ? <button onClick={handleSignout} className="link-item">Sign Out</button> : <Link href="/auth/signin" className="link-item">Sign In</Link>}
+											{user ? (
+											<>
+												<Link href={'/myprofile'} className="link-item" onClick={(() => {
+													document.body.click()
+												})}>My Profile</Link>
+												<button onClick={handleSignout} className="link-item">Sign Out</button>
+											</>) : <>
+												<Link href="/auth/signin" className="link-item">Sign In</Link>
+											</>}
 										</li>
 										
 										{/* <li className="profile-link">
