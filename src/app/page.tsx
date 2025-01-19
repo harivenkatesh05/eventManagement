@@ -61,7 +61,7 @@ export default function Home() {
 
 	const highlightedEventsFC = highlightedEvents.map((event: HightLightedEventType) => {
 		return (
-			<Link key={event.id} href={`/event/${event.type}/${event.id}`}>
+			<Link key={event.id} href={`/event/${event.type}/${event.id}`} className="thumbnail-img">
 				<Image src={event.image} alt={event.name} layout="fill" objectFit="cover"></Image>
 			</Link>
 		)
