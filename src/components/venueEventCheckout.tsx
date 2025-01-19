@@ -4,7 +4,7 @@ import { initiatePayment, bookVenueEvent } from '@/app/apis';
 import { useUser } from '@/context/UserContext';
 import { formatDateToIST, getDateObj } from '@/util/date';
 import { toast } from 'react-hot-toast';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import BookingConfirmed from './bookingConfirmed';
 import { defaultPurchaseForm } from '@/app/defaultValues';
 
