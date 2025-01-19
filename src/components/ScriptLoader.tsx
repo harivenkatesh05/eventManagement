@@ -35,9 +35,10 @@ export default function ScriptLoader() {
 			<>
 			<Script src="/vendor/mixitup/dist/mixitup.min.js" strategy="lazyOnload" onLoad={() => {
 				setTimeout(() => {
-					var containerEl = document.querySelector('[data-ref~="event-filter-content"]');
+					const containerEl = document.querySelector('[data-ref~="event-filter-content"]');
 					if(containerEl) {
-						var mixer = (window as any).mixitup(containerEl, {
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
+						(globalThis as any).mixitup(containerEl, {
 						selectors: {
 							target: '[data-ref~="mixitup-target"]'
 						}
