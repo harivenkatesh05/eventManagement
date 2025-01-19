@@ -37,7 +37,7 @@ export function middleware(request: NextRequest) {
 
 	if (!isAuthenticated && isProtectedPath) {
 		const redirectUrl = new URL('/auth/signin', request.url)
-		// redirectUrl.searchParams.set('redirect', request.nextUrl.pathname)
+		redirectUrl.searchParams.set('redirect', request.nextUrl.pathname)
 		return NextResponse.redirect(redirectUrl)
 	}
 

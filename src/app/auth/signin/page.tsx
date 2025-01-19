@@ -2,19 +2,27 @@
 
 import { signin } from '@/app/apis';
 import Link from 'next/link'
-import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react'
 import { GoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-hot-toast';
 import { useUser } from '@/context/UserContext';
 
 export default function SignIn() {
-	
 	const router = useRouter();
+	const searchParams = useSearchParams();
 	const [showPassword, setShowPassword] = useState(false);
 	const [formData, setFormData] = useState<SignInForm>({ email: "", password: "" });
 	const [googleLoading, setGoogleLoading] = useState(false);
 	const { setUser } = useUser();
+	const [redirect, setRedirect] = useState("");
+
+	useEffect(() => {
+		const redirectParam = searchParams.get('redirect');
+		if (redirectParam) {
+			setRedirect(redirectParam);
+		}
+	}, [searchParams]);
 	
 	const handleSignin = async (e: Event) => {
 		e.preventDefault();
@@ -58,14 +66,11 @@ export default function SignIn() {
 	};
 
 	const handleSignInSuccess = () => {
-		// Get the stored redirect path
-		const redirectPath = sessionStorage.getItem('redirectAfterLogin');
-		if (redirectPath) {
+		const redirectPath = redirect || sessionStorage.getItem('redirectAfterLogin') || '/';
+		if (sessionStorage.getItem('redirectAfterLogin')) {
 			sessionStorage.removeItem('redirectAfterLogin');
-			router.push(redirectPath);
-		} else {
-			router.push('/'); // Default redirect
 		}
+		router.push(redirectPath);
 	};
 
 	return (
