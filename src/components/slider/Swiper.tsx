@@ -5,11 +5,26 @@ import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { JSX } from 'react';
+import { JSX, useState, useEffect } from 'react';
 
 export default function Swipper({slides}: {slides: JSX.Element[]}) {
+	const [isMobile, setIsMobile] = useState(false);
+
+	useEffect(() => {
+		const handleResize = () => {
+			setIsMobile(window.innerWidth <= 400);
+		};
+
+		handleResize(); // Set initial value
+		window.addEventListener('resize', handleResize);
+
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	}, []);
+  
 	return <Swiper 
-		slidesPerView={3}
+		slidesPerView={isMobile ? 1 : 3}
 		centeredSlides={true}
 		spaceBetween={30}
 		effect="fade"
@@ -24,7 +39,7 @@ export default function Swipper({slides}: {slides: JSX.Element[]}) {
 			clickable: true,
 		}}
 		loop={true}
-		navigation={true}
+		navigation={!isMobile}
 		modules={[Autoplay, Pagination, Navigation]}
 		className="mySwiper"
 	>

@@ -348,3 +348,21 @@ a:hover {
   width: 100%;
   height: 100%;
 }
+
+@media (width <= 400px) {
+  .hero-banner.hero-swipper{
+    padding: 0;
+  }
+
+  .swiper-wrapper{
+    height: 100% !important;
+  }
+
+  .p-80{
+    padding: 22px 0 64px;
+  }
+
+  .mySwiper{
+    height: 250px;
+  }
+}
