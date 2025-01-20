@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
 		const userId = getUserIdFromToken(request);
 		
 		await connectDatabase()
-		const purchases = await Purchase.find({userId}).populate('eventId');
+		const purchases = await Purchase.find({userId, status: 'completed'}).populate('eventId');
 
 		const response = NextResponse.json(
 			{ order: purchases.map((order) => {

@@ -188,6 +188,7 @@ type PaymentData = {
 	amount: number;
 	eventId: string;
 	tickets: number;
+	ticketID: string;
 	customerDetails: {
 		firstName: string,
 		lastName: string,

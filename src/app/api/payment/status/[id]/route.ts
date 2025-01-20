@@ -3,6 +3,8 @@ import Purchase from '@/models/Purchase';
 import connectDatabase from '@/lib/mongodb';
 import axios from 'axios';
 import sha256 from 'sha256';
+import { store } from '@/lib/store';
+import { isOnlineEvent } from '@/app/api/utility';
 
 export async function GET(
 	request: NextRequest,
@@ -32,7 +34,9 @@ export async function GET(
 		);
 
 		// Get purchase details
-		const purchase = await Purchase.findById(id).populate('eventId');
+		const purchase = await Purchase.findById(id);
+		const event = await store.getEvent(purchase.eventId)
+		
 		if (!purchase) {
 			return NextResponse.json({
 				status: 'failure',
@@ -40,11 +44,25 @@ export async function GET(
 			});
 		}
 
+		console.log("payment gateway response", response.data.toString())
 		if (response.data.code === 'PAYMENT_SUCCESS') {
-			const event = purchase.eventId;
-			event.remaining -= purchase.ticketes;
-			await event.save()
+			purchase.status = "confirmed"
+			await purchase.save()
 
+			const linkedEvent = await store.getLinkedEvent(event.linkedEvent, event.type)
+			if(isOnlineEvent(linkedEvent)) {
+				linkedEvent.remaining -= purchase.tickets;
+				await store.saveOnlineEvent(linkedEvent)
+			}
+			else {
+				linkedEvent.tickets.forEach((ticket) => {
+					if (ticket.id === purchase.ticketID) {
+						ticket.remaining -= purchase.ticketes;
+					}
+				});
+				await store.saveVenueEvent(linkedEvent)
+			}
+			
 			return NextResponse.json({
 				status: 'success',
 				message: 'Payment successful',

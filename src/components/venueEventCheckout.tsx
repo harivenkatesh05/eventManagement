@@ -93,6 +93,7 @@ export default function VenueEventCheckout({ event, selectedTicketIndex, ticketC
 				amount: totalAmount,
 				eventId: event.id,
 				tickets: purchaseForm.tickets,
+				ticketID: purchaseForm.ticketID,
 				customerDetails: {
 					firstName: purchaseForm.firstName,
 					lastName: purchaseForm.lastName,

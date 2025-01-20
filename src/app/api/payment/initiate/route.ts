@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
 			firstName: data.customerDetails.firstName,
 			lastName: data.customerDetails.lastName,
 			phoneNumber: data.customerDetails.phone,
+			ticketID: data.ticketID
 			// barcode will be auto-generated
 		});
 
