@@ -36,6 +36,7 @@ class Store{
 		const user = await User.findById(userId) as UserDocument;
 		console.log("user from db", userId)
 		// this.cache.setUser(userId, user);
+		if(!user) {throw new Error("User not found")}
 		redis.hset("user:map", {[userId]: user})
 		
 		return user as UserDocument
@@ -44,8 +45,16 @@ class Store{
 	async getUserByEmail(userEmail: string) {
 		const redisUser = await redis.hgetall("user:map")
 		if(redisUser) {
-			for(const [, user] of Object.entries(redisUser)) {
-				if((user as UserDocument).email === userEmail) {
+			for(const [userId, user] of Object.entries(redisUser)) {
+				if(!user) {
+					await connectDatabase();
+					const user = await User.findById(userId) as UserDocument;
+					if(!user) {
+						redis.hdel("user:map", userId)
+					}
+					redis.hset("user:map", {[userId]: user})
+				}
+				else if((user as UserDocument).email === userEmail) {
 					console.log("user from redis", userEmail)
 					return user as UserDocument
 				}
@@ -121,6 +130,7 @@ class Store{
 		);
 		console.log("update user", userSaved.id);
 
+		if(!userSaved) {throw new Error("User not found")}
 		await redis.hset("user:map", {[userSaved.id]: userSaved})
 		return userSaved.id
 	}
