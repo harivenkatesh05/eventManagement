@@ -54,7 +54,8 @@ class Store{
 
 		await connectDatabase();
 		const user = await User.findOne({ email: userEmail }) as UserDocument;
-		console.log("user from db")
+		if(!user) {return null}
+		console.log("user from db ", user.id)
 		// this.cache.setUser(userId, user);
 		redis.hset("user:map", {[user.id]: user})
 		return user as UserDocument

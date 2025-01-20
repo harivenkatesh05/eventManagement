@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 				phoneNumber: null,
 				phoneNumberVerfied: false
 			});
-			await store.createUser(user)
+			await store.createUser(user!)
 		}
 		
 
