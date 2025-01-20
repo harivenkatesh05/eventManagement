@@ -15,11 +15,23 @@ export default function DatePicker({ title, placeholder = "MM/DD/YYYY", value, o
 
 	useEffect(() => {
 		setTimeout(() => {
+			$.fn.datepicker.language['en'] = {
+				days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+				daysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+				daysMin: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+				months: ['January','February','March','April','May','June', 'July','August','September','October','November','December'],
+				monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+				today: 'Today',
+				clear: 'Clear',
+				dateFormat: 'mm/dd/yyyy',
+				timeFormat: 'hh:ii aa',
+				firstDay: 0
+			};
+
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			(globalThis as any).$(`#${datepickerId}`).datepicker({
 				language: 'en',
 				autoClose: true,
-				dateFormat: 'mm/dd/yyyy',
 				onSelect: function(formattedDate: string) {
 					const existingDate = value ? new Date(value) : new Date();
 					const newDate = new Date(formattedDate);
@@ -30,7 +42,7 @@ export default function DatePicker({ title, placeholder = "MM/DD/YYYY", value, o
 					onChange(newDate.toISOString())
 				}
 			})
-		}, 100)
+		}, 1000)
 	}, [datepickerId, onChange, value])
 
 	return (

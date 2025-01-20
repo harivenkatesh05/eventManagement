@@ -178,7 +178,7 @@ export default function OnlineEvent() {
 
 			// Initialize other plugins
 			(globalThis as any).$('.selectpicker').selectpicker();
-		}, 1000)
+		}, 100)
 	}, [])
 		
 	return (

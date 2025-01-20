@@ -38,6 +38,8 @@ export const viewport = 'width=device-width, shrink-to-fit=9';
 // 	);
 // }
 
+const isProductionMode = process.env.NODE_ENV === 'production';
+
 export default function RootLayout({
 	children,
 }: Readonly<{
@@ -53,7 +55,7 @@ export default function RootLayout({
 						<ClientRouteHandler>
 							{children}
 						</ClientRouteHandler>
-						<SpeedInsights />
+						{isProductionMode && <SpeedInsights />}
 					</div>
 				</GoogleOAuthProvider>
 				<StyleLoader />

@@ -27,52 +27,39 @@ export default function ScriptLoader() {
 	return (
 		<>
 		{/* Essential scripts that should load first */}
-		<Script src="/js/jquery.min.js" strategy="beforeInteractive" />
+		<Script src="/js/jquery.min.js" strategy="beforeInteractive" onLoad={() => console.log("jquery loaded")}/>
 		<Script src="/vendor/bootstrap/js/bootstrap.bundle.min.js" strategy="beforeInteractive" />
 		
 		{/* Conditionally loaded scripts */}
 		{needsMixitup && (
 			<>
-			<Script src="/vendor/mixitup/dist/mixitup.min.js" strategy="lazyOnload" onLoad={() => {
-				setTimeout(() => {
-					const containerEl = document.querySelector('[data-ref~="event-filter-content"]');
-					if(containerEl) {
-						// eslint-disable-next-line @typescript-eslint/no-explicit-any
-						(globalThis as any).mixitup(containerEl, {
-						selectors: {
-							target: '[data-ref~="mixitup-target"]'
+				<Script src="/vendor/mixitup/dist/mixitup.min.js" strategy="lazyOnload" onLoad={() => {
+					console.log("mixitup loaded")
+					setTimeout(() => {
+						const containerEl = document.querySelector('[data-ref~="event-filter-content"]');
+						if(containerEl) {
+							// eslint-disable-next-line @typescript-eslint/no-explicit-any
+							(globalThis as any).mixitup(containerEl, {
+							selectors: {
+								target: '[data-ref~="mixitup-target"]'
+							}
+							});
 						}
-						});
-					}
-				}, 1000)
-			}}/>
+					}, 10)
+				}}/>
 			</>
 		)}
 
 		{needsDatepicker && (
 			<>
-			<Script src="/js/datepicker.min.js" strategy={isFirstLoad ? "beforeInteractive" : "afterInteractive"} onLoad={() => {
-				setTimeout(() => {
-					$.fn.datepicker.language['en'] = {
-						days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-						daysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-						daysMin: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-						months: ['January','February','March','April','May','June', 'July','August','September','October','November','December'],
-						monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-						today: 'Today',
-						clear: 'Clear',
-						dateFormat: 'mm/dd/yyyy',
-						timeFormat: 'hh:ii aa',
-						firstDay: 0
-					};
-				})
-			}}/>
+				<Script src="/js/datepicker.min.js" strategy={isFirstLoad ? "beforeInteractive" : "afterInteractive"}/>
 			</>
 		)}
 
 		{needsDropdown && (
 			<>
 				<Script src="/vendor/bootstrap-select/dist/js/bootstrap-select.min.js" strategy={isFirstLoad ? "beforeInteractive" : "afterInteractive"} onLoad={() => {
+					console.log("select loaded")
 					$('.selectpicker').selectpicker();
 				}} />
 			</>
