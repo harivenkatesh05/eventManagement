@@ -372,3 +372,8 @@ a:hover {
   border: #F3E8FF;
   color: #8B2EB9;
 }
+
+.navbar-toggler .icon{
+  padding: 30%;
+  fill: #717171;
+}
