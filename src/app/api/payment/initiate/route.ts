@@ -27,7 +27,8 @@ export async function POST(request: NextRequest) {
 		}
 
 		await connectDatabase();
-		const purchase = new Purchase({
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const purchaseObj: any = {
 			eventId: data.eventId,
 			userId,
 			tickets: data.tickets,
@@ -36,11 +37,13 @@ export async function POST(request: NextRequest) {
 			purchaseDate: new Date(),
 			firstName: data.customerDetails.firstName,
 			lastName: data.customerDetails.lastName,
-			phoneNumber: data.customerDetails.phone,
-			ticketID: data.ticketID
+			phoneNumber: data.customerDetails.phone
 			// barcode will be auto-generated
-		});
+		}
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		data.ticketID && (purchaseObj.ticketID = data.ticketID)
 
+		const purchase = new Purchase(purchaseObj);
 		await purchase.save();
 
 		const uniqueId = purchase._id.toString();
