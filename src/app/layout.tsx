@@ -5,6 +5,7 @@ import { roboto } from './fonts'
 import ClientRouteHandler from "./ClientRouteHandler";
 import ScriptLoader from "@/components/ScriptLoader";
 import StyleLoader from "@/components/StyleLoader";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 // import "../../public/vendor/unicons-2.0.1/css/unicons.css"
 import "../../public/css/style.css"
@@ -52,6 +53,7 @@ export default function RootLayout({
 						<ClientRouteHandler>
 							{children}
 						</ClientRouteHandler>
+						<SpeedInsights />
 					</div>
 				</GoogleOAuthProvider>
 				<StyleLoader />
