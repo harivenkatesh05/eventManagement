@@ -44,7 +44,7 @@ export async function GET(
 			});
 		}
 
-		console.log("payment gateway response", response.data.toString())
+		console.log("payment gateway response", response.data)
 		if (response.data.code === 'PAYMENT_SUCCESS') {
 			purchase.status = "confirmed"
 			await purchase.save()
