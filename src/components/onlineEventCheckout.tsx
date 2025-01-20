@@ -85,6 +85,11 @@ export default function OnlineEventCheckout({ event }: { event: OnlineEventFullD
 
 	const handlePayment = async () => {
 		try {
+			if (!validateForm()) {
+				toast.error('Please fill all required fields');
+				return;
+			}
+			
 			setLoading(true);
 			
 			// Calculate total amount including tax and fees
